@@ -150,7 +150,7 @@ move = Animation('move',
 
 bomb = Animation('bomb',
   data=[
-    Variable('actingID', int)
+    Variable('actingID', int),
     Variable('x', int),
     Variable('y', int)
   ],
