@@ -130,8 +130,9 @@ TrapType = Model('TrapType',
 
 #TILE
 Tile = Model('Tile',
+  parent = Mappable,
   data = [
-    Variable('isWall', int, 'Whether this tile is a wall or not.'),
+    Variable('type', int, 'What type of tile this is. 0: empty, 1: wall: 2: spawn.'),
     ],
   doc='Represents a tile.',
   functions=[],
