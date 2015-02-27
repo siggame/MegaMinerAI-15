@@ -30,14 +30,7 @@ class Match(DefaultGameWorld):
     self.addPlayer(self.scribe, "spectator")
 
     #TODO: INITIALIZE THESE!
-<<<<<<< HEAD
-    self.mapWidth = self.mapWidth
-    self.mapHeight = self.mapHeight
-    self.turnNumber = self.turnNumber
-    self.maxThieves = self.maxThieves
-    self.maxTraps = self.maxTraps
-    self.playerID = self.playerID
-=======
+
     self.grid = []
     self.mapWidth = self.mapWidth
     self.mapHeight = self.mapHeight
@@ -45,7 +38,6 @@ class Match(DefaultGameWorld):
     self.maxThieves = self.maxThieves
     self.maxTraps = self.maxTraps
     self.playerID = -1
->>>>>>> 4809377e4d137743d05459a851cdf8ee488d18d7
     self.gameNumber = id
     self.roundNumber = self.roundNumber
     self.scarabsForTraps = self.scarabsForTraps
