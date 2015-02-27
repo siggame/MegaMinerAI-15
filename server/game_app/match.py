@@ -93,6 +93,18 @@ class Match(DefaultGameWorld):
     else:
       return None
 
+  def getRealX(self, player, x, side):
+	if player == 0:
+		if side == 0:# left player placing traps
+			return x
+		else:# left player placing thieves
+			return x + (self.mapWidth / 2)
+	else:
+		if side == 1:# right player placing traps
+			return x + (self.mapWidth / 2)
+		else:# right player placing thieves
+			return x
+
   def nextTurn(self):
     self.turnNumber += 1
     if self.turn == self.players[0]:
