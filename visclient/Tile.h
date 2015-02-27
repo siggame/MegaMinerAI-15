@@ -6,22 +6,26 @@
 #include <iostream>
 #include "vc_structures.h"
 
+#include "Mappable.h"
 
 namespace client
 {
 
 
 ///Represents a tile.
-class Tile {
+class Tile : public Mappable {
   public:
-  void* ptr;
   Tile(_Tile* ptr = NULL);
 
   // Accessors
   ///Unique Identifier
   int id();
-  ///Whether this tile is a wall or not.
-  int isWall();
+  ///X position of the object
+  int x();
+  ///Y position of the object
+  int y();
+  ///What type of tile this is. 0: empty, 1: wall: 2: spawn.
+  int type();
 
   // Actions
 

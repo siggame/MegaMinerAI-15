@@ -30,12 +30,22 @@ class Match(DefaultGameWorld):
     self.addPlayer(self.scribe, "spectator")
 
     #TODO: INITIALIZE THESE!
+<<<<<<< HEAD
     self.mapWidth = self.mapWidth
     self.mapHeight = self.mapHeight
     self.turnNumber = self.turnNumber
     self.maxThieves = self.maxThieves
     self.maxTraps = self.maxTraps
     self.playerID = self.playerID
+=======
+    self.grid = []
+    self.mapWidth = self.mapWidth
+    self.mapHeight = self.mapHeight
+    self.turnNumber = self.turnNumber
+    self.maxThieves = self.maxThieves
+    self.maxTraps = self.maxTraps
+    self.playerID = -1
+>>>>>>> 4809377e4d137743d05459a851cdf8ee488d18d7
     self.gameNumber = id
     self.roundNumber = self.roundNumber
     self.scarabsForTraps = self.scarabsForTraps
@@ -81,10 +91,28 @@ class Match(DefaultGameWorld):
     #TODO: START STUFF
     self.turn = self.players[-1]
     self.turnNumber = -1
+    self.grid = [[[ self.addObject(Tile,[x, y, -1]) ] for y in range(self.mapHeight)] for x in range(self.mapWidth)]
 
     self.nextTurn()
     return True
 
+  def getTile(self, x, y):
+    if (0 <= x < self.mapWidth) and (0 <= y < self.mapHeight):
+      return self.grid[x][y][0]
+    else:
+      return None
+
+  def getRealX(self, player, x, side):
+	if player == 0:
+		if side == 0:# left player placing traps
+			return x
+		else:# left player placing thieves
+			return x + (self.mapWidth / 2)
+	else:
+		if side == 1:# right player placing traps
+			return x + (self.mapWidth / 2)
+		else:# right player placing thieves
+			return x
 
   def nextTurn(self):
     self.turnNumber += 1

@@ -67,7 +67,9 @@ public interface Client extends Library {
   int mappableGetY(Pointer ptr);
 
   int tileGetId(Pointer ptr);
-  int tileGetIsWall(Pointer ptr);
+  int tileGetX(Pointer ptr);
+  int tileGetY(Pointer ptr);
+  int tileGetType(Pointer ptr);
 
   int trapGetId(Pointer ptr);
   int trapGetX(Pointer ptr);

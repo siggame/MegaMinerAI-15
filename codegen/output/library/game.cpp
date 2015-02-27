@@ -400,7 +400,11 @@ void parseTile(Connection* c, _Tile* object, sexp_t* expression)
 
   object->id = atoi(sub->val);
   sub = sub->next;
-  object->isWall = atoi(sub->val);
+  object->x = atoi(sub->val);
+  sub = sub->next;
+  object->y = atoi(sub->val);
+  sub = sub->next;
+  object->type = atoi(sub->val);
   sub = sub->next;
 
 }

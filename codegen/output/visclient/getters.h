@@ -27,7 +27,9 @@ DLLEXPORT int mappableGetY(_Mappable* ptr);
 
 
 DLLEXPORT int tileGetId(_Tile* ptr);
-DLLEXPORT int tileGetIsWall(_Tile* ptr);
+DLLEXPORT int tileGetX(_Tile* ptr);
+DLLEXPORT int tileGetY(_Tile* ptr);
+DLLEXPORT int tileGetType(_Tile* ptr);
 
 
 DLLEXPORT int trapGetId(_Trap* ptr);

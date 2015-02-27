@@ -56,20 +56,22 @@ class Mappable(object):
         object.__setattr__(self, 'updatedAt', self.game.turnNumber)
       object.__setattr__(self, name, value)
 
-class Tile(object):
-  game_state_attributes = ['id', 'isWall']
-  def __init__(self, game, id, isWall):
+class Tile(Mappable):
+  game_state_attributes = ['id', 'x', 'y', 'type']
+  def __init__(self, game, id, x, y, type):
     self.game = game
     self.id = id
-    self.isWall = isWall
+    self.x = x
+    self.y = y
+    self.type = type
     self.updatedAt = game.turnNumber
 
   def toList(self):
-    return [self.id, self.isWall, ]
+    return [self.id, self.x, self.y, self.type, ]
   
   # This will not work if the object has variables other than primitives
   def toJson(self):
-    return dict(id = self.id, isWall = self.isWall, )
+    return dict(id = self.id, x = self.x, y = self.y, type = self.type, )
   
   def nextTurn(self):
     pass
@@ -144,7 +146,27 @@ class Thief(Mappable):
     pass
 
   def move(self, x, y):
-    pass
+    if self.owner != self.game.playerID:
+      return 'Turn {}: You cannot use the other player\'s thief {}. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+    elif self.movementLeft <= 0:
+      return 'Turn {}: Your thief {} does not have any movement left. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+    elif not ((self.game.mapWidth / 2) * self.game.playerID^1 <= x < (self.game.mapWidth / 2) + (self.game.mapWidth / 2) * self.game.playerID^1) or not (0 <= y < self.game.mapHeight):
+      return 'Turn {}: Your thief {} cannot move off its side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+    elif self.game.getTile(x, y).type == 2:
+      return 'Turn {}: Your thief {} is trying to run into a wall. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+    elif abs(self.x-x) + abs(self.y-y) != 1:
+      return 'Turn {}: Your thief {} can only move one unit away. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+
+    self.game.grid[self.x][self.y].remove(self)
+
+    self.game.addAnimation(MoveAnimation(self.id,self.x,self.y,x,y))
+    self.x = x
+    self.y = y
+    self.movementLeft -= 1
+    self.actionsLeft = 0
+    self.game.grid[self.x][self.y].append(self)
+
+    return True
 
   def act(self, x, y):
     pass

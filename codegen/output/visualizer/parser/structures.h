@@ -41,10 +41,9 @@ struct Mappable
   friend std::ostream& operator<<(std::ostream& stream, Mappable obj);
 };
 
-struct Tile
+struct Tile: public Mappable 
 {
-  int id;
-  int isWall;
+  int type;
 
   friend std::ostream& operator<<(std::ostream& stream, Tile obj);
 };

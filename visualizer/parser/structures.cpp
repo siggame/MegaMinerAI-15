@@ -30,7 +30,9 @@ std::ostream& operator<<(std::ostream& stream, Mappable ob)
 std::ostream& operator<<(std::ostream& stream, Tile ob)
 {
   stream << "id: " << ob.id  <<'\n';
-  stream << "isWall: " << ob.isWall  <<'\n';
+  stream << "x: " << ob.x  <<'\n';
+  stream << "y: " << ob.y  <<'\n';
+  stream << "type: " << ob.type  <<'\n';
   return stream;
 }
 

@@ -33,7 +33,9 @@ struct _Tile
 {
   Connection* _c;
   int id;
-  int isWall;
+  int x;
+  int y;
+  int type;
 };
 struct _Trap
 {
