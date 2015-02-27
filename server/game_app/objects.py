@@ -146,27 +146,30 @@ class Thief(Mappable):
     pass
 
   def move(self, x, y):
-    if self.healthLeft <= 0:
-      return 'Turn {}: Your unit {} does not have any health left. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+    if self.owner != self.game.playerID:
+      return 'Turn {}: You cannot use the other player\'s thief {}. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
     elif self.movementLeft <= 0:
-      return 'Turn {}: Your unit {} does not have any movement left. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-    elif self.game.gridTile.type  = 2:
-      return 'Turn {}: Your unit {} is attempting to walk into a wall. ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-    elif not (0 <= x < self.game.mapWidth) or not (0 <= y < self.game.mapHeight):
-      return 'Turn {}: Your unit {} cannot move off the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+      return 'Turn {}: Your thief {} does not have any movement left. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+    elif not ((self.game.mapWidth / 2) * self.game.playerID^1 <= x < (self.game.mapWidth / 2) + (self.game.mapWidth / 2) * self.game.playerID^1) or not (0 <= y < self.game.mapHeight):
+      return 'Turn {}: Your thief {} cannot move off its side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+    elif self.game.getTile(x, y).type == 2:
+      return 'Turn {}: Your thief {} is trying to run into a wall. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
     elif abs(self.x-x) + abs(self.y-y) != 1:
-      return 'Turn {}: Your unit {} can only move one unit away. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-     
+      return 'Turn {}: Your thief {} can only move one unit away. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+
     self.game.grid[self.x][self.y].remove(self)
+
     self.game.addAnimation(MoveAnimation(self.id,self.x,self.y,x,y))
     self.x = x
     self.y = y
     self.movementLeft -= 1
     self.game.grid[self.x][self.y].append(self)
-    for unit in self.game.grid[x][y]:
+    
+    #TODO: Figure out trap activation
+    for unit in self.game.grid[x][y]:             
       if isinstance(unit, Trap) and unit.active:
         unit.act(x, y)
-
+    self.actionsLeft = 0
     return True
 
   def act(self, x, y):
