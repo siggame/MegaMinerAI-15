@@ -30,17 +30,17 @@ class Match(DefaultGameWorld):
     self.addPlayer(self.scribe, "spectator")
 
     #TODO: INITIALIZE THESE!
-    self.mapWidth = None
-    self.mapHeight = None
-    self.turnNumber = None
-    self.maxThieves = None
-    self.maxTraps = None
-    self.playerID = None
+    self.mapWidth = self.mapWidth
+    self.mapHeight = self.mapHeight
+    self.turnNumber = self.turnNumber
+    self.maxThieves = self.maxThieves
+    self.maxTraps = self.maxTraps
+    self.playerID = self.playerID
     self.gameNumber = id
-    self.roundNumber = None
-    self.scarabsForTraps = None
-    self.scarabsForThieves = None
-    self.maxStack = None
+    self.roundNumber = self.roundNumber
+    self.scarabsForTraps = self.scarabsForTraps
+    self.scarabsForThieves = Nself.scarabsForThieves
+    self.maxStack = self.maxStack
 
   #this is here to be wrapped
   def __del__(self):
