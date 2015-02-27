@@ -4,11 +4,8 @@ using System.Runtime.InteropServices;
 /// <summary>
 /// Represents a tile.
 /// </summary>
-public class Tile
+public class Tile: Mappable
 {
-  public IntPtr ptr;
-  protected int ID;
-  protected int iteration;
 
   public Tile()
   {
@@ -21,7 +18,7 @@ public class Tile
     iteration = BaseAI.iteration;
   }
 
-  public bool validify()
+  public override bool validify()
   {
     if(iteration == BaseAI.iteration) return true;
     for(int i = 0; i < BaseAI.tiles.Length; i++)
@@ -43,7 +40,7 @@ public class Tile
   /// <summary>
   /// Unique Identifier
   /// </summary>
-  public int Id
+  public new int Id
   {
     get
     {
@@ -54,14 +51,40 @@ public class Tile
   }
 
   /// <summary>
-  /// Whether this tile is a wall or not.
+  /// X position of the object
   /// </summary>
-  public int IsWall
+  public new int X
   {
     get
     {
       validify();
-      int value = Client.tileGetIsWall(ptr);
+      int value = Client.tileGetX(ptr);
+      return value;
+    }
+  }
+
+  /// <summary>
+  /// Y position of the object
+  /// </summary>
+  public new int Y
+  {
+    get
+    {
+      validify();
+      int value = Client.tileGetY(ptr);
+      return value;
+    }
+  }
+
+  /// <summary>
+  /// What type of tile this is. 0: empty, 1: wall: 2: spawn.
+  /// </summary>
+  public int Type
+  {
+    get
+    {
+      validify();
+      int value = Client.tileGetType(ptr);
       return value;
     }
   }

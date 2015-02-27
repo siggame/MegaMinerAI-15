@@ -32,9 +32,17 @@ DLLEXPORT int tileGetId(_Tile* ptr)
 {
   return ptr->id;
 }
-DLLEXPORT int tileGetIsWall(_Tile* ptr)
+DLLEXPORT int tileGetX(_Tile* ptr)
 {
-  return ptr->isWall;
+  return ptr->x;
+}
+DLLEXPORT int tileGetY(_Tile* ptr)
+{
+  return ptr->y;
+}
+DLLEXPORT int tileGetType(_Tile* ptr)
+{
+  return ptr->type;
 }
 DLLEXPORT int trapGetId(_Trap* ptr)
 {

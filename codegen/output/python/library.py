@@ -170,8 +170,14 @@ library.mappableGetY.argtypes = [c_void_p]
 library.tileGetId.restype = c_int
 library.tileGetId.argtypes = [c_void_p]
 
-library.tileGetIsWall.restype = c_int
-library.tileGetIsWall.argtypes = [c_void_p]
+library.tileGetX.restype = c_int
+library.tileGetX.argtypes = [c_void_p]
+
+library.tileGetY.restype = c_int
+library.tileGetY.argtypes = [c_void_p]
+
+library.tileGetType.restype = c_int
+library.tileGetType.argtypes = [c_void_p]
 
 library.trapGetId.restype = c_int
 library.trapGetId.argtypes = [c_void_p]

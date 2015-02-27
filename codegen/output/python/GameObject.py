@@ -146,7 +146,7 @@ class Mappable(GameObject):
     return ret
 
 ##Represents a tile.
-class Tile(GameObject):
+class Tile(Mappable):
   def __init__(self, ptr):
     from BaseAI import BaseAI
     self._ptr = ptr
@@ -176,19 +176,37 @@ class Tile(GameObject):
   id = property(getId)
 
   #\cond
-  def getIsWall(self):
+  def getX(self):
     self.validify()
-    return library.tileGetIsWall(self._ptr)
+    return library.tileGetX(self._ptr)
   #\endcond
-  ##Whether this tile is a wall or not.
-  isWall = property(getIsWall)
+  ##X position of the object
+  x = property(getX)
+
+  #\cond
+  def getY(self):
+    self.validify()
+    return library.tileGetY(self._ptr)
+  #\endcond
+  ##Y position of the object
+  y = property(getY)
+
+  #\cond
+  def getType(self):
+    self.validify()
+    return library.tileGetType(self._ptr)
+  #\endcond
+  ##What type of tile this is. 0: empty, 1: wall: 2: spawn.
+  type = property(getType)
 
 
   def __str__(self):
     self.validify()
     ret = ""
     ret += "id: %s\n" % self.getId()
-    ret += "isWall: %s\n" % self.getIsWall()
+    ret += "x: %s\n" % self.getX()
+    ret += "y: %s\n" % self.getY()
+    ret += "type: %s\n" % self.getType()
     return ret
 
 ##Represents a single trap on the map.

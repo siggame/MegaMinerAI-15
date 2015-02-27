@@ -115,7 +115,11 @@ public class Client {
   [DllImport("client")]
   public static extern int tileGetId(IntPtr ptr);
   [DllImport("client")]
-  public static extern int tileGetIsWall(IntPtr ptr);
+  public static extern int tileGetX(IntPtr ptr);
+  [DllImport("client")]
+  public static extern int tileGetY(IntPtr ptr);
+  [DllImport("client")]
+  public static extern int tileGetType(IntPtr ptr);
 
   [DllImport("client")]
   public static extern int trapGetId(IntPtr ptr);

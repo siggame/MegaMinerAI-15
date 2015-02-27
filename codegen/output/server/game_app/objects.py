@@ -56,20 +56,22 @@ class Mappable(object):
         object.__setattr__(self, 'updatedAt', self.game.turnNumber)
       object.__setattr__(self, name, value)
 
-class Tile(object):
-  game_state_attributes = ['id', 'isWall']
-  def __init__(self, game, id, isWall):
+class Tile(Mappable):
+  game_state_attributes = ['id', 'x', 'y', 'type']
+  def __init__(self, game, id, x, y, type):
     self.game = game
     self.id = id
-    self.isWall = isWall
+    self.x = x
+    self.y = y
+    self.type = type
     self.updatedAt = game.turnNumber
 
   def toList(self):
-    return [self.id, self.isWall, ]
+    return [self.id, self.x, self.y, self.type, ]
   
   # This will not work if the object has variables other than primitives
   def toJson(self):
-    return dict(id = self.id, isWall = self.isWall, )
+    return dict(id = self.id, x = self.x, y = self.y, type = self.type, )
   
   def nextTurn(self):
     pass

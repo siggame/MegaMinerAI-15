@@ -14,9 +14,19 @@ int Tile::id()
   return ((_Tile*)ptr)->id;
 }
 
-int Tile::isWall()
+int Tile::x()
 {
-  return ((_Tile*)ptr)->isWall;
+  return ((_Tile*)ptr)->x;
+}
+
+int Tile::y()
+{
+  return ((_Tile*)ptr)->y;
+}
+
+int Tile::type()
+{
+  return ((_Tile*)ptr)->type;
 }
 
 
@@ -25,6 +35,8 @@ int Tile::isWall()
 std::ostream& operator<<(std::ostream& stream,Tile ob)
 {
   stream << "id: " << ((_Tile*)ob.ptr)->id  <<'\n';
-  stream << "isWall: " << ((_Tile*)ob.ptr)->isWall  <<'\n';
+  stream << "x: " << ((_Tile*)ob.ptr)->x  <<'\n';
+  stream << "y: " << ((_Tile*)ob.ptr)->y  <<'\n';
+  stream << "type: " << ((_Tile*)ob.ptr)->type  <<'\n';
   return stream;
 }

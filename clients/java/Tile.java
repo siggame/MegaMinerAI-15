@@ -1,16 +1,11 @@
 import com.sun.jna.Pointer;
 
 ///Represents a tile.
-class Tile
+class Tile extends Mappable
 {
-  Pointer ptr;
-  int ID;
-  int iteration;
   public Tile(Pointer p)
   {
-    ptr = p;
-    ID = Client.INSTANCE.tileGetId(ptr);
-    iteration = BaseAI.iteration;
+    super(p);
   }
   boolean validify()
   {
@@ -38,11 +33,23 @@ class Tile
     validify();
     return Client.INSTANCE.tileGetId(ptr);
   }
-  ///Whether this tile is a wall or not.
-  public int getIsWall()
+  ///X position of the object
+  public int getX()
   {
     validify();
-    return Client.INSTANCE.tileGetIsWall(ptr);
+    return Client.INSTANCE.tileGetX(ptr);
+  }
+  ///Y position of the object
+  public int getY()
+  {
+    validify();
+    return Client.INSTANCE.tileGetY(ptr);
+  }
+  ///What type of tile this is. 0: empty, 1: wall: 2: spawn.
+  public int getType()
+  {
+    validify();
+    return Client.INSTANCE.tileGetType(ptr);
   }
 
 }
