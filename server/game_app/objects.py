@@ -19,7 +19,20 @@ class Player(object):
     pass
 
   def placeTrap(self, x, y, trapType):
-    pass
+    tile = self.game.getTile(x, y)
+    if not tile:
+      return "You cannot place a trap outside of the map."
+    if tile.type == 1:
+      return "You cannot place a trap on a spawn point"
+    if tile.type == 2:
+      return "You cannot place a trap on a wall"
+
+    for item in self.game.grid[x][y][1:]:
+      if isinstance(item, Trap):
+        return "You cannot place a trap on a trap"
+
+    trap = self.game.addObject(Trap)
+    self.game.grid[x][y].append(trap)
 
   def purchaseThief(self, x, y, thiefType):
     pass
@@ -65,6 +78,7 @@ class Tile(Mappable):
     self.y = y
     self.type = type
     self.updatedAt = game.turnNumber
+    self.unit = None
 
   def toList(self):
     return [self.id, self.x, self.y, self.type, ]
