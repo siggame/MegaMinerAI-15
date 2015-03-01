@@ -34,6 +34,7 @@ class Match(DefaultGameWorld):
     self.mapWidth = None
     self.mapHeight = None
     self.turnNumber = None
+    self.roundTurnNumber = None
     self.maxThieves = None
     self.maxTraps = None
     self.playerID = None
@@ -82,6 +83,7 @@ class Match(DefaultGameWorld):
     #TODO: START STUFF
     self.turn = self.players[-1]
     self.turnNumber = -1
+	self.roundTurnNumber = -1
     self.grid = [[[ self.addObject(Tile,[x, y, -1]) ] for y in range(self.mapHeight)] for x in range(self.mapWidth)]
 
     self.nextTurn()
@@ -107,6 +109,7 @@ class Match(DefaultGameWorld):
 
   def nextTurn(self):
     self.turnNumber += 1
+	self.roundTurnNumber += 1
     if self.turn == self.players[0]:
       self.turn = self.players[1]
       self.playerID = 1
@@ -132,6 +135,7 @@ class Match(DefaultGameWorld):
           mapWidth = self.mapWidth,
           mapHeight = self.mapHeight,
           turnNumber = self.turnNumber,
+          roundTurnNumber = self.roundTurnNumber,
           maxThieves = self.maxThieves,
           maxTraps = self.maxTraps,
           playerID = self.playerID,
@@ -248,7 +252,7 @@ class Match(DefaultGameWorld):
   def status(self):
     msg = ["status"]
 
-    msg.append(["game", self.mapWidth, self.mapHeight, self.turnNumber, self.maxThieves, self.maxTraps, self.playerID, self.gameNumber, self.roundNumber, self.scarabsForTraps, self.scarabsForThieves, self.maxStack])
+    msg.append(["game", self.mapWidth, self.mapHeight, self.turnNumber, self.roundTurnNumber, self.maxThieves, self.maxTraps, self.playerID, self.gameNumber, self.roundNumber, self.scarabsForTraps, self.scarabsForThieves, self.maxStack])
 
     typeLists = []
     typeLists.append(["Player"] + [i.toList() for i in self.objects.values() if i.__class__ is Player])

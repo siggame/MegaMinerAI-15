@@ -26,10 +26,10 @@ class ThiefType {
   int type();
   ///The number of scarabs required to purchase this thief.
   int cost();
-  ///The maximum number of times the thief can act.
-  int maxActions();
   ///The maximum number of times this thief can move.
   int maxMovement();
+  ///The maximum number of times this thief can escape death.
+  int maxNinjaReflexes();
   ///The maximum number of this type thief that can be purchased each round.
   int maxInstances();
 

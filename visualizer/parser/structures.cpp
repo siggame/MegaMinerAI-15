@@ -14,6 +14,7 @@ std::ostream& operator<<(std::ostream& stream, Player ob)
   stream << "playerName: " << ob.playerName  <<'\n';
   stream << "time: " << ob.time  <<'\n';
   stream << "scarabs: " << ob.scarabs  <<'\n';
+  stream << "roundsWon: " << ob.roundsWon  <<'\n';
   return stream;
 }
 
@@ -59,10 +60,11 @@ std::ostream& operator<<(std::ostream& stream, Thief ob)
   stream << "owner: " << ob.owner  <<'\n';
   stream << "thiefType: " << ob.thiefType  <<'\n';
   stream << "alive: " << ob.alive  <<'\n';
-  stream << "actionsLeft: " << ob.actionsLeft  <<'\n';
-  stream << "maxActions: " << ob.maxActions  <<'\n';
+  stream << "ninjaReflexesLeft: " << ob.ninjaReflexesLeft  <<'\n';
+  stream << "maxNinjaReflexes: " << ob.maxNinjaReflexes  <<'\n';
   stream << "movementLeft: " << ob.movementLeft  <<'\n';
   stream << "maxMovement: " << ob.maxMovement  <<'\n';
+  stream << "frozenTurnsLeft: " << ob.frozenTurnsLeft  <<'\n';
   return stream;
 }
 
@@ -73,8 +75,8 @@ std::ostream& operator<<(std::ostream& stream, ThiefType ob)
   stream << "name: " << ob.name  <<'\n';
   stream << "type: " << ob.type  <<'\n';
   stream << "cost: " << ob.cost  <<'\n';
-  stream << "maxActions: " << ob.maxActions  <<'\n';
   stream << "maxMovement: " << ob.maxMovement  <<'\n';
+  stream << "maxNinjaReflexes: " << ob.maxNinjaReflexes  <<'\n';
   stream << "maxInstances: " << ob.maxInstances  <<'\n';
   return stream;
 }
@@ -88,6 +90,14 @@ std::ostream& operator<<(std::ostream& stream, TrapType ob)
   stream << "cost: " << ob.cost  <<'\n';
   stream << "startsVisible: " << ob.startsVisible  <<'\n';
   stream << "hasAction: " << ob.hasAction  <<'\n';
+  stream << "activatable: " << ob.activatable  <<'\n';
+  stream << "maxBodyCount: " << ob.maxBodyCount  <<'\n';
+  stream << "maxInstances: " << ob.maxInstances  <<'\n';
+  stream << "killsOnWalkThrough: " << ob.killsOnWalkThrough  <<'\n';
+  stream << "turnsToKillOnTile: " << ob.turnsToKillOnTile  <<'\n';
+  stream << "canPlaceInWalls: " << ob.canPlaceInWalls  <<'\n';
+  stream << "canPlaceInEmptyTiles: " << ob.canPlaceInEmptyTiles  <<'\n';
+  stream << "freezesForTurns: " << ob.freezesForTurns  <<'\n';
   return stream;
 }
 
@@ -165,6 +175,7 @@ std::ostream& operator<<(std::ostream& stream, GameState ob)
   stream << "mapWidth: " << ob.mapWidth  <<'\n';
   stream << "mapHeight: " << ob.mapHeight  <<'\n';
   stream << "turnNumber: " << ob.turnNumber  <<'\n';
+  stream << "roundTurnNumber: " << ob.roundTurnNumber  <<'\n';
   stream << "maxThieves: " << ob.maxThieves  <<'\n';
   stream << "maxTraps: " << ob.maxTraps  <<'\n';
   stream << "playerID: " << ob.playerID  <<'\n';

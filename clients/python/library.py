@@ -77,6 +77,9 @@ library.getMapHeight.argtypes = [c_void_p]
 library.getTurnNumber.restype = c_int
 library.getTurnNumber.argtypes = [c_void_p]
 
+library.getRoundTurnNumber.restype = c_int
+library.getRoundTurnNumber.argtypes = [c_void_p]
+
 library.getMaxThieves.restype = c_int
 library.getMaxThieves.argtypes = [c_void_p]
 
@@ -158,6 +161,9 @@ library.playerGetTime.argtypes = [c_void_p]
 library.playerGetScarabs.restype = c_int
 library.playerGetScarabs.argtypes = [c_void_p]
 
+library.playerGetRoundsWon.restype = c_int
+library.playerGetRoundsWon.argtypes = [c_void_p]
+
 library.mappableGetId.restype = c_int
 library.mappableGetId.argtypes = [c_void_p]
 
@@ -221,17 +227,20 @@ library.thiefGetThiefType.argtypes = [c_void_p]
 library.thiefGetAlive.restype = c_int
 library.thiefGetAlive.argtypes = [c_void_p]
 
-library.thiefGetActionsLeft.restype = c_int
-library.thiefGetActionsLeft.argtypes = [c_void_p]
+library.thiefGetNinjaReflexesLeft.restype = c_int
+library.thiefGetNinjaReflexesLeft.argtypes = [c_void_p]
 
-library.thiefGetMaxActions.restype = c_int
-library.thiefGetMaxActions.argtypes = [c_void_p]
+library.thiefGetMaxNinjaReflexes.restype = c_int
+library.thiefGetMaxNinjaReflexes.argtypes = [c_void_p]
 
 library.thiefGetMovementLeft.restype = c_int
 library.thiefGetMovementLeft.argtypes = [c_void_p]
 
 library.thiefGetMaxMovement.restype = c_int
 library.thiefGetMaxMovement.argtypes = [c_void_p]
+
+library.thiefGetFrozenTurnsLeft.restype = c_int
+library.thiefGetFrozenTurnsLeft.argtypes = [c_void_p]
 
 library.thiefTypeGetId.restype = c_int
 library.thiefTypeGetId.argtypes = [c_void_p]
@@ -245,11 +254,11 @@ library.thiefTypeGetType.argtypes = [c_void_p]
 library.thiefTypeGetCost.restype = c_int
 library.thiefTypeGetCost.argtypes = [c_void_p]
 
-library.thiefTypeGetMaxActions.restype = c_int
-library.thiefTypeGetMaxActions.argtypes = [c_void_p]
-
 library.thiefTypeGetMaxMovement.restype = c_int
 library.thiefTypeGetMaxMovement.argtypes = [c_void_p]
+
+library.thiefTypeGetMaxNinjaReflexes.restype = c_int
+library.thiefTypeGetMaxNinjaReflexes.argtypes = [c_void_p]
 
 library.thiefTypeGetMaxInstances.restype = c_int
 library.thiefTypeGetMaxInstances.argtypes = [c_void_p]
@@ -271,6 +280,30 @@ library.trapTypeGetStartsVisible.argtypes = [c_void_p]
 
 library.trapTypeGetHasAction.restype = c_int
 library.trapTypeGetHasAction.argtypes = [c_void_p]
+
+library.trapTypeGetActivatable.restype = c_int
+library.trapTypeGetActivatable.argtypes = [c_void_p]
+
+library.trapTypeGetMaxBodyCount.restype = c_int
+library.trapTypeGetMaxBodyCount.argtypes = [c_void_p]
+
+library.trapTypeGetMaxInstances.restype = c_int
+library.trapTypeGetMaxInstances.argtypes = [c_void_p]
+
+library.trapTypeGetKillsOnWalkThrough.restype = c_int
+library.trapTypeGetKillsOnWalkThrough.argtypes = [c_void_p]
+
+library.trapTypeGetTurnsToKillOnTile.restype = c_int
+library.trapTypeGetTurnsToKillOnTile.argtypes = [c_void_p]
+
+library.trapTypeGetCanPlaceInWalls.restype = c_int
+library.trapTypeGetCanPlaceInWalls.argtypes = [c_void_p]
+
+library.trapTypeGetCanPlaceInEmptyTiles.restype = c_int
+library.trapTypeGetCanPlaceInEmptyTiles.argtypes = [c_void_p]
+
+library.trapTypeGetFreezesForTurns.restype = c_int
+library.trapTypeGetFreezesForTurns.argtypes = [c_void_p]
 
 
 #Properties

@@ -16,6 +16,7 @@ DLLEXPORT int playerGetId(_Player* ptr);
 DLLEXPORT char* playerGetPlayerName(_Player* ptr);
 DLLEXPORT float playerGetTime(_Player* ptr);
 DLLEXPORT int playerGetScarabs(_Player* ptr);
+DLLEXPORT int playerGetRoundsWon(_Player* ptr);
 
 
 DLLEXPORT int mappableGetId(_Mappable* ptr);
@@ -45,18 +46,19 @@ DLLEXPORT int thiefGetY(_Thief* ptr);
 DLLEXPORT int thiefGetOwner(_Thief* ptr);
 DLLEXPORT int thiefGetThiefType(_Thief* ptr);
 DLLEXPORT int thiefGetAlive(_Thief* ptr);
-DLLEXPORT int thiefGetActionsLeft(_Thief* ptr);
-DLLEXPORT int thiefGetMaxActions(_Thief* ptr);
+DLLEXPORT int thiefGetNinjaReflexesLeft(_Thief* ptr);
+DLLEXPORT int thiefGetMaxNinjaReflexes(_Thief* ptr);
 DLLEXPORT int thiefGetMovementLeft(_Thief* ptr);
 DLLEXPORT int thiefGetMaxMovement(_Thief* ptr);
+DLLEXPORT int thiefGetFrozenTurnsLeft(_Thief* ptr);
 
 
 DLLEXPORT int thiefTypeGetId(_ThiefType* ptr);
 DLLEXPORT char* thiefTypeGetName(_ThiefType* ptr);
 DLLEXPORT int thiefTypeGetType(_ThiefType* ptr);
 DLLEXPORT int thiefTypeGetCost(_ThiefType* ptr);
-DLLEXPORT int thiefTypeGetMaxActions(_ThiefType* ptr);
 DLLEXPORT int thiefTypeGetMaxMovement(_ThiefType* ptr);
+DLLEXPORT int thiefTypeGetMaxNinjaReflexes(_ThiefType* ptr);
 DLLEXPORT int thiefTypeGetMaxInstances(_ThiefType* ptr);
 
 
@@ -66,6 +68,14 @@ DLLEXPORT int trapTypeGetType(_TrapType* ptr);
 DLLEXPORT int trapTypeGetCost(_TrapType* ptr);
 DLLEXPORT int trapTypeGetStartsVisible(_TrapType* ptr);
 DLLEXPORT int trapTypeGetHasAction(_TrapType* ptr);
+DLLEXPORT int trapTypeGetActivatable(_TrapType* ptr);
+DLLEXPORT int trapTypeGetMaxBodyCount(_TrapType* ptr);
+DLLEXPORT int trapTypeGetMaxInstances(_TrapType* ptr);
+DLLEXPORT int trapTypeGetKillsOnWalkThrough(_TrapType* ptr);
+DLLEXPORT int trapTypeGetTurnsToKillOnTile(_TrapType* ptr);
+DLLEXPORT int trapTypeGetCanPlaceInWalls(_TrapType* ptr);
+DLLEXPORT int trapTypeGetCanPlaceInEmptyTiles(_TrapType* ptr);
+DLLEXPORT int trapTypeGetFreezesForTurns(_TrapType* ptr);
 
 
 

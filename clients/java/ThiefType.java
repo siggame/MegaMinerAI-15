@@ -56,17 +56,17 @@ class ThiefType
     validify();
     return Client.INSTANCE.thiefTypeGetCost(ptr);
   }
-  ///The maximum number of times the thief can act.
-  public int getMaxActions()
-  {
-    validify();
-    return Client.INSTANCE.thiefTypeGetMaxActions(ptr);
-  }
   ///The maximum number of times this thief can move.
   public int getMaxMovement()
   {
     validify();
     return Client.INSTANCE.thiefTypeGetMaxMovement(ptr);
+  }
+  ///The maximum number of times this thief can escape death.
+  public int getMaxNinjaReflexes()
+  {
+    validify();
+    return Client.INSTANCE.thiefTypeGetMaxNinjaReflexes(ptr);
   }
   ///The maximum number of this type thief that can be purchased each round.
   public int getMaxInstances()

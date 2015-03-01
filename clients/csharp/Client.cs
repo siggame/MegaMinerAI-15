@@ -49,6 +49,8 @@ public class Client {
   [DllImport("client")]
   public static extern int getTurnNumber(IntPtr connection);
   [DllImport("client")]
+  public static extern int getRoundTurnNumber(IntPtr connection);
+  [DllImport("client")]
   public static extern int getMaxThieves(IntPtr connection);
   [DllImport("client")]
   public static extern int getMaxTraps(IntPtr connection);
@@ -104,6 +106,8 @@ public class Client {
   public static extern float playerGetTime(IntPtr ptr);
   [DllImport("client")]
   public static extern int playerGetScarabs(IntPtr ptr);
+  [DllImport("client")]
+  public static extern int playerGetRoundsWon(IntPtr ptr);
 
   [DllImport("client")]
   public static extern int mappableGetId(IntPtr ptr);
@@ -151,13 +155,15 @@ public class Client {
   [DllImport("client")]
   public static extern int thiefGetAlive(IntPtr ptr);
   [DllImport("client")]
-  public static extern int thiefGetActionsLeft(IntPtr ptr);
+  public static extern int thiefGetNinjaReflexesLeft(IntPtr ptr);
   [DllImport("client")]
-  public static extern int thiefGetMaxActions(IntPtr ptr);
+  public static extern int thiefGetMaxNinjaReflexes(IntPtr ptr);
   [DllImport("client")]
   public static extern int thiefGetMovementLeft(IntPtr ptr);
   [DllImport("client")]
   public static extern int thiefGetMaxMovement(IntPtr ptr);
+  [DllImport("client")]
+  public static extern int thiefGetFrozenTurnsLeft(IntPtr ptr);
 
   [DllImport("client")]
   public static extern int thiefTypeGetId(IntPtr ptr);
@@ -168,9 +174,9 @@ public class Client {
   [DllImport("client")]
   public static extern int thiefTypeGetCost(IntPtr ptr);
   [DllImport("client")]
-  public static extern int thiefTypeGetMaxActions(IntPtr ptr);
-  [DllImport("client")]
   public static extern int thiefTypeGetMaxMovement(IntPtr ptr);
+  [DllImport("client")]
+  public static extern int thiefTypeGetMaxNinjaReflexes(IntPtr ptr);
   [DllImport("client")]
   public static extern int thiefTypeGetMaxInstances(IntPtr ptr);
 
@@ -186,6 +192,22 @@ public class Client {
   public static extern int trapTypeGetStartsVisible(IntPtr ptr);
   [DllImport("client")]
   public static extern int trapTypeGetHasAction(IntPtr ptr);
+  [DllImport("client")]
+  public static extern int trapTypeGetActivatable(IntPtr ptr);
+  [DllImport("client")]
+  public static extern int trapTypeGetMaxBodyCount(IntPtr ptr);
+  [DllImport("client")]
+  public static extern int trapTypeGetMaxInstances(IntPtr ptr);
+  [DllImport("client")]
+  public static extern int trapTypeGetKillsOnWalkThrough(IntPtr ptr);
+  [DllImport("client")]
+  public static extern int trapTypeGetTurnsToKillOnTile(IntPtr ptr);
+  [DllImport("client")]
+  public static extern int trapTypeGetCanPlaceInWalls(IntPtr ptr);
+  [DllImport("client")]
+  public static extern int trapTypeGetCanPlaceInEmptyTiles(IntPtr ptr);
+  [DllImport("client")]
+  public static extern int trapTypeGetFreezesForTurns(IntPtr ptr);
 
 #endregion
 
