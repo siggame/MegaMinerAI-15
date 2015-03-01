@@ -116,6 +116,19 @@ public class Player
     }
   }
 
+  /// <summary>
+  /// The number of rounds won by this player.
+  /// </summary>
+  public int RoundsWon
+  {
+    get
+    {
+      validify();
+      int value = Client.playerGetRoundsWon(ptr);
+      return value;
+    }
+  }
+
   #endregion
 
   #region Properties

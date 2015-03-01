@@ -26,6 +26,22 @@ class TrapType {
   int startsVisible();
   ///Whether the trap is able to act().
   int hasAction();
+  ///Whether the trap can be activated by the player.
+  int activatable();
+  ///The maximum number of bodies needed to disable this trap.
+  int maxBodyCount();
+  ///The maximum number of this type of trap that can be placed in a round by a player.
+  int maxInstances();
+  ///Thieves who move onto and then off of this tile die.
+  int killsOnWalkThrough();
+  ///The maximum number of turns a thief can stay on this tile before it dies.
+  int turnsToKillOnTile();
+  ///Whether this trap can be placed inside of walls.
+  int canPlaceInWalls();
+  ///Whether this trap can be placed on empty tiles.
+  int canPlaceInEmptyTiles();
+  ///How many turns a thief will be frozen when this trap activates.
+  int freezesForTurns();
 
   // Actions
 

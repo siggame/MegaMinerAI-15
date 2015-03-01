@@ -21,6 +21,7 @@ struct _Player
   char* playerName;
   float time;
   int scarabs;
+  int roundsWon;
 };
 struct _Mappable
 {
@@ -58,10 +59,11 @@ struct _Thief
   int owner;
   int thiefType;
   int alive;
-  int actionsLeft;
-  int maxActions;
+  int ninjaReflexesLeft;
+  int maxNinjaReflexes;
   int movementLeft;
   int maxMovement;
+  int frozenTurnsLeft;
 };
 struct _ThiefType
 {
@@ -70,8 +72,8 @@ struct _ThiefType
   char* name;
   int type;
   int cost;
-  int maxActions;
   int maxMovement;
+  int maxNinjaReflexes;
   int maxInstances;
 };
 struct _TrapType
@@ -83,6 +85,14 @@ struct _TrapType
   int cost;
   int startsVisible;
   int hasAction;
+  int activatable;
+  int maxBodyCount;
+  int maxInstances;
+  int killsOnWalkThrough;
+  int turnsToKillOnTile;
+  int canPlaceInWalls;
+  int canPlaceInEmptyTiles;
+  int freezesForTurns;
 };
 
 #endif

@@ -21,6 +21,8 @@ class Player {
   float time();
   ///The number of scarabs this player has to purchase traps or thieves.
   int scarabs();
+  ///The number of rounds won by this player.
+  int roundsWon();
 
   // Actions
   ///Place the specified trap type at the given location.

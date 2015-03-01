@@ -14,6 +14,7 @@ globals = [
   Variable('mapWidth', int, 'The width of the total map.'),
   Variable('mapHeight', int, 'The height of the total map.'),
   Variable('turnNumber', int, 'The current turn number.'),
+  Variable('roundTurnNumber', int, 'The current turn number for this round.'),
   Variable('maxThieves', int, 'The maximum number of Thieves allowed per player.'),
   Variable('maxTraps', int, 'The maximum number of Traps allowed per player.'),
   Variable('playerID', int, 'The id of the current player.'),
@@ -26,6 +27,7 @@ globals = [
 
 playerData = [
   Variable('scarabs', int, 'The number of scarabs this player has to purchase traps or thieves.'),
+  Variable('roundsWon', int, 'The number of rounds won by this player.'),
   ]
 
 playerFunctions = [
@@ -53,12 +55,13 @@ Thief = Model('Thief',
     Variable('thiefType', int, 'The type of this thief. This type refers to list of thiefTypes.'),
 
     Variable('alive', int, 'Whether the thief is alive or not.'),
-
-    Variable('actionsLeft', int, 'The remaining number of times the thief can act.'),
-    Variable('maxActions', int, 'The maximum number of times the thief can act.'),
+    Variable('ninjaReflexesLeft', int, 'How many more deaths this thief can escape.'),
+    Variable('maxNinjaReflexes', int, 'The maximum number of times this thief can escape death.'),
 
     Variable('movementLeft', int, 'The remaining number of times this thief can move.'),
     Variable('maxMovement', int, 'The maximum number of times this thief can move.'),
+    
+    Variable('frozenTurnsLeft', int, 'How many turns this thief is frozen for.'),
     ],
   doc='Represents a single thief on the map.',
   functions=[
@@ -80,8 +83,8 @@ ThiefType = Model('ThiefType',
     Variable('type', int, 'The type of this thief. This value is unique for all types.'),
     Variable('cost', int, 'The number of scarabs required to purchase this thief.'),
 
-    Variable('maxActions', int, 'The maximum number of times the thief can act.'),
     Variable('maxMovement', int, 'The maximum number of times this thief can move.'),
+    Variable('maxNinjaReflexes', int, 'The maximum number of times this thief can escape death.'),
 
     Variable('maxInstances', int, 'The maximum number of this type thief that can be purchased each round.'),
     ],
@@ -122,6 +125,15 @@ TrapType = Model('TrapType',
 
     Variable('startsVisible', int, 'Whether the trap starts visible to the enemy player.'),
     Variable('hasAction', int, 'Whether the trap is able to act().'),
+    Variable('activatable', int, 'Whether the trap can be activated by the player.'),
+    Variable('maxBodyCount', int, 'The maximum number of bodies needed to disable this trap.'),
+    Variable('maxInstances', int, 'The maximum number of this type of trap that can be placed in a round by a player.'),
+    
+    Variable('killsOnWalkThrough', int, 'Thieves who move onto and then off of this tile die.'),
+    Variable('turnsToKillOnTile', int, 'The maximum number of turns a thief can stay on this tile before it dies.'),
+    Variable('canPlaceInWalls', int, 'Whether this trap can be placed inside of walls.'),
+    Variable('canPlaceInEmptyTiles', int, 'Whether this trap can be placed on empty tiles.'),
+    Variable('freezesForTurns', int, 'How many turns a thief will be frozen when this trap activates.'),
     ],
   doc='Represents a type of trap.',
   functions=[],
