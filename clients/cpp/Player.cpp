@@ -29,6 +29,11 @@ int Player::scarabs()
   return ((_Player*)ptr)->scarabs;
 }
 
+int Player::roundsWon()
+{
+  return ((_Player*)ptr)->roundsWon;
+}
+
 
 bool Player::placeTrap(int x, int y, int trapType)
 {
@@ -53,5 +58,6 @@ std::ostream& operator<<(std::ostream& stream,Player ob)
   stream << "playerName: " << ((_Player*)ob.ptr)->playerName  <<'\n';
   stream << "time: " << ((_Player*)ob.ptr)->time  <<'\n';
   stream << "scarabs: " << ((_Player*)ob.ptr)->scarabs  <<'\n';
+  stream << "roundsWon: " << ((_Player*)ob.ptr)->roundsWon  <<'\n';
   return stream;
 }

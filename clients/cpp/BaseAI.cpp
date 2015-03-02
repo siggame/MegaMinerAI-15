@@ -17,6 +17,10 @@ int BaseAI::turnNumber()
 {
   return getTurnNumber(c);
 }
+int BaseAI::roundTurnNumber()
+{
+  return getRoundTurnNumber(c);
+}
 int BaseAI::maxThieves()
 {
   return getMaxThieves(c);

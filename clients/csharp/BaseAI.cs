@@ -142,6 +142,16 @@ public abstract class BaseAI
   }
 
   /// <summary>
+  /// The current turn number for this round.
+  /// </summary>
+  /// <returns>Returns the current turn number for this round.</returns>
+  public int roundTurnNumber()
+  {
+    int value = Client.getRoundTurnNumber(connection);
+    return value;
+  }
+
+  /// <summary>
   /// The maximum number of Thieves allowed per player.
   /// </summary>
   /// <returns>Returns the maximum number of Thieves allowed per player.</returns>

@@ -93,19 +93,6 @@ public class ThiefType
   }
 
   /// <summary>
-  /// The maximum number of times the thief can act.
-  /// </summary>
-  public int MaxActions
-  {
-    get
-    {
-      validify();
-      int value = Client.thiefTypeGetMaxActions(ptr);
-      return value;
-    }
-  }
-
-  /// <summary>
   /// The maximum number of times this thief can move.
   /// </summary>
   public int MaxMovement
@@ -114,6 +101,19 @@ public class ThiefType
     {
       validify();
       int value = Client.thiefTypeGetMaxMovement(ptr);
+      return value;
+    }
+  }
+
+  /// <summary>
+  /// The maximum number of times this thief can escape death.
+  /// </summary>
+  public int MaxNinjaReflexes
+  {
+    get
+    {
+      validify();
+      int value = Client.thiefTypeGetMaxNinjaReflexes(ptr);
       return value;
     }
   }

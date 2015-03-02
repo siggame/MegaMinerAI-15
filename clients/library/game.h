@@ -34,6 +34,7 @@ struct Connection
   int mapWidth;
   int mapHeight;
   int turnNumber;
+  int roundTurnNumber;
   int maxThieves;
   int maxTraps;
   int playerID;
@@ -103,6 +104,7 @@ extern "C"
 DLLEXPORT int getMapWidth(Connection* c);
 DLLEXPORT int getMapHeight(Connection* c);
 DLLEXPORT int getTurnNumber(Connection* c);
+DLLEXPORT int getRoundTurnNumber(Connection* c);
 DLLEXPORT int getMaxThieves(Connection* c);
 DLLEXPORT int getMaxTraps(Connection* c);
 DLLEXPORT int getPlayerID(Connection* c);

@@ -74,5 +74,11 @@ class Player
     validify();
     return Client.INSTANCE.playerGetScarabs(ptr);
   }
+  ///The number of rounds won by this player.
+  public int getRoundsWon()
+  {
+    validify();
+    return Client.INSTANCE.playerGetRoundsWon(ptr);
+  }
 
 }

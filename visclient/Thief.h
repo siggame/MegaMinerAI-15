@@ -30,14 +30,16 @@ class Thief : public Mappable {
   int thiefType();
   ///Whether the thief is alive or not.
   int alive();
-  ///The remaining number of times the thief can act.
-  int actionsLeft();
-  ///The maximum number of times the thief can act.
-  int maxActions();
+  ///How many more deaths this thief can escape.
+  int ninjaReflexesLeft();
+  ///The maximum number of times this thief can escape death.
+  int maxNinjaReflexes();
   ///The remaining number of times this thief can move.
   int movementLeft();
   ///The maximum number of times this thief can move.
   int maxMovement();
+  ///How many turns this thief is frozen for.
+  int frozenTurnsLeft();
 
   // Actions
   ///Allows a thief to display messages on the screen

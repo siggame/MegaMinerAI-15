@@ -55,6 +55,7 @@ DLLEXPORT Connection* createConnection()
   c->mapWidth = 0;
   c->mapHeight = 0;
   c->turnNumber = 0;
+  c->roundTurnNumber = 0;
   c->maxThieves = 0;
   c->maxTraps = 0;
   c->playerID = 0;
@@ -364,6 +365,8 @@ void parsePlayer(Connection* c, _Player* object, sexp_t* expression)
   sub = sub->next;
   object->scarabs = atoi(sub->val);
   sub = sub->next;
+  object->roundsWon = atoi(sub->val);
+  sub = sub->next;
 
 }
 void parseMappable(Connection* c, _Mappable* object, sexp_t* expression)
@@ -442,13 +445,15 @@ void parseThief(Connection* c, _Thief* object, sexp_t* expression)
   sub = sub->next;
   object->alive = atoi(sub->val);
   sub = sub->next;
-  object->actionsLeft = atoi(sub->val);
+  object->ninjaReflexesLeft = atoi(sub->val);
   sub = sub->next;
-  object->maxActions = atoi(sub->val);
+  object->maxNinjaReflexes = atoi(sub->val);
   sub = sub->next;
   object->movementLeft = atoi(sub->val);
   sub = sub->next;
   object->maxMovement = atoi(sub->val);
+  sub = sub->next;
+  object->frozenTurnsLeft = atoi(sub->val);
   sub = sub->next;
 
 }
@@ -469,9 +474,9 @@ void parseThiefType(Connection* c, _ThiefType* object, sexp_t* expression)
   sub = sub->next;
   object->cost = atoi(sub->val);
   sub = sub->next;
-  object->maxActions = atoi(sub->val);
-  sub = sub->next;
   object->maxMovement = atoi(sub->val);
+  sub = sub->next;
+  object->maxNinjaReflexes = atoi(sub->val);
   sub = sub->next;
   object->maxInstances = atoi(sub->val);
   sub = sub->next;
@@ -497,6 +502,22 @@ void parseTrapType(Connection* c, _TrapType* object, sexp_t* expression)
   object->startsVisible = atoi(sub->val);
   sub = sub->next;
   object->hasAction = atoi(sub->val);
+  sub = sub->next;
+  object->activatable = atoi(sub->val);
+  sub = sub->next;
+  object->maxBodyCount = atoi(sub->val);
+  sub = sub->next;
+  object->maxInstances = atoi(sub->val);
+  sub = sub->next;
+  object->killsOnWalkThrough = atoi(sub->val);
+  sub = sub->next;
+  object->turnsToKillOnTile = atoi(sub->val);
+  sub = sub->next;
+  object->canPlaceInWalls = atoi(sub->val);
+  sub = sub->next;
+  object->canPlaceInEmptyTiles = atoi(sub->val);
+  sub = sub->next;
+  object->freezesForTurns = atoi(sub->val);
   sub = sub->next;
 
 }
@@ -576,6 +597,9 @@ DLLEXPORT int networkLoop(Connection* c)
           sub = sub->next;
 
           c->turnNumber = atoi(sub->val);
+          sub = sub->next;
+
+          c->roundTurnNumber = atoi(sub->val);
           sub = sub->next;
 
           c->maxThieves = atoi(sub->val);
@@ -814,6 +838,10 @@ DLLEXPORT int getMapHeight(Connection* c)
 DLLEXPORT int getTurnNumber(Connection* c)
 {
   return c->turnNumber;
+}
+DLLEXPORT int getRoundTurnNumber(Connection* c)
+{
+  return c->roundTurnNumber;
 }
 DLLEXPORT int getMaxThieves(Connection* c)
 {
