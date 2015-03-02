@@ -27,10 +27,9 @@ class Player(object):
       return "You cannot place a trap on a spawn point"
     if tile.type == 2:
       return "You cannot place a trap on a wall"
-
-    for item in self.game.grid[x][y][1:]:
-      if isinstance(item, Trap):
-        return "You cannot place a trap on a trap"
+      
+    if len(self.game.grid[x][y]) > 1:
+      return "You cannot place a trap on a trap"
 
     trap = self.game.addObject(Trap)
     self.game.grid[x][y].append(trap)
