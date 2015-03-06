@@ -83,14 +83,14 @@ class Match(DefaultGameWorld):
     #TODO: START STUFF
     self.turn = self.players[-1]
     self.turnNumber = -1
-	self.roundTurnNumber = -1
-    self.grid = [[[ self.addObject(Tile,[x, y, -1]) ] for y in range(self.mapHeight)] for x in range(self.mapWidth)]
-
-    self.nextTurn()
+    self.startRound()
     return True
 
-  def resetRound(self):
+  def startRound(self):
       self.roundTurnNumber = -1
+      self.grid = [[[ self.addObject(Tile,[x, y, -1]) ] for y in range(self.mapHeight)] for x in range(self.mapWidth)]
+      self.nextTurn()
+      return True
 
   def getTile(self, x, y):
     if (0 <= x < self.mapWidth) and (0 <= y < self.mapHeight):
@@ -185,8 +185,8 @@ class Match(DefaultGameWorld):
     if winner.roundsWon >= 3: #This should probably be a global constant
       self.declareWinner(self, winner, "Player {} reached 3 points".format(winner.playerID))
     else:
-      self.resetRound()
       #TODO: Add an animation declaring the round winner
+      self.startRound()
       print "Player", self.getPlayerIndex(self.winner), "wins round", self.id
     pass
 
