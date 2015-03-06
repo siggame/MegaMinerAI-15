@@ -146,7 +146,10 @@ class Trap(Mappable):
     pass
 
   def act(self, x, y):
-    pass
+     if self.owner != self.game.playerID:
+      return 'Turn {}: You cannot use the other player\'s trap {}. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
+    if self.bodyCount > maxBodyCount:
+      return 'Turn {}: Max body count has been exceeded for trap {}. ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y)
 
   def toggle(self):
     pass
