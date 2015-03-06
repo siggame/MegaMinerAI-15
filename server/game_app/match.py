@@ -83,7 +83,7 @@ class Match(DefaultGameWorld):
     #TODO: START STUFF
     self.turn = self.players[-1]
     self.turnNumber = -1
-	self.roundTurnNumber = -1
+    self.roundTurnNumber = -1
     self.grid = [[[ self.addObject(Tile,[x, y, -1]) ] for y in range(self.mapHeight)] for x in range(self.mapWidth)]
 
     self.nextTurn()
@@ -109,7 +109,7 @@ class Match(DefaultGameWorld):
 
   def nextTurn(self):
     self.turnNumber += 1
-	self.roundTurnNumber += 1
+    self.roundTurnNumber += 1
     if self.turn == self.players[0]:
       self.turn = self.players[1]
       self.playerID = 1
