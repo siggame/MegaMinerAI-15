@@ -20,7 +20,9 @@ class Player(object):
     pass
 
   def placeTrap(self, x, y, trapType):
-    tile = self.game.getTile(x, y)
+    if self.game.roundTurnNumber > 1:
+      return "You cannot place traps after the first turn"
+    tile = self.game.getTile(getRealX(self.id, x, 0), y)
     if not tile:
       return "You cannot place a trap outside of the map."
     if tile.type == 1:
@@ -30,8 +32,6 @@ class Player(object):
       
     if len(self.game.grid[x][y]) > 1:
       return "You cannot place a trap on a trap"
-    if self.game.roundTurnNumber > 1:
-      return "You cannot place traps after the first turn"
 
     trap = self.game.addObject(Trap)
     self.game.grid[x][y].append(trap)
