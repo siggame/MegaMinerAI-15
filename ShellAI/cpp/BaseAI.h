@@ -17,12 +17,16 @@ protected:
 public:
   // The width of the total map.
   int mapWidth();
+  
   // The height of the total map.
   int mapHeight();
+  
   // The current turn number.
   int turnNumber();
+  
   // The id of the current player.
   int playerID();
+  
   // What number game this is for the server.
   int gameNumber();
   
