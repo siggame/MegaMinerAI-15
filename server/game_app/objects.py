@@ -25,7 +25,7 @@ class Player(object):
 
     if trapType < 0 or trapType >= len(self.game.objects.trapTypes):
       return 'Turn {}: You cannot place traps of this type. ({}, {})'.format(self.game.turnNumber, x, y)
-    
+
     type = self.game.objects.trapTypes[trapType]
     if self.scarabs < type.cost:
       return 'Turn {}: You do not have enough scarabs to buy this trap. ({}, {})'.format(self.game.turnNumber, x, y)
@@ -40,8 +40,6 @@ class Player(object):
       
     if len(self.game.grid[x][y]) > 1:
       return "You cannot place a trap on a trap"
-
-    trap = self.game.addObject(Trap)
 
     # 'id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount'
     newTrapStats = [x, y, self.id, trapType, 0, 0, 0]
