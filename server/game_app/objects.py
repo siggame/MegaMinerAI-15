@@ -25,15 +25,15 @@ class Player(object):
     trapCount = 0
 
     if not tile:
-      return "You cannot place a trap outside of the map."
+      return "Turn {}: You cannot place a trap outside of the map. ({}, {})".format(self.game.turnNumber, x, y)
     if tile.type == 1:
-      return "You cannot place a trap on a spawn point"
+      return "Turn {}: You cannot place a trap on a spawn point ({}, {})".format(self.game.turnNumber, x, y)
     if tile.type == 2:
-      return "You cannot place a trap on a wall"
+      return "Turn {}: You cannot place a trap on a wall ({}, {})".format(self.game.turnNumber, x, y)
     if len(self.game.grid[x][y]) > 1:
-      return "You cannot place a trap on a trap"
+      return "Turn {}: You cannot place a trap on a trap ({}, {})".format(self.game.turnNumber, x, y)
     if trapType < 0 or trapType >= len(self.game.objects.trapTypes):
-      return 'Turn {}: You cannot spawn traps of this type. ({}, {})'.format(self.game.turnNumber, x, y)
+      return "Turn {}: You cannot spawn traps of this type. ({}, {})".format(self.game.turnNumber, x, y)
    
     for trap in self.game.traps:
       if trap.owner == self.id and trap.type == trapType:
@@ -41,9 +41,9 @@ class Player(object):
 
     type = self.game.objects.trapTypes[trapType]
     if trapCount >= type.maxInstances:
-      return "You cannot buy any more of this type of trap"
+      return "Turn {}: You cannot buy any more of this type of trap".format(self.game.turnNumber, x, y)
     if self.scarabs < type.cost:
-      return "You do not have enough scarabs to buy this thief"
+      return "Turn {}: You do not have enough scarabs to buy this thief".format(self.game.turnNumber, x, y)
 
     self.scarabs -= type.cost
 
