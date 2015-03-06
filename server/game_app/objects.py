@@ -56,7 +56,7 @@ class Player(object):
 
   def purchaseThief(self, x, y, thiefType):
 	realX = self.game.getRealX(self.id, x, 1)
-	thiefCount == 0
+	thiefCount = 0
 	if x < 0 or x >= self.game.mapWidth /2 or y < 0 or y >= self.game.mapHeight:
 		return 'Turn {}: You cannot place a thief out of bounds. ({}, {})'.format(self.game.turnNumber, x, y)
 	tile = self.game.getTile(realX, y)
