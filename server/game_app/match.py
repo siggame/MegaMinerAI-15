@@ -257,7 +257,7 @@ class Match(DefaultGameWorld):
     updated = [i for i in self.objects.values() if i.__class__ is Tile and i.updatedAt > self.turnNumber-3]
     if updated:
       typeLists.append(["Tile"] + [i.toList() for i in updated])
-    typeLists.append(["Trap"] + [i.toList() for i in self.objects.values() if i.__class__ is Trap])
+    typeLists.append(["Trap"] + [i.toList() for i in self.objects.values() if i.__class__ is Trap and( i.visible or i.owner == self.playerID or connection.type != "player")])
     typeLists.append(["Thief"] + [i.toList() for i in self.objects.values() if i.__class__ is Thief])
     updated = [i for i in self.objects.values() if i.__class__ is ThiefType and i.updatedAt > self.turnNumber-3]
     if updated:
