@@ -22,7 +22,15 @@ class Player(object):
   def placeTrap(self, x, y, trapType):
     if self.game.roundTurnNumber > 1:
       return "You cannot place traps after the first turn"
-    tile = self.game.getTile(getRealX(self.id, x, 0), y)
+
+    if trapType < 0 or trapType >= len(self.game.objects.trapTypes):
+      return 'Turn {}: You cannot place traps of this type. ({}, {})'.format(self.game.turnNumber, x, y)
+    
+    type = self.game.objects.trapTypes[trapType]
+    if self.scarabs < type.cost:
+      return 'Turn {}: You do not have enough scarabs to buy this trap. ({}, {})'.format(self.game.turnNumber, x, y)
+
+    tile = self.game.getTile(self.game.getRealX(self.id, x, 0), y)
     if not tile:
       return "You cannot place a trap outside of the map."
     if tile.type == 1:
@@ -34,7 +42,12 @@ class Player(object):
       return "You cannot place a trap on a trap"
 
     trap = self.game.addObject(Trap)
-    self.game.grid[x][y].append(trap)
+
+    # 'id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount'
+    newTrapStats = [x, y, self.id, trapType, 0, 0, 0]
+    newTrap = self.game.addObject(Trap, newTrapStats)
+    self.game.grid[newTrap.x][newTrap.y].append(newTrap)
+    return True
 
   def purchaseThief(self, x, y, thiefType):
     realX = self.game.getRealX(self.id, x, 1)
