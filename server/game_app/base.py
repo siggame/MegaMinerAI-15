@@ -1,3 +1,4 @@
+import random
 from ObjectHolder import ObjectHolder
 class GameWorld(object):
   """
@@ -22,7 +23,11 @@ class GameWorld(object):
     Used to create new objects
     """
     id = self.nextid
-    self.nextid+=1
+    if id > 3:
+      id = random.randint(3, self.maxid)
+      while id in self.objects:
+        id = random.randint(3, self.maxid)
+    self.nextid += 1
     self.animations.append(["add", id])
     self.objects[id] = objType(*([self, id]+arguments))
     return self.objects[id]
