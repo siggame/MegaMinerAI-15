@@ -32,13 +32,13 @@ class Match(DefaultGameWorld):
     self.grid = []
     self.mapWidth = self.mapWidth
     self.mapHeight = self.mapHeight
-    self.turnNumber = self.turnNumber
-    self.roundTurnNumber = self.roundTurnNumber
+    self.turnNumber = 0
+    self.roundTurnNumber = 0
     self.maxThieves = self.maxThieves
     self.maxTraps = self.maxTraps
     self.playerID = -1
     self.gameNumber = id
-    self.roundNumber = self.roundNumber
+    self.roundNumber = 0
     self.scarabsForTraps = self.scarabsForTraps
     self.scarabsForThieves = self.scarabsForThieves
     self.maxStack = self.maxStack
@@ -54,7 +54,7 @@ class Match(DefaultGameWorld):
     if type == "player":
       self.players.append(connection)
       try:
-        self.addObject(Player, [connection.screenName, self.startTime])
+        self.addObject(Player, [connection.screenName, self.startTime, self.scarabsForTraps, 0])
       except TypeError:
         raise TypeError("Someone forgot to add the extra attributes to the Player object initialization")
     elif type == "spectator":
@@ -82,7 +82,7 @@ class Match(DefaultGameWorld):
     #TODO: START STUFF
     self.turn = self.players[-1]
     self.turnNumber = -1
-	self.roundTurnNumber = -1
+    self.roundTurnNumber = -1
     self.grid = [[[ self.addObject(Tile,[x, y, -1]) ] for y in range(self.mapHeight)] for x in range(self.mapWidth)]
 
     self.nextTurn()
@@ -108,7 +108,7 @@ class Match(DefaultGameWorld):
 
   def nextTurn(self):
     self.turnNumber += 1
-	self.roundTurnNumber += 1
+    self.roundTurnNumber += 1
     if self.turn == self.players[0]:
       self.turn = self.players[1]
       self.playerID = 1
