@@ -15,4 +15,11 @@ public:
   virtual void end();
 };
 
+// Function for bounds checking
+bool withinBounds(int x, int y) {
+  if (x < 0 || x >= mapWidth() || y < 0 || y >= mapHeight()) {
+    return false;
+  }
+  return true;
+}
 #endif
