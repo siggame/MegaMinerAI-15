@@ -27,7 +27,7 @@ class Player(object):
     thiefCount = 0
     if x < 0 or x >= self.game.mapWidth /2 or y < 0 or y >= self.game.mapHeight:
       return 'Turn {}: You cannot place a thief out of bounds. ({}, {})'.format(self.game.turnNumber, x, y)
-      tile = self.game.getTile(realX, y)
+    tile = self.game.getTile(realX, y)
     if tile.type != 1:
       return 'Turn {}: You can only spawn thieves on spawn tiles. ({}, {})'.format(self.game.turnNumber, x, y)
     if thiefType < 0 or thiefType >= len(self.game.objects.thiefTypes):
@@ -35,10 +35,10 @@ class Player(object):
     type = self.game.objects.thiefTypes[thiefType]
     for thief in self.game.thieves:
       if thief.owner == self.id and thief.type == thiefType:
-        thiefCount += 1
+          thiefCount += 1
     if thiefCount >= type.maxInstances:
       return 'Turn {}: You cannot buy any more of this type of thief. ({}, {})'.format(self.game.turnNumber, x, y)
-    if 	self.scarabs < type.cost:
+    if self.scarabs < type.cost:
       return 'Turn {}: You do not have enough scarabs to buy this thief. ({}, {})'.format(self.game.turnNumber, x, y)
 
     self.scarabs -= type.cost
