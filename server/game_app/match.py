@@ -161,9 +161,11 @@ class Match(DefaultGameWorld):
 
   def checkWinner(self):
     #TODO: Make this check if a player won, and call declareWinner with a player if they did
-    if self.turnNumber >= self.turnLimit:
-       self.declareWinner(self.players[0], "Because I said so, this should be removed")
+    if self.roundNumber >= self.turnLimit:
+       self.declareRoundWinner(self.players[0], "Because I said so, this should be removed")
 
+  def declareRoundWinner(self, winner, reason=''):
+      pass
 
   def declareWinner(self, winner, reason=''):
     print "Player", self.getPlayerIndex(self.winner), "wins game", self.id
