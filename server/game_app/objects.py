@@ -104,7 +104,6 @@ class Tile(Mappable):
     self.y = y
     self.type = type
     self.updatedAt = game.turnNumber
-    self.unit = None
 
   def toList(self):
     return [self.id, self.x, self.y, self.type, ]
