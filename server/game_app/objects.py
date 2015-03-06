@@ -30,7 +30,7 @@ class Player(object):
       
     if len(self.game.grid[x][y]) > 1:
       return "You cannot place a trap on a trap"
-    if self.game.turnNumber > 1:
+    if self.game.roundTurnNumber > 1:
       return "You cannot place traps after the first turn"
 
     trap = self.game.addObject(Trap)
