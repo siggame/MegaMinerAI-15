@@ -20,19 +20,39 @@ class Player(object):
     pass
 
   def placeTrap(self, x, y, trapType):
+    realX = self.game.getRealX(self.id, x, 1)
     tile = self.game.getTile(x, y)
+    trapCount = 0
+
     if not tile:
       return "You cannot place a trap outside of the map."
     if tile.type == 1:
       return "You cannot place a trap on a spawn point"
     if tile.type == 2:
       return "You cannot place a trap on a wall"
-      
     if len(self.game.grid[x][y]) > 1:
       return "You cannot place a trap on a trap"
+    if trapType < 0 or trapType >= len(self.game.objects.trapTypes):
+      return 'Turn {}: You cannot spawn traps of this type. ({}, {})'.format(self.game.turnNumber, x, y)
+   
+    for trap in self.game.traps:
+      if trap.owner == self.id and trap.type == trapType:
+        trapCount += 1
 
-    trap = self.game.addObject(Trap)
-    self.game.grid[x][y].append(trap)
+    type = self.game.objects.trapTypes[trapType]
+    if trapCount >= type.maxInstances:
+      return "You cannot buy any more of this type of trap"
+    if self.scarabs < type.cost:
+      return "You do not have enough scarabs to buy this thief"
+
+    self.scarabs -= type.cost
+
+    newTrapStats = [realX, y, self.id, trapType, False, True, 0]
+    newTrap = self.game.addObject(Trap, newTrapStats)
+    self.game.grid[realX][y].append(newTrap)
+    self.game.addAnimation(SpawnAnimation(self.id, realX, y))
+
+    return True
 
   def purchaseThief(self, x, y, thiefType):
 	realX = self.game.getRealX(self.id, x, 1)
