@@ -163,6 +163,17 @@ class Match(DefaultGameWorld):
     return True
 
   def checkWinner(self):
+    sarcophagus = {}
+    #set the sarcophagus locations
+    for trap in self.objects.traps:
+      if trap.trapType == 0: #SARCOPHAGUS
+        sarcophagus[trap.owner] = (trap.x, trap.y)
+
+    #check if there are any enemy thieves on the sarcophagus
+    for thief in self.objects.theives:
+      if thief.x == sarcophagus[thief.owner^1] and thief.y == sarcophagus[thief.owner^1]:
+        self.declareRoundWinner(self.players[0], "Player {} reached the sarcophagus")
+
     #TODO: Make this check if a player won, and call declareWinner with a player if they did
     if self.roundTurnNumber >= self.turnLimit:
        self.declareRoundWinner(self.players[0], "Because I said so, this should be removed")
@@ -170,12 +181,13 @@ class Match(DefaultGameWorld):
 
   #declare the round winner and reset the match
   def declareRoundWinner(self, winner, reason=''):
-
     winner.roundsWon = winner.roundsWon + 1
-    if winner.roundsWon >= 3:
+    if winner.roundsWon >= 3: #This should probably be a global constant
       self.declareWinner(self, winner, "Player {} reached 3 points".format(winner.playerID))
     else:
       self.resetRound()
+      #TODO: Add an animation declaring the round winner
+      print "Player", self.getPlayerIndex(self.winner), "wins round", self.id
     pass
 
   def declareWinner(self, winner, reason=''):
