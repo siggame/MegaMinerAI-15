@@ -89,6 +89,9 @@ class Match(DefaultGameWorld):
     self.nextTurn()
     return True
 
+  def resetRound(self):
+      self.roundTurnNumber = -1
+
   def getTile(self, x, y):
     if (0 <= x < self.mapWidth) and (0 <= y < self.mapHeight):
       return self.grid[x][y][0]
@@ -161,11 +164,19 @@ class Match(DefaultGameWorld):
 
   def checkWinner(self):
     #TODO: Make this check if a player won, and call declareWinner with a player if they did
-    if self.roundNumber >= self.turnLimit:
+    if self.roundTurnNumber >= self.turnLimit:
        self.declareRoundWinner(self.players[0], "Because I said so, this should be removed")
+    pass
 
+  #declare the round winner and reset the match
   def declareRoundWinner(self, winner, reason=''):
-      pass
+
+    winner.roundsWon = winner.roundsWon + 1
+    if winner.roundsWon >= 3:
+      self.declareWinner(self, winner, "Player {} reached 3 points".format(winner.playerID))
+    else:
+      self.resetRound()
+    pass
 
   def declareWinner(self, winner, reason=''):
     print "Player", self.getPlayerIndex(self.winner), "wins game", self.id
