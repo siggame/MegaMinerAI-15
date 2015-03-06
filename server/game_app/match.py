@@ -41,7 +41,7 @@ class Match(DefaultGameWorld):
     self.gameNumber = id
     self.roundNumber = self.roundNumber
     self.scarabsForTraps = self.scarabsForTraps
-    self.scarabsForThieves = Nself.scarabsForThieves
+    self.scarabsForThieves = self.scarabsForThieves
     self.maxStack = self.maxStack
 
   #this is here to be wrapped
