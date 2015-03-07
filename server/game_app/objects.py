@@ -20,31 +20,41 @@ class Player(object):
     pass
 
   def placeTrap(self, x, y, trapType):
+    realX = self.game.getRealX(self.id, x, 0)
+    tile = self.game.getTile(realX, y)
+    trapCount = 0
+
     if self.game.roundTurnNumber > 1:
       return "You cannot place traps after the first turn"
-
+    if not tile:
+      return "Turn {}: You cannot place a trap outside of the map. ({}, {})".format(self.game.turnNumber, x, y)
+    if tile.type == 1:
+      return "Turn {}: You cannot place a trap on a spawn point ({}, {})".format(self.game.turnNumber, x, y)
+    if tile.type == 2:
+      return "Turn {}: You cannot place a trap on a wall ({}, {})".format(self.game.turnNumber, x, y)
+    if len(self.game.grid[x][y]) > 1:
+      return "Turn {}: You cannot place a trap on a trap ({}, {})".format(self.game.turnNumber, x, y)
     if trapType < 0 or trapType >= len(self.game.objects.trapTypes):
-      return 'Turn {}: You cannot place traps of this type. ({}, {})'.format(self.game.turnNumber, x, y)
+      return "Turn {}: You cannot spawn traps of this type. ({}, {})".format(self.game.turnNumber, x, y)
+   
+    for trap in self.game.traps:
+      if trap.owner == self.id and trap.type == trapType:
+        trapCount += 1
 
     type = self.game.objects.trapTypes[trapType]
+    if trapCount >= type.maxInstances:
+      return "Turn {}: You cannot buy any more of this type of trap".format(self.game.turnNumber, x, y)
     if self.scarabs < type.cost:
-      return 'Turn {}: You do not have enough scarabs to buy this trap. ({}, {})'.format(self.game.turnNumber, x, y)
+      return "Turn {}: You do not have enough scarabs to buy this thief".format(self.game.turnNumber, x, y)
 
-    tile = self.game.getTile(self.game.getRealX(self.id, x, 0), y)
-    if not tile:
-      return "You cannot place a trap outside of the map."
-    if tile.type == 1:
-      return "You cannot place a trap on a spawn point"
-    if tile.type == 2:
-      return "You cannot place a trap on a wall"
-      
-    if len(self.game.grid[x][y]) > 1:
-      return "You cannot place a trap on a trap"
+    self.scarabs -= type.cost
 
     # 'id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount'
-    newTrapStats = [x, y, self.id, trapType, 0, 0, 0]
+    newTrapStats = [realX, y, self.id, trapType, 0, 0, 0]
     newTrap = self.game.addObject(Trap, newTrapStats)
     self.game.grid[newTrap.x][newTrap.y].append(newTrap)
+    self.game.addAnimation(SpawnAnimation(self.id, realX, y))
+
     return True
 
   def purchaseThief(self, x, y, thiefType):
@@ -117,7 +127,6 @@ class Tile(Mappable):
     self.y = y
     self.type = type
     self.updatedAt = game.turnNumber
-    self.unit = None
 
   def toList(self):
     return [self.id, self.x, self.y, self.type, ]
