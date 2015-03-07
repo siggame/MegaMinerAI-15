@@ -16,6 +16,10 @@ DLLEXPORT int playerGetScarabs(_Player* ptr)
 {
   return ptr->scarabs;
 }
+DLLEXPORT int playerGetRoundsWon(_Player* ptr)
+{
+  return ptr->roundsWon;
+}
 DLLEXPORT int mappableGetId(_Mappable* ptr)
 {
   return ptr->id;
@@ -100,13 +104,13 @@ DLLEXPORT int thiefGetAlive(_Thief* ptr)
 {
   return ptr->alive;
 }
-DLLEXPORT int thiefGetActionsLeft(_Thief* ptr)
+DLLEXPORT int thiefGetNinjaReflexesLeft(_Thief* ptr)
 {
-  return ptr->actionsLeft;
+  return ptr->ninjaReflexesLeft;
 }
-DLLEXPORT int thiefGetMaxActions(_Thief* ptr)
+DLLEXPORT int thiefGetMaxNinjaReflexes(_Thief* ptr)
 {
-  return ptr->maxActions;
+  return ptr->maxNinjaReflexes;
 }
 DLLEXPORT int thiefGetMovementLeft(_Thief* ptr)
 {
@@ -115,6 +119,10 @@ DLLEXPORT int thiefGetMovementLeft(_Thief* ptr)
 DLLEXPORT int thiefGetMaxMovement(_Thief* ptr)
 {
   return ptr->maxMovement;
+}
+DLLEXPORT int thiefGetFrozenTurnsLeft(_Thief* ptr)
+{
+  return ptr->frozenTurnsLeft;
 }
 DLLEXPORT int thiefTypeGetId(_ThiefType* ptr)
 {
@@ -132,13 +140,13 @@ DLLEXPORT int thiefTypeGetCost(_ThiefType* ptr)
 {
   return ptr->cost;
 }
-DLLEXPORT int thiefTypeGetMaxActions(_ThiefType* ptr)
-{
-  return ptr->maxActions;
-}
 DLLEXPORT int thiefTypeGetMaxMovement(_ThiefType* ptr)
 {
   return ptr->maxMovement;
+}
+DLLEXPORT int thiefTypeGetMaxNinjaReflexes(_ThiefType* ptr)
+{
+  return ptr->maxNinjaReflexes;
 }
 DLLEXPORT int thiefTypeGetMaxInstances(_ThiefType* ptr)
 {
@@ -167,5 +175,37 @@ DLLEXPORT int trapTypeGetStartsVisible(_TrapType* ptr)
 DLLEXPORT int trapTypeGetHasAction(_TrapType* ptr)
 {
   return ptr->hasAction;
+}
+DLLEXPORT int trapTypeGetActivatable(_TrapType* ptr)
+{
+  return ptr->activatable;
+}
+DLLEXPORT int trapTypeGetMaxBodyCount(_TrapType* ptr)
+{
+  return ptr->maxBodyCount;
+}
+DLLEXPORT int trapTypeGetMaxInstances(_TrapType* ptr)
+{
+  return ptr->maxInstances;
+}
+DLLEXPORT int trapTypeGetKillsOnWalkThrough(_TrapType* ptr)
+{
+  return ptr->killsOnWalkThrough;
+}
+DLLEXPORT int trapTypeGetTurnsToKillOnTile(_TrapType* ptr)
+{
+  return ptr->turnsToKillOnTile;
+}
+DLLEXPORT int trapTypeGetCanPlaceInWalls(_TrapType* ptr)
+{
+  return ptr->canPlaceInWalls;
+}
+DLLEXPORT int trapTypeGetCanPlaceInEmptyTiles(_TrapType* ptr)
+{
+  return ptr->canPlaceInEmptyTiles;
+}
+DLLEXPORT int trapTypeGetFreezesForTurns(_TrapType* ptr)
+{
+  return ptr->freezesForTurns;
 }
 

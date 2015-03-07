@@ -81,17 +81,17 @@ class Thief extends Mappable
     validify();
     return Client.INSTANCE.thiefGetAlive(ptr);
   }
-  ///The remaining number of times the thief can act.
-  public int getActionsLeft()
+  ///How many more deaths this thief can escape.
+  public int getNinjaReflexesLeft()
   {
     validify();
-    return Client.INSTANCE.thiefGetActionsLeft(ptr);
+    return Client.INSTANCE.thiefGetNinjaReflexesLeft(ptr);
   }
-  ///The maximum number of times the thief can act.
-  public int getMaxActions()
+  ///The maximum number of times this thief can escape death.
+  public int getMaxNinjaReflexes()
   {
     validify();
-    return Client.INSTANCE.thiefGetMaxActions(ptr);
+    return Client.INSTANCE.thiefGetMaxNinjaReflexes(ptr);
   }
   ///The remaining number of times this thief can move.
   public int getMovementLeft()
@@ -104,6 +104,12 @@ class Thief extends Mappable
   {
     validify();
     return Client.INSTANCE.thiefGetMaxMovement(ptr);
+  }
+  ///How many turns this thief is frozen for.
+  public int getFrozenTurnsLeft()
+  {
+    validify();
+    return Client.INSTANCE.thiefGetFrozenTurnsLeft(ptr);
   }
 
 }

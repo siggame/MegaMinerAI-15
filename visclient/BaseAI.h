@@ -42,6 +42,8 @@ public:
   int mapHeight();
   ///The current turn number.
   int turnNumber();
+  ///The current turn number for this round.
+  int roundTurnNumber();
   ///The maximum number of Thieves allowed per player.
   int maxThieves();
   ///The maximum number of Traps allowed per player.

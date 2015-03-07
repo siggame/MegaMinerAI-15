@@ -28,6 +28,7 @@ struct Player
   char* playerName;
   float time;
   int scarabs;
+  int roundsWon;
 
   friend std::ostream& operator<<(std::ostream& stream, Player obj);
 };
@@ -64,10 +65,11 @@ struct Thief: public Mappable
   int owner;
   int thiefType;
   int alive;
-  int actionsLeft;
-  int maxActions;
+  int ninjaReflexesLeft;
+  int maxNinjaReflexes;
   int movementLeft;
   int maxMovement;
+  int frozenTurnsLeft;
 
   friend std::ostream& operator<<(std::ostream& stream, Thief obj);
 };
@@ -78,8 +80,8 @@ struct ThiefType
   char* name;
   int type;
   int cost;
-  int maxActions;
   int maxMovement;
+  int maxNinjaReflexes;
   int maxInstances;
 
   friend std::ostream& operator<<(std::ostream& stream, ThiefType obj);
@@ -93,6 +95,14 @@ struct TrapType
   int cost;
   int startsVisible;
   int hasAction;
+  int activatable;
+  int maxBodyCount;
+  int maxInstances;
+  int killsOnWalkThrough;
+  int turnsToKillOnTile;
+  int canPlaceInWalls;
+  int canPlaceInEmptyTiles;
+  int freezesForTurns;
 
   friend std::ostream& operator<<(std::ostream& stream, TrapType obj);
 };
@@ -182,6 +192,7 @@ struct GameState
   int mapWidth;
   int mapHeight;
   int turnNumber;
+  int roundTurnNumber;
   int maxThieves;
   int maxTraps;
   int playerID;

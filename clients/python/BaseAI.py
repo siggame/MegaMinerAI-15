@@ -71,6 +71,11 @@ class BaseAI:
   #\endcond
   turnNumber = property(getTurnNumber)
   #\cond
+  def getRoundTurnNumber(self):
+    return library.getRoundTurnNumber(self.connection)
+  #\endcond
+  roundTurnNumber = property(getRoundTurnNumber)
+  #\cond
   def getMaxThieves(self):
     return library.getMaxThieves(self.connection)
   #\endcond

@@ -80,6 +80,14 @@ class Player(GameObject):
   ##The number of scarabs this player has to purchase traps or thieves.
   scarabs = property(getScarabs)
 
+  #\cond
+  def getRoundsWon(self):
+    self.validify()
+    return library.playerGetRoundsWon(self._ptr)
+  #\endcond
+  ##The number of rounds won by this player.
+  roundsWon = property(getRoundsWon)
+
 
   def __str__(self):
     self.validify()
@@ -88,6 +96,7 @@ class Player(GameObject):
     ret += "playerName: %s\n" % self.getPlayerName()
     ret += "time: %s\n" % self.getTime()
     ret += "scarabs: %s\n" % self.getScarabs()
+    ret += "roundsWon: %s\n" % self.getRoundsWon()
     return ret
 
 ##A mappable object!
@@ -405,20 +414,20 @@ class Thief(Mappable):
   alive = property(getAlive)
 
   #\cond
-  def getActionsLeft(self):
+  def getNinjaReflexesLeft(self):
     self.validify()
-    return library.thiefGetActionsLeft(self._ptr)
+    return library.thiefGetNinjaReflexesLeft(self._ptr)
   #\endcond
-  ##The remaining number of times the thief can act.
-  actionsLeft = property(getActionsLeft)
+  ##How many more deaths this thief can escape.
+  ninjaReflexesLeft = property(getNinjaReflexesLeft)
 
   #\cond
-  def getMaxActions(self):
+  def getMaxNinjaReflexes(self):
     self.validify()
-    return library.thiefGetMaxActions(self._ptr)
+    return library.thiefGetMaxNinjaReflexes(self._ptr)
   #\endcond
-  ##The maximum number of times the thief can act.
-  maxActions = property(getMaxActions)
+  ##The maximum number of times this thief can escape death.
+  maxNinjaReflexes = property(getMaxNinjaReflexes)
 
   #\cond
   def getMovementLeft(self):
@@ -436,6 +445,14 @@ class Thief(Mappable):
   ##The maximum number of times this thief can move.
   maxMovement = property(getMaxMovement)
 
+  #\cond
+  def getFrozenTurnsLeft(self):
+    self.validify()
+    return library.thiefGetFrozenTurnsLeft(self._ptr)
+  #\endcond
+  ##How many turns this thief is frozen for.
+  frozenTurnsLeft = property(getFrozenTurnsLeft)
+
 
   def __str__(self):
     self.validify()
@@ -446,10 +463,11 @@ class Thief(Mappable):
     ret += "owner: %s\n" % self.getOwner()
     ret += "thiefType: %s\n" % self.getThiefType()
     ret += "alive: %s\n" % self.getAlive()
-    ret += "actionsLeft: %s\n" % self.getActionsLeft()
-    ret += "maxActions: %s\n" % self.getMaxActions()
+    ret += "ninjaReflexesLeft: %s\n" % self.getNinjaReflexesLeft()
+    ret += "maxNinjaReflexes: %s\n" % self.getMaxNinjaReflexes()
     ret += "movementLeft: %s\n" % self.getMovementLeft()
     ret += "maxMovement: %s\n" % self.getMaxMovement()
+    ret += "frozenTurnsLeft: %s\n" % self.getFrozenTurnsLeft()
     return ret
 
 ##Represents a type of thief.
@@ -507,20 +525,20 @@ class ThiefType(GameObject):
   cost = property(getCost)
 
   #\cond
-  def getMaxActions(self):
-    self.validify()
-    return library.thiefTypeGetMaxActions(self._ptr)
-  #\endcond
-  ##The maximum number of times the thief can act.
-  maxActions = property(getMaxActions)
-
-  #\cond
   def getMaxMovement(self):
     self.validify()
     return library.thiefTypeGetMaxMovement(self._ptr)
   #\endcond
   ##The maximum number of times this thief can move.
   maxMovement = property(getMaxMovement)
+
+  #\cond
+  def getMaxNinjaReflexes(self):
+    self.validify()
+    return library.thiefTypeGetMaxNinjaReflexes(self._ptr)
+  #\endcond
+  ##The maximum number of times this thief can escape death.
+  maxNinjaReflexes = property(getMaxNinjaReflexes)
 
   #\cond
   def getMaxInstances(self):
@@ -538,8 +556,8 @@ class ThiefType(GameObject):
     ret += "name: %s\n" % self.getName()
     ret += "type: %s\n" % self.getType()
     ret += "cost: %s\n" % self.getCost()
-    ret += "maxActions: %s\n" % self.getMaxActions()
     ret += "maxMovement: %s\n" % self.getMaxMovement()
+    ret += "maxNinjaReflexes: %s\n" % self.getMaxNinjaReflexes()
     ret += "maxInstances: %s\n" % self.getMaxInstances()
     return ret
 
@@ -613,6 +631,70 @@ class TrapType(GameObject):
   ##Whether the trap is able to act().
   hasAction = property(getHasAction)
 
+  #\cond
+  def getActivatable(self):
+    self.validify()
+    return library.trapTypeGetActivatable(self._ptr)
+  #\endcond
+  ##Whether the trap can be activated by the player.
+  activatable = property(getActivatable)
+
+  #\cond
+  def getMaxBodyCount(self):
+    self.validify()
+    return library.trapTypeGetMaxBodyCount(self._ptr)
+  #\endcond
+  ##The maximum number of bodies needed to disable this trap.
+  maxBodyCount = property(getMaxBodyCount)
+
+  #\cond
+  def getMaxInstances(self):
+    self.validify()
+    return library.trapTypeGetMaxInstances(self._ptr)
+  #\endcond
+  ##The maximum number of this type of trap that can be placed in a round by a player.
+  maxInstances = property(getMaxInstances)
+
+  #\cond
+  def getKillsOnWalkThrough(self):
+    self.validify()
+    return library.trapTypeGetKillsOnWalkThrough(self._ptr)
+  #\endcond
+  ##Thieves who move onto and then off of this tile die.
+  killsOnWalkThrough = property(getKillsOnWalkThrough)
+
+  #\cond
+  def getTurnsToKillOnTile(self):
+    self.validify()
+    return library.trapTypeGetTurnsToKillOnTile(self._ptr)
+  #\endcond
+  ##The maximum number of turns a thief can stay on this tile before it dies.
+  turnsToKillOnTile = property(getTurnsToKillOnTile)
+
+  #\cond
+  def getCanPlaceInWalls(self):
+    self.validify()
+    return library.trapTypeGetCanPlaceInWalls(self._ptr)
+  #\endcond
+  ##Whether this trap can be placed inside of walls.
+  canPlaceInWalls = property(getCanPlaceInWalls)
+
+  #\cond
+  def getCanPlaceInEmptyTiles(self):
+    self.validify()
+    return library.trapTypeGetCanPlaceInEmptyTiles(self._ptr)
+  #\endcond
+  ##Whether this trap can be placed on empty tiles.
+  canPlaceInEmptyTiles = property(getCanPlaceInEmptyTiles)
+
+  #\cond
+  def getFreezesForTurns(self):
+    self.validify()
+    return library.trapTypeGetFreezesForTurns(self._ptr)
+  #\endcond
+  ##How many turns a thief will be frozen when this trap activates.
+  freezesForTurns = property(getFreezesForTurns)
+
 
   def __str__(self):
     self.validify()
@@ -623,4 +705,12 @@ class TrapType(GameObject):
     ret += "cost: %s\n" % self.getCost()
     ret += "startsVisible: %s\n" % self.getStartsVisible()
     ret += "hasAction: %s\n" % self.getHasAction()
+    ret += "activatable: %s\n" % self.getActivatable()
+    ret += "maxBodyCount: %s\n" % self.getMaxBodyCount()
+    ret += "maxInstances: %s\n" % self.getMaxInstances()
+    ret += "killsOnWalkThrough: %s\n" % self.getKillsOnWalkThrough()
+    ret += "turnsToKillOnTile: %s\n" % self.getTurnsToKillOnTile()
+    ret += "canPlaceInWalls: %s\n" % self.getCanPlaceInWalls()
+    ret += "canPlaceInEmptyTiles: %s\n" % self.getCanPlaceInEmptyTiles()
+    ret += "freezesForTurns: %s\n" % self.getFreezesForTurns()
     return ret

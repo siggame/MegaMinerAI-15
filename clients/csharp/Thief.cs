@@ -140,27 +140,27 @@ public class Thief: Mappable
   }
 
   /// <summary>
-  /// The remaining number of times the thief can act.
+  /// How many more deaths this thief can escape.
   /// </summary>
-  public int ActionsLeft
+  public int NinjaReflexesLeft
   {
     get
     {
       validify();
-      int value = Client.thiefGetActionsLeft(ptr);
+      int value = Client.thiefGetNinjaReflexesLeft(ptr);
       return value;
     }
   }
 
   /// <summary>
-  /// The maximum number of times the thief can act.
+  /// The maximum number of times this thief can escape death.
   /// </summary>
-  public int MaxActions
+  public int MaxNinjaReflexes
   {
     get
     {
       validify();
-      int value = Client.thiefGetMaxActions(ptr);
+      int value = Client.thiefGetMaxNinjaReflexes(ptr);
       return value;
     }
   }
@@ -187,6 +187,19 @@ public class Thief: Mappable
     {
       validify();
       int value = Client.thiefGetMaxMovement(ptr);
+      return value;
+    }
+  }
+
+  /// <summary>
+  /// How many turns this thief is frozen for.
+  /// </summary>
+  public int FrozenTurnsLeft
+  {
+    get
+    {
+      validify();
+      int value = Client.thiefGetFrozenTurnsLeft(ptr);
       return value;
     }
   }

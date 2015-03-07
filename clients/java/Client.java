@@ -31,6 +31,7 @@ public interface Client extends Library {
   int getMapWidth(Pointer connection);
   int getMapHeight(Pointer connection);
   int getTurnNumber(Pointer connection);
+  int getRoundTurnNumber(Pointer connection);
   int getMaxThieves(Pointer connection);
   int getMaxTraps(Pointer connection);
   int getPlayerID(Pointer connection);
@@ -61,6 +62,7 @@ public interface Client extends Library {
   String playerGetPlayerName(Pointer ptr);
   float playerGetTime(Pointer ptr);
   int playerGetScarabs(Pointer ptr);
+  int playerGetRoundsWon(Pointer ptr);
 
   int mappableGetId(Pointer ptr);
   int mappableGetX(Pointer ptr);
@@ -86,17 +88,18 @@ public interface Client extends Library {
   int thiefGetOwner(Pointer ptr);
   int thiefGetThiefType(Pointer ptr);
   int thiefGetAlive(Pointer ptr);
-  int thiefGetActionsLeft(Pointer ptr);
-  int thiefGetMaxActions(Pointer ptr);
+  int thiefGetNinjaReflexesLeft(Pointer ptr);
+  int thiefGetMaxNinjaReflexes(Pointer ptr);
   int thiefGetMovementLeft(Pointer ptr);
   int thiefGetMaxMovement(Pointer ptr);
+  int thiefGetFrozenTurnsLeft(Pointer ptr);
 
   int thiefTypeGetId(Pointer ptr);
   String thiefTypeGetName(Pointer ptr);
   int thiefTypeGetType(Pointer ptr);
   int thiefTypeGetCost(Pointer ptr);
-  int thiefTypeGetMaxActions(Pointer ptr);
   int thiefTypeGetMaxMovement(Pointer ptr);
+  int thiefTypeGetMaxNinjaReflexes(Pointer ptr);
   int thiefTypeGetMaxInstances(Pointer ptr);
 
   int trapTypeGetId(Pointer ptr);
@@ -105,6 +108,14 @@ public interface Client extends Library {
   int trapTypeGetCost(Pointer ptr);
   int trapTypeGetStartsVisible(Pointer ptr);
   int trapTypeGetHasAction(Pointer ptr);
+  int trapTypeGetActivatable(Pointer ptr);
+  int trapTypeGetMaxBodyCount(Pointer ptr);
+  int trapTypeGetMaxInstances(Pointer ptr);
+  int trapTypeGetKillsOnWalkThrough(Pointer ptr);
+  int trapTypeGetTurnsToKillOnTile(Pointer ptr);
+  int trapTypeGetCanPlaceInWalls(Pointer ptr);
+  int trapTypeGetCanPlaceInEmptyTiles(Pointer ptr);
+  int trapTypeGetFreezesForTurns(Pointer ptr);
 
 
     //properties
