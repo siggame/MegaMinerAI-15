@@ -33,6 +33,7 @@ class Match(DefaultGameWorld):
     self.mapWidth = self.mapWidth
     self.mapHeight = self.mapHeight
     self.turnNumber = self.turnNumber
+    self.roundTurnNumber = self.roundTurnNumber
     self.maxThieves = self.maxThieves
     self.maxTraps = self.maxTraps
     self.playerID = -1
