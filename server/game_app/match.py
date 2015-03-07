@@ -29,20 +29,19 @@ class Match(DefaultGameWorld):
       self.dictLog = dict(gameName = "Pharaoh", turns = [])
     self.addPlayer(self.scribe, "spectator")
 
-    #TODO: INITIALIZE THESE!
     self.grid = []
-    self.mapWidth = None
-    self.mapHeight = None
-    self.turnNumber = None
-    self.roundTurnNumber = None
-    self.maxThieves = None
-    self.maxTraps = None
-    self.playerID = None
+    self.mapWidth = self.mapWidth
+    self.mapHeight = self.mapHeight
+    self.turnNumber = 0
+    self.roundTurnNumber = 0
+    self.maxThieves = self.maxThieves
+    self.maxTraps = self.maxTraps
+    self.playerID = -1
     self.gameNumber = id
-    self.roundNumber = None
-    self.scarabsForTraps = None
-    self.scarabsForThieves = None
-    self.maxStack = None
+    self.roundNumber = 0
+    self.scarabsForTraps = self.scarabsForTraps
+    self.scarabsForThieves = self.scarabsForThieves
+    self.maxStack = self.maxStack
 
   #this is here to be wrapped
   def __del__(self):
@@ -55,7 +54,7 @@ class Match(DefaultGameWorld):
     if type == "player":
       self.players.append(connection)
       try:
-        self.addObject(Player, [connection.screenName, self.startTime])
+        self.addObject(Player, [connection.screenName, self.startTime, self.scarabsForTraps, 0])
       except TypeError:
         raise TypeError("Someone forgot to add the extra attributes to the Player object initialization")
     elif type == "spectator":

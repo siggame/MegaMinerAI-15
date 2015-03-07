@@ -20,10 +20,12 @@ class Player(object):
     pass
 
   def placeTrap(self, x, y, trapType):
-    realX = self.game.getRealX(self.id, x, 1)
-    tile = self.game.getTile(x, y)
+    realX = self.game.getRealX(self.id, x, 0)
+    tile = self.game.getTile(realX, y)
     trapCount = 0
 
+    if self.game.roundTurnNumber > 1:
+      return "You cannot place traps after the first turn"
     if not tile:
       return "Turn {}: You cannot place a trap outside of the map. ({}, {})".format(self.game.turnNumber, x, y)
     if tile.type == 1:
@@ -47,41 +49,42 @@ class Player(object):
 
     self.scarabs -= type.cost
 
-    newTrapStats = [realX, y, self.id, trapType, False, True, 0]
+    # 'id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount'
+    newTrapStats = [realX, y, self.id, trapType, 0, 0, 0]
     newTrap = self.game.addObject(Trap, newTrapStats)
-    self.game.grid[realX][y].append(newTrap)
+    self.game.grid[newTrap.x][newTrap.y].append(newTrap)
     self.game.addAnimation(SpawnAnimation(self.id, realX, y))
 
     return True
 
   def purchaseThief(self, x, y, thiefType):
-	realX = self.game.getRealX(self.id, x, 1)
-	thiefCount = 0
-	if x < 0 or x >= self.game.mapWidth /2 or y < 0 or y >= self.game.mapHeight:
-		return 'Turn {}: You cannot place a thief out of bounds. ({}, {})'.format(self.game.turnNumber, x, y)
-	tile = self.game.getTile(realX, y)
-	if tile.type != 1:
-		return 'Turn {}: You can only spawn thieves on spawn tiles. ({}, {})'.format(self.game.turnNumber, x, y)
-	if thiefType < 0 or thiefType >= len(self.game.objects.thiefTypes):
-		return 'Turn {}: You cannot spawn thieves of this type. ({}, {})'.format(self.game.turnNumber, x, y)
-	type = self.game.objects.thiefTypes[thiefType]
-	for thief in self.game.thieves:
-		if thief.owner == self.id and thief.type == thiefType:
-			thiefCount += 1
-	if thiefCount >= type.maxInstances:
-		return 'Turn {}: You cannot buy any more of this type of thief. ({}, {})'.format(self.game.turnNumber, x, y)
-	if 	self.scarabs < type.cost:
-		return 'Turn {}: You do not have enough scarabs to buy this thief. ({}, {})'.format(self.game.turnNumber, x, y)
-	
-	self.scarabs -= type.cost
-	# 'id', 'x', 'y', 'owner', 'thiefType', 'alive', 'ninjaReflexesLeft', 'maxNinjaReflexes', 'movementLeft', 'maxMovement', 'frozenTurnsLeft'
-	newThiefStats = [realX, y, self.id, thiefType, 1, type.maxNinjaReflexes, type.maxNinjaReflexes, type.maxMovement, type.maxMovement, 0]
-	newThief = self.game.addObject(Thief, newThiefStats)
-	self.game.grid[newThief.x][newThief.y].append(newThief)
-	
-	self.game.addAnimation(SpawnAnimation(self.id, realX, y))
-	
-	return True
+    realX = self.game.getRealX(self.id, x, 1)
+    thiefCount = 0
+    if x < 0 or x >= self.game.mapWidth /2 or y < 0 or y >= self.game.mapHeight:
+      return 'Turn {}: You cannot place a thief out of bounds. ({}, {})'.format(self.game.turnNumber, x, y)
+    tile = self.game.getTile(realX, y)
+    if tile.type != 1:
+      return 'Turn {}: You can only spawn thieves on spawn tiles. ({}, {})'.format(self.game.turnNumber, x, y)
+    if thiefType < 0 or thiefType >= len(self.game.objects.thiefTypes):
+      return 'Turn {}: You cannot spawn thieves of this type. ({}, {})'.format(self.game.turnNumber, x, y)
+    type = self.game.objects.thiefTypes[thiefType]
+    for thief in self.game.thieves:
+      if thief.owner == self.id and thief.type == thiefType:
+          thiefCount += 1
+    if thiefCount >= type.maxInstances:
+      return 'Turn {}: You cannot buy any more of this type of thief. ({}, {})'.format(self.game.turnNumber, x, y)
+    if self.scarabs < type.cost:
+      return 'Turn {}: You do not have enough scarabs to buy this thief. ({}, {})'.format(self.game.turnNumber, x, y)
+
+    self.scarabs -= type.cost
+    # 'id', 'x', 'y', 'owner', 'thiefType', 'alive', 'ninjaReflexesLeft', 'maxNinjaReflexes', 'movementLeft', 'maxMovement', 'frozenTurnsLeft'
+    newThiefStats = [realX, y, self.id, thiefType, 1, type.maxNinjaReflexes, type.maxNinjaReflexes, type.maxMovement, type.maxMovement, 0]
+    newThief = self.game.addObject(Thief, newThiefStats)
+    self.game.grid[newThief.x][newThief.y].append(newThief)
+
+    self.game.addAnimation(SpawnAnimation(self.id, realX, y))
+
+    return True
 	
   def pharaohTalk(self, message):
     pass
