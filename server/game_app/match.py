@@ -82,11 +82,14 @@ class Match(DefaultGameWorld):
     #TODO: START STUFF
     self.turn = self.players[-1]
     self.turnNumber = -1
-    self.roundTurnNumber = -1
-    self.grid = [[[ self.addObject(Tile,[x, y, -1]) ] for y in range(self.mapHeight)] for x in range(self.mapWidth)]
-
-    self.nextTurn()
+    self.startRound()
     return True
+
+  def startRound(self):
+      self.roundTurnNumber = -1
+      self.grid = [[[ self.addObject(Tile,[x, y, -1]) ] for y in range(self.mapHeight)] for x in range(self.mapWidth)]
+      self.nextTurn()
+      return True
 
   def getTile(self, x, y):
     if (0 <= x < self.mapWidth) and (0 <= y < self.mapHeight):
@@ -159,10 +162,32 @@ class Match(DefaultGameWorld):
     return True
 
   def checkWinner(self):
-    #TODO: Make this check if a player won, and call declareWinner with a player if they did
-    if self.turnNumber >= self.turnLimit:
-       self.declareWinner(self.players[0], "Because I said so, this should be removed")
+    sarcophagus = {}
+    #set the sarcophagus locations
+    for trap in self.objects.traps:
+      if trap.trapType == 0: #SARCOPHAGUS
+        sarcophagus[trap.owner] = (trap.x, trap.y)
 
+    #check if there are any enemy thieves on the sarcophagus
+    for thief in self.objects.theives:
+      if thief.x == sarcophagus[thief.owner^1] and thief.y == sarcophagus[thief.owner^1]:
+        self.declareRoundWinner(self.players[0], "Player {} reached the sarcophagus")
+
+    #TODO: Make this check if a player won, and call declareWinner with a player if they did
+    if self.roundTurnNumber >= self.turnLimit:
+       self.declareRoundWinner(self.players[0], "Because I said so, this should be removed")
+    pass
+
+  #declare the round winner and reset the match
+  def declareRoundWinner(self, winner, reason=''):
+    winner.roundsWon = winner.roundsWon + 1
+    if winner.roundsWon >= 3: #This should probably be a global constant
+      self.declareWinner(self, winner, "Player {} reached 3 points".format(winner.playerID))
+    else:
+      #TODO: Add an animation declaring the round winner
+      self.startRound()
+      print "Player", self.getPlayerIndex(self.winner), "wins round", self.id
+    pass
 
   def declareWinner(self, winner, reason=''):
     print "Player", self.getPlayerIndex(self.winner), "wins game", self.id
