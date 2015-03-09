@@ -169,7 +169,7 @@ class Match(DefaultGameWorld):
         sarcophagus[trap.owner] = (trap.x, trap.y)
 
     #check if there are any enemy thieves on the sarcophagus
-    for thief in self.objects.theives:
+    for thief in self.objects.thiefs:
       if thief.x == sarcophagus[thief.owner^1] and thief.y == sarcophagus[thief.owner^1]:
         self.declareRoundWinner(self.players[0], "Player {} reached the sarcophagus")
 
