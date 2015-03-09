@@ -179,9 +179,9 @@ class Trap(Mappable):
       # TODO: Requires adding thief types and trap types to global config
       if self.trapType == self.game.boulder:
         if (x != 1 and x != -1) and (y != 1 and y != -1):
-          return: 'Turn {}: Invalid rolling direction for boulder {}. ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y)
+          return 'Turn {}: Invalid rolling direction for boulder {}. ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y)
         if (x == 1 or x == -1) and (y == 1 or y == -1):
-          return: 'Turn {}: Cannot indicate two rolling directions for boulder {}. ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y)
+          return 'Turn {}: Cannot indicate two rolling directions for boulder {}. ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y)
         
         #Kill thieves as boulder rolls over them, until boulder runs into a wall
         boulderRolling = True 
@@ -205,7 +205,7 @@ class Trap(Mappable):
       if self.trapType == self.game.mummy:
         #Check if desired space is adjacent to mummy's current space
         if (1 != abs(self.x - x)) or (1 != abs(self.y - y)):
-          return: 'Turn {}: Cannot move mummy {} to non-adjacent space. ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y)
+          return 'Turn {}: Cannot move mummy {} to non-adjacent space. ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y)
         self.game.grid[x][y].append(self)
 
         
