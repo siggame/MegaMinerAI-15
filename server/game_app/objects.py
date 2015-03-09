@@ -169,7 +169,49 @@ class Trap(Mappable):
     pass
 
   def act(self, x, y):
-    pass
+    if not self.activatable:
+      return 'Turn {}: Trap {} is not currently active. ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y)
+    else:
+      if self.owner != self.game.playerID:
+        return 'Turn {}: You cannot use the other player\'s trap {}. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
+      if self.bodyCount > maxBodyCount:
+        return 'Turn {}: Max body count has been exceeded for trap {}. ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y)
+      
+      # TODO: Requires adding thief types and trap types to global config
+      if self.trapType == self.game.boulder:
+        if (x != 1 and x != -1) and (y != 1 and y != -1):
+          return: 'Turn {}: Invalid rolling direction for boulder {}. ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y)
+        if (x == 1 or x == -1) and (y == 1 or y == -1):
+          return: 'Turn {}: Cannot indicate two rolling directions for boulder {}. ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y)
+        
+        #Kill thieves as boulder rolls over them, until boulder runs into a wall
+        boulderRolling = True 
+
+        while boulderRolling:
+          for unit in self.game.grid[boulderCounterX][boulderCounterY]: 
+            if isinstance(unit, Thief) and unit.ninjaReflexesLeft == 0:
+              unit.alive = 0
+            if unit.ninjaReflexesLeft > 0:
+              unit.ninjaReflexesLeft -= 1
+          boulderCounterX += x
+          boulderCounterY += y
+          
+          #Check if the boulder has hit a wall
+          for units in self.game.grid[boulderCounterX][boulderCounterY]: 
+            if isinstance(unit, Tile) == 2:
+              boulderRolling = False
+              self.activationsRemaining = 0
+      
+
+      if self.trapType == self.game.mummy:
+        #Check if desired space is adjacent to mummy's current space
+        if (1 != abs(self.x - x)) or (1 != abs(self.y - y)):
+          return: 'Turn {}: Cannot move mummy {} to non-adjacent space. ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y)
+        self.game.grid[x][y].append(self)
+
+        
+
+      
 
   def toggle(self):
     pass
@@ -227,7 +269,7 @@ class Thief(Mappable):
     self.x = x
     self.y = y
     self.movementLeft -= 1
-    self.game.grid[self.x][self.y].append(self)
+    self.game.grid[x][y].append(self)
     
     #TODO: Figure out trap activation
     for unit in self.game.grid[x][y]:             
