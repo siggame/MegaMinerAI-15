@@ -87,5 +87,11 @@ class Trap extends Mappable
     validify();
     return Client.INSTANCE.trapGetBodyCount(ptr);
   }
+  ///How many more times this trap can activate.
+  public int getActivationsRemaining()
+  {
+    validify();
+    return Client.INSTANCE.trapGetActivationsRemaining(ptr);
+  }
 
 }

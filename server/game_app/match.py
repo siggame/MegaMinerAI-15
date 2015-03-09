@@ -42,6 +42,7 @@ class Match(DefaultGameWorld):
     self.scarabsForTraps = self.scarabsForTraps
     self.scarabsForThieves = self.scarabsForThieves
     self.maxStack = self.maxStack
+    self.roundsToWin = self.roundsToWin
 
   #this is here to be wrapped
   def __del__(self):
@@ -146,6 +147,7 @@ class Match(DefaultGameWorld):
           scarabsForTraps = self.scarabsForTraps,
           scarabsForThieves = self.scarabsForThieves,
           maxStack = self.maxStack,
+          roundsToWin = self.roundsToWin,
           Players = [i.toJson() for i in self.objects.values() if i.__class__ is Player],
           Mappables = [i.toJson() for i in self.objects.values() if i.__class__ is Mappable],
           Tiles = [i.toJson() for i in self.objects.values() if i.__class__ is Tile],
@@ -181,8 +183,8 @@ class Match(DefaultGameWorld):
   #declare the round winner and reset the match
   def declareRoundWinner(self, winner, reason=''):
     winner.roundsWon = winner.roundsWon + 1
-    if winner.roundsWon >= 3: #This should probably be a global constant
-      self.declareWinner(self, winner, "Player {} reached 3 points".format(winner.playerID))
+    if winner.roundsWon >= self.roundsToWin:
+      self.declareWinner(self, winner, "Player {} reached {} points".format(winner.playerID, self.roundsToWin))
     else:
       #TODO: Add an animation declaring the round winner
       self.startRound()
@@ -276,7 +278,7 @@ class Match(DefaultGameWorld):
   def status(self):
     msg = ["status"]
 
-    msg.append(["game", self.mapWidth, self.mapHeight, self.turnNumber, self.roundTurnNumber, self.maxThieves, self.maxTraps, self.playerID, self.gameNumber, self.roundNumber, self.scarabsForTraps, self.scarabsForThieves, self.maxStack])
+    msg.append(["game", self.mapWidth, self.mapHeight, self.turnNumber, self.roundTurnNumber, self.maxThieves, self.maxTraps, self.playerID, self.gameNumber, self.roundNumber, self.scarabsForTraps, self.scarabsForThieves, self.maxStack, self.roundsToWin])
 
     typeLists = []
     typeLists.append(["Player"] + [i.toList() for i in self.objects.values() if i.__class__ is Player])
@@ -284,7 +286,7 @@ class Match(DefaultGameWorld):
     updated = [i for i in self.objects.values() if i.__class__ is Tile and i.updatedAt > self.turnNumber-3]
     if updated:
       typeLists.append(["Tile"] + [i.toList() for i in updated])
-    typeLists.append(["Trap"] + [i.toList() for i in self.objects.values() if i.__class__ is Trap and( i.visible or i.owner == self.playerID or connection.type != "player")])
+    typeLists.append(["Trap"] + [i.toList() for i in self.objects.values() if i.__class__ is Trap])
     typeLists.append(["Thief"] + [i.toList() for i in self.objects.values() if i.__class__ is Thief])
     updated = [i for i in self.objects.values() if i.__class__ is ThiefType and i.updatedAt > self.turnNumber-3]
     if updated:

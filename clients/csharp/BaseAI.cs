@@ -230,4 +230,14 @@ public abstract class BaseAI
     int value = Client.getMaxStack(connection);
     return value;
   }
+
+  /// <summary>
+  /// The number of won rounds required to win.
+  /// </summary>
+  /// <returns>Returns the number of won rounds required to win.</returns>
+  public int roundsToWin()
+  {
+    int value = Client.getRoundsToWin(connection);
+    return value;
+  }
 }

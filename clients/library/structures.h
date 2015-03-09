@@ -49,6 +49,7 @@ struct _Trap
   int visible;
   int active;
   int bodyCount;
+  int activationsRemaining;
 };
 struct _Thief
 {
@@ -83,16 +84,20 @@ struct _TrapType
   char* name;
   int type;
   int cost;
+  int maxInstances;
   int startsVisible;
   int hasAction;
-  int activatable;
-  int maxBodyCount;
-  int maxInstances;
-  int killsOnWalkThrough;
-  int turnsToKillOnTile;
-  int canPlaceInWalls;
-  int canPlaceInEmptyTiles;
+  int deactivatable;
+  int maxActivations;
+  int activatesOnWalkedThrough;
+  int turnsToActivateOnTile;
+  int canPlaceOnWalls;
+  int canPlaceOnOpenTiles;
   int freezesForTurns;
+  int killsOnActivate;
+  int cooldown;
+  int explosive;
+  int unpassable;
 };
 
 #endif

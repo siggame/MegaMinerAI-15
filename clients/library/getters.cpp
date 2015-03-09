@@ -80,6 +80,10 @@ DLLEXPORT int trapGetBodyCount(_Trap* ptr)
 {
   return ptr->bodyCount;
 }
+DLLEXPORT int trapGetActivationsRemaining(_Trap* ptr)
+{
+  return ptr->activationsRemaining;
+}
 DLLEXPORT int thiefGetId(_Thief* ptr)
 {
   return ptr->id;
@@ -168,6 +172,10 @@ DLLEXPORT int trapTypeGetCost(_TrapType* ptr)
 {
   return ptr->cost;
 }
+DLLEXPORT int trapTypeGetMaxInstances(_TrapType* ptr)
+{
+  return ptr->maxInstances;
+}
 DLLEXPORT int trapTypeGetStartsVisible(_TrapType* ptr)
 {
   return ptr->startsVisible;
@@ -176,36 +184,48 @@ DLLEXPORT int trapTypeGetHasAction(_TrapType* ptr)
 {
   return ptr->hasAction;
 }
-DLLEXPORT int trapTypeGetActivatable(_TrapType* ptr)
+DLLEXPORT int trapTypeGetDeactivatable(_TrapType* ptr)
 {
-  return ptr->activatable;
+  return ptr->deactivatable;
 }
-DLLEXPORT int trapTypeGetMaxBodyCount(_TrapType* ptr)
+DLLEXPORT int trapTypeGetMaxActivations(_TrapType* ptr)
 {
-  return ptr->maxBodyCount;
+  return ptr->maxActivations;
 }
-DLLEXPORT int trapTypeGetMaxInstances(_TrapType* ptr)
+DLLEXPORT int trapTypeGetActivatesOnWalkedThrough(_TrapType* ptr)
 {
-  return ptr->maxInstances;
+  return ptr->activatesOnWalkedThrough;
 }
-DLLEXPORT int trapTypeGetKillsOnWalkThrough(_TrapType* ptr)
+DLLEXPORT int trapTypeGetTurnsToActivateOnTile(_TrapType* ptr)
 {
-  return ptr->killsOnWalkThrough;
+  return ptr->turnsToActivateOnTile;
 }
-DLLEXPORT int trapTypeGetTurnsToKillOnTile(_TrapType* ptr)
+DLLEXPORT int trapTypeGetCanPlaceOnWalls(_TrapType* ptr)
 {
-  return ptr->turnsToKillOnTile;
+  return ptr->canPlaceOnWalls;
 }
-DLLEXPORT int trapTypeGetCanPlaceInWalls(_TrapType* ptr)
+DLLEXPORT int trapTypeGetCanPlaceOnOpenTiles(_TrapType* ptr)
 {
-  return ptr->canPlaceInWalls;
-}
-DLLEXPORT int trapTypeGetCanPlaceInEmptyTiles(_TrapType* ptr)
-{
-  return ptr->canPlaceInEmptyTiles;
+  return ptr->canPlaceOnOpenTiles;
 }
 DLLEXPORT int trapTypeGetFreezesForTurns(_TrapType* ptr)
 {
   return ptr->freezesForTurns;
+}
+DLLEXPORT int trapTypeGetKillsOnActivate(_TrapType* ptr)
+{
+  return ptr->killsOnActivate;
+}
+DLLEXPORT int trapTypeGetCooldown(_TrapType* ptr)
+{
+  return ptr->cooldown;
+}
+DLLEXPORT int trapTypeGetExplosive(_TrapType* ptr)
+{
+  return ptr->explosive;
+}
+DLLEXPORT int trapTypeGetUnpassable(_TrapType* ptr)
+{
+  return ptr->unpassable;
 }
 

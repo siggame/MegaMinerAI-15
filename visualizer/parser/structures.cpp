@@ -48,6 +48,7 @@ std::ostream& operator<<(std::ostream& stream, Trap ob)
   stream << "visible: " << ob.visible  <<'\n';
   stream << "active: " << ob.active  <<'\n';
   stream << "bodyCount: " << ob.bodyCount  <<'\n';
+  stream << "activationsRemaining: " << ob.activationsRemaining  <<'\n';
   return stream;
 }
 
@@ -88,16 +89,20 @@ std::ostream& operator<<(std::ostream& stream, TrapType ob)
   stream << "name: " << ob.name  <<'\n';
   stream << "type: " << ob.type  <<'\n';
   stream << "cost: " << ob.cost  <<'\n';
+  stream << "maxInstances: " << ob.maxInstances  <<'\n';
   stream << "startsVisible: " << ob.startsVisible  <<'\n';
   stream << "hasAction: " << ob.hasAction  <<'\n';
-  stream << "activatable: " << ob.activatable  <<'\n';
-  stream << "maxBodyCount: " << ob.maxBodyCount  <<'\n';
-  stream << "maxInstances: " << ob.maxInstances  <<'\n';
-  stream << "killsOnWalkThrough: " << ob.killsOnWalkThrough  <<'\n';
-  stream << "turnsToKillOnTile: " << ob.turnsToKillOnTile  <<'\n';
-  stream << "canPlaceInWalls: " << ob.canPlaceInWalls  <<'\n';
-  stream << "canPlaceInEmptyTiles: " << ob.canPlaceInEmptyTiles  <<'\n';
+  stream << "deactivatable: " << ob.deactivatable  <<'\n';
+  stream << "maxActivations: " << ob.maxActivations  <<'\n';
+  stream << "activatesOnWalkedThrough: " << ob.activatesOnWalkedThrough  <<'\n';
+  stream << "turnsToActivateOnTile: " << ob.turnsToActivateOnTile  <<'\n';
+  stream << "canPlaceOnWalls: " << ob.canPlaceOnWalls  <<'\n';
+  stream << "canPlaceOnOpenTiles: " << ob.canPlaceOnOpenTiles  <<'\n';
   stream << "freezesForTurns: " << ob.freezesForTurns  <<'\n';
+  stream << "killsOnActivate: " << ob.killsOnActivate  <<'\n';
+  stream << "cooldown: " << ob.cooldown  <<'\n';
+  stream << "explosive: " << ob.explosive  <<'\n';
+  stream << "unpassable: " << ob.unpassable  <<'\n';
   return stream;
 }
 
@@ -184,6 +189,7 @@ std::ostream& operator<<(std::ostream& stream, GameState ob)
   stream << "scarabsForTraps: " << ob.scarabsForTraps  <<'\n';
   stream << "scarabsForThieves: " << ob.scarabsForThieves  <<'\n';
   stream << "maxStack: " << ob.maxStack  <<'\n';
+  stream << "roundsToWin: " << ob.roundsToWin  <<'\n';
 
   stream << "\n\nPlayers:\n";
   for(std::map<int,Player>::iterator i = ob.players.begin(); i != ob.players.end(); i++)

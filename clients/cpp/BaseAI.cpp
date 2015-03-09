@@ -53,6 +53,10 @@ int BaseAI::maxStack()
 {
   return getMaxStack(c);
 }
+int BaseAI::roundsToWin()
+{
+  return getRoundsToWin(c);
+}
 
 bool BaseAI::startTurn()
 {

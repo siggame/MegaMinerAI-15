@@ -49,8 +49,8 @@ class Player(object):
 
     self.scarabs -= type.cost
 
-    # 'id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount'
-    newTrapStats = [realX, y, self.id, trapType, 0, 0, 0]
+    # 'id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount', 'activationsRemaining']
+    newTrapStats = [realX, y, self.id, trapType, type.startsVisible, 1, 0, type.maxActivations]
     newTrap = self.game.addObject(Trap, newTrapStats)
     self.game.grid[newTrap.x][newTrap.y].append(newTrap)
     self.game.addAnimation(SpawnAnimation(self.id, realX, y))
@@ -144,8 +144,8 @@ class Tile(Mappable):
       object.__setattr__(self, name, value)
 
 class Trap(Mappable):
-  game_state_attributes = ['id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount']
-  def __init__(self, game, id, x, y, owner, trapType, visible, active, bodyCount):
+  game_state_attributes = ['id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount', 'activationsRemaining']
+  def __init__(self, game, id, x, y, owner, trapType, visible, active, bodyCount, activationsRemaining):
     self.game = game
     self.id = id
     self.x = x
@@ -155,14 +155,15 @@ class Trap(Mappable):
     self.visible = visible
     self.active = active
     self.bodyCount = bodyCount
+    self.activationsRemaining = activationsRemaining
     self.updatedAt = game.turnNumber
 
   def toList(self):
-    return [self.id, self.x, self.y, self.owner, self.trapType, self.visible, self.active, self.bodyCount, ]
+    return [self.id, self.x, self.y, self.owner, self.trapType, self.visible, self.active, self.bodyCount, self.activationsRemaining, ]
   
   # This will not work if the object has variables other than primitives
   def toJson(self):
-    return dict(id = self.id, x = self.x, y = self.y, owner = self.owner, trapType = self.trapType, visible = self.visible, active = self.active, bodyCount = self.bodyCount, )
+    return dict(id = self.id, x = self.x, y = self.y, owner = self.owner, trapType = self.trapType, visible = self.visible, active = self.active, bodyCount = self.bodyCount, activationsRemaining = self.activationsRemaining, )
   
   def nextTurn(self):
     pass
@@ -272,31 +273,35 @@ class ThiefType(object):
       object.__setattr__(self, name, value)
 
 class TrapType(object):
-  game_state_attributes = ['id', 'name', 'type', 'cost', 'startsVisible', 'hasAction', 'activatable', 'maxBodyCount', 'maxInstances', 'killsOnWalkThrough', 'turnsToKillOnTile', 'canPlaceInWalls', 'canPlaceInEmptyTiles', 'freezesForTurns']
-  def __init__(self, game, id, name, type, cost, startsVisible, hasAction, activatable, maxBodyCount, maxInstances, killsOnWalkThrough, turnsToKillOnTile, canPlaceInWalls, canPlaceInEmptyTiles, freezesForTurns):
+  game_state_attributes = ['id', 'name', 'type', 'cost', 'maxInstances', 'startsVisible', 'hasAction', 'deactivatable', 'maxActivations', 'activatesOnWalkedThrough', 'turnsToActivateOnTile', 'canPlaceOnWalls', 'canPlaceOnOpenTiles', 'freezesForTurns', 'killsOnActivate', 'cooldown', 'explosive', 'unpassable']
+  def __init__(self, game, id, name, type, cost, maxInstances, startsVisible, hasAction, deactivatable, maxActivations, activatesOnWalkedThrough, turnsToActivateOnTile, canPlaceOnWalls, canPlaceOnOpenTiles, freezesForTurns, killsOnActivate, cooldown, explosive, unpassable):
     self.game = game
     self.id = id
     self.name = name
     self.type = type
     self.cost = cost
+    self.maxInstances = maxInstances
     self.startsVisible = startsVisible
     self.hasAction = hasAction
-    self.activatable = activatable
-    self.maxBodyCount = maxBodyCount
-    self.maxInstances = maxInstances
-    self.killsOnWalkThrough = killsOnWalkThrough
-    self.turnsToKillOnTile = turnsToKillOnTile
-    self.canPlaceInWalls = canPlaceInWalls
-    self.canPlaceInEmptyTiles = canPlaceInEmptyTiles
+    self.deactivatable = deactivatable
+    self.maxActivations = maxActivations
+    self.activatesOnWalkedThrough = activatesOnWalkedThrough
+    self.turnsToActivateOnTile = turnsToActivateOnTile
+    self.canPlaceOnWalls = canPlaceOnWalls
+    self.canPlaceOnOpenTiles = canPlaceOnOpenTiles
     self.freezesForTurns = freezesForTurns
+    self.killsOnActivate = killsOnActivate
+    self.cooldown = cooldown
+    self.explosive = explosive
+    self.unpassable = unpassable
     self.updatedAt = game.turnNumber
 
   def toList(self):
-    return [self.id, self.name, self.type, self.cost, self.startsVisible, self.hasAction, self.activatable, self.maxBodyCount, self.maxInstances, self.killsOnWalkThrough, self.turnsToKillOnTile, self.canPlaceInWalls, self.canPlaceInEmptyTiles, self.freezesForTurns, ]
+    return [self.id, self.name, self.type, self.cost, self.maxInstances, self.startsVisible, self.hasAction, self.deactivatable, self.maxActivations, self.activatesOnWalkedThrough, self.turnsToActivateOnTile, self.canPlaceOnWalls, self.canPlaceOnOpenTiles, self.freezesForTurns, self.killsOnActivate, self.cooldown, self.explosive, self.unpassable, ]
   
   # This will not work if the object has variables other than primitives
   def toJson(self):
-    return dict(id = self.id, name = self.name, type = self.type, cost = self.cost, startsVisible = self.startsVisible, hasAction = self.hasAction, activatable = self.activatable, maxBodyCount = self.maxBodyCount, maxInstances = self.maxInstances, killsOnWalkThrough = self.killsOnWalkThrough, turnsToKillOnTile = self.turnsToKillOnTile, canPlaceInWalls = self.canPlaceInWalls, canPlaceInEmptyTiles = self.canPlaceInEmptyTiles, freezesForTurns = self.freezesForTurns, )
+    return dict(id = self.id, name = self.name, type = self.type, cost = self.cost, maxInstances = self.maxInstances, startsVisible = self.startsVisible, hasAction = self.hasAction, deactivatable = self.deactivatable, maxActivations = self.maxActivations, activatesOnWalkedThrough = self.activatesOnWalkedThrough, turnsToActivateOnTile = self.turnsToActivateOnTile, canPlaceOnWalls = self.canPlaceOnWalls, canPlaceOnOpenTiles = self.canPlaceOnOpenTiles, freezesForTurns = self.freezesForTurns, killsOnActivate = self.killsOnActivate, cooldown = self.cooldown, explosive = self.explosive, unpassable = self.unpassable, )
   
   def nextTurn(self):
     pass

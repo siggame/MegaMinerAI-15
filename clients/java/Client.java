@@ -40,6 +40,7 @@ public interface Client extends Library {
   int getScarabsForTraps(Pointer connection);
   int getScarabsForThieves(Pointer connection);
   int getMaxStack(Pointer connection);
+  int getRoundsToWin(Pointer connection);
 
   Pointer getPlayer(Pointer connection, int num);
   int getPlayerCount(Pointer connection);
@@ -81,6 +82,7 @@ public interface Client extends Library {
   int trapGetVisible(Pointer ptr);
   int trapGetActive(Pointer ptr);
   int trapGetBodyCount(Pointer ptr);
+  int trapGetActivationsRemaining(Pointer ptr);
 
   int thiefGetId(Pointer ptr);
   int thiefGetX(Pointer ptr);
@@ -106,16 +108,20 @@ public interface Client extends Library {
   String trapTypeGetName(Pointer ptr);
   int trapTypeGetType(Pointer ptr);
   int trapTypeGetCost(Pointer ptr);
+  int trapTypeGetMaxInstances(Pointer ptr);
   int trapTypeGetStartsVisible(Pointer ptr);
   int trapTypeGetHasAction(Pointer ptr);
-  int trapTypeGetActivatable(Pointer ptr);
-  int trapTypeGetMaxBodyCount(Pointer ptr);
-  int trapTypeGetMaxInstances(Pointer ptr);
-  int trapTypeGetKillsOnWalkThrough(Pointer ptr);
-  int trapTypeGetTurnsToKillOnTile(Pointer ptr);
-  int trapTypeGetCanPlaceInWalls(Pointer ptr);
-  int trapTypeGetCanPlaceInEmptyTiles(Pointer ptr);
+  int trapTypeGetDeactivatable(Pointer ptr);
+  int trapTypeGetMaxActivations(Pointer ptr);
+  int trapTypeGetActivatesOnWalkedThrough(Pointer ptr);
+  int trapTypeGetTurnsToActivateOnTile(Pointer ptr);
+  int trapTypeGetCanPlaceOnWalls(Pointer ptr);
+  int trapTypeGetCanPlaceOnOpenTiles(Pointer ptr);
   int trapTypeGetFreezesForTurns(Pointer ptr);
+  int trapTypeGetKillsOnActivate(Pointer ptr);
+  int trapTypeGetCooldown(Pointer ptr);
+  int trapTypeGetExplosive(Pointer ptr);
+  int trapTypeGetUnpassable(Pointer ptr);
 
 
     //properties

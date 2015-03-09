@@ -1,1 +1,0 @@
-csharp Shell AI

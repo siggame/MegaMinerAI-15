@@ -104,6 +104,9 @@ library.getScarabsForThieves.argtypes = [c_void_p]
 library.getMaxStack.restype = c_int
 library.getMaxStack.argtypes = [c_void_p]
 
+library.getRoundsToWin.restype = c_int
+library.getRoundsToWin.argtypes = [c_void_p]
+
 library.getPlayer.restype = c_void_p
 library.getPlayer.argtypes = [c_void_p, c_int]
 
@@ -209,6 +212,9 @@ library.trapGetActive.argtypes = [c_void_p]
 library.trapGetBodyCount.restype = c_int
 library.trapGetBodyCount.argtypes = [c_void_p]
 
+library.trapGetActivationsRemaining.restype = c_int
+library.trapGetActivationsRemaining.argtypes = [c_void_p]
+
 library.thiefGetId.restype = c_int
 library.thiefGetId.argtypes = [c_void_p]
 
@@ -275,35 +281,47 @@ library.trapTypeGetType.argtypes = [c_void_p]
 library.trapTypeGetCost.restype = c_int
 library.trapTypeGetCost.argtypes = [c_void_p]
 
+library.trapTypeGetMaxInstances.restype = c_int
+library.trapTypeGetMaxInstances.argtypes = [c_void_p]
+
 library.trapTypeGetStartsVisible.restype = c_int
 library.trapTypeGetStartsVisible.argtypes = [c_void_p]
 
 library.trapTypeGetHasAction.restype = c_int
 library.trapTypeGetHasAction.argtypes = [c_void_p]
 
-library.trapTypeGetActivatable.restype = c_int
-library.trapTypeGetActivatable.argtypes = [c_void_p]
+library.trapTypeGetDeactivatable.restype = c_int
+library.trapTypeGetDeactivatable.argtypes = [c_void_p]
 
-library.trapTypeGetMaxBodyCount.restype = c_int
-library.trapTypeGetMaxBodyCount.argtypes = [c_void_p]
+library.trapTypeGetMaxActivations.restype = c_int
+library.trapTypeGetMaxActivations.argtypes = [c_void_p]
 
-library.trapTypeGetMaxInstances.restype = c_int
-library.trapTypeGetMaxInstances.argtypes = [c_void_p]
+library.trapTypeGetActivatesOnWalkedThrough.restype = c_int
+library.trapTypeGetActivatesOnWalkedThrough.argtypes = [c_void_p]
 
-library.trapTypeGetKillsOnWalkThrough.restype = c_int
-library.trapTypeGetKillsOnWalkThrough.argtypes = [c_void_p]
+library.trapTypeGetTurnsToActivateOnTile.restype = c_int
+library.trapTypeGetTurnsToActivateOnTile.argtypes = [c_void_p]
 
-library.trapTypeGetTurnsToKillOnTile.restype = c_int
-library.trapTypeGetTurnsToKillOnTile.argtypes = [c_void_p]
+library.trapTypeGetCanPlaceOnWalls.restype = c_int
+library.trapTypeGetCanPlaceOnWalls.argtypes = [c_void_p]
 
-library.trapTypeGetCanPlaceInWalls.restype = c_int
-library.trapTypeGetCanPlaceInWalls.argtypes = [c_void_p]
-
-library.trapTypeGetCanPlaceInEmptyTiles.restype = c_int
-library.trapTypeGetCanPlaceInEmptyTiles.argtypes = [c_void_p]
+library.trapTypeGetCanPlaceOnOpenTiles.restype = c_int
+library.trapTypeGetCanPlaceOnOpenTiles.argtypes = [c_void_p]
 
 library.trapTypeGetFreezesForTurns.restype = c_int
 library.trapTypeGetFreezesForTurns.argtypes = [c_void_p]
+
+library.trapTypeGetKillsOnActivate.restype = c_int
+library.trapTypeGetKillsOnActivate.argtypes = [c_void_p]
+
+library.trapTypeGetCooldown.restype = c_int
+library.trapTypeGetCooldown.argtypes = [c_void_p]
+
+library.trapTypeGetExplosive.restype = c_int
+library.trapTypeGetExplosive.argtypes = [c_void_p]
+
+library.trapTypeGetUnpassable.restype = c_int
+library.trapTypeGetUnpassable.argtypes = [c_void_p]
 
 
 #Properties

@@ -115,5 +115,10 @@ class BaseAI:
     return library.getMaxStack(self.connection)
   #\endcond
   maxStack = property(getMaxStack)
+  #\cond
+  def getRoundsToWin(self):
+    return library.getRoundsToWin(self.connection)
+  #\endcond
+  roundsToWin = property(getRoundsToWin)
   def __init__(self, connection):
     self.connection = connection

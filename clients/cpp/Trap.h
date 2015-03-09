@@ -30,6 +30,8 @@ class Trap : public Mappable {
   int active();
   ///How many thieves this trap has killed.
   int bodyCount();
+  ///How many more times this trap can activate.
+  int activationsRemaining();
 
   // Actions
   ///Commands a trap to act on a location.

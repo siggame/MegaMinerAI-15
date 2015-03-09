@@ -77,7 +77,7 @@ public class Tile: Mappable
   }
 
   /// <summary>
-  /// What type of tile this is. 0: empty, 1: wall: 2: spawn.
+  /// What type of tile this is. 0: empty, 1: spawn: 2: wall.
   /// </summary>
   public int Type
   {

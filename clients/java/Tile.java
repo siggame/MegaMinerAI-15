@@ -45,7 +45,7 @@ class Tile extends Mappable
     validify();
     return Client.INSTANCE.tileGetY(ptr);
   }
-  ///What type of tile this is. 0: empty, 1: wall: 2: spawn.
+  ///What type of tile this is. 0: empty, 1: spawn: 2: wall.
   public int getType()
   {
     validify();
