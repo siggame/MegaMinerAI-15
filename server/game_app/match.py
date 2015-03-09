@@ -184,11 +184,11 @@ class Match(DefaultGameWorld):
   def declareRoundWinner(self, winner, reason=''):
     winner.roundsWon = winner.roundsWon + 1
     if winner.roundsWon >= self.roundsToWin:
-      self.declareWinner(self, winner, "Player {} reached {} points".format(winner.playerID, self.roundsToWin))
+      self.declareWinner(self.players[winner.id], "Player {} reached {} points".format(winner.id, self.roundsToWin))
     else:
       #TODO: Add an animation declaring the round winner
       self.startRound()
-      print "Player", self.getPlayerIndex(self.winner), "wins round", self.id
+      print "Player", winner.id, "wins round", self.id
     pass
 
   def declareWinner(self, winner, reason=''):
