@@ -171,11 +171,11 @@ class Match(DefaultGameWorld):
     #check if there are any enemy thieves on the sarcophagus
     for thief in self.objects.thiefs:
       if thief.x == sarcophagus[thief.owner^1] and thief.y == sarcophagus[thief.owner^1]:
-        self.declareRoundWinner(self.players[0], "Player {} reached the sarcophagus")
+        self.declareRoundWinner(self.objects.players[0], "Player {} reached the sarcophagus")
 
     #TODO: Make this check if a player won, and call declareWinner with a player if they did
     if self.roundTurnNumber >= self.turnLimit:
-       self.declareRoundWinner(self.players[0], "Because I said so, this should be removed")
+       self.declareRoundWinner(self.objects.players[0], "Because I said so, this should be removed")
     pass
 
   #declare the round winner and reset the match
