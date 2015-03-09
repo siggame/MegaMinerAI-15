@@ -8,8 +8,11 @@ import os
 import itertools
 import scribe
 import jsonLogger
+import maze
 
 Scribe = scribe.Scribe
+
+SIZE = 25
 
 def loadClassDefaults(cfgFile = "config/defaults.cfg"):
   cfg = networking.config.config.readConfig(cfgFile)
@@ -87,7 +90,8 @@ class Match(DefaultGameWorld):
 
   def startRound(self):
       self.roundTurnNumber = -1
-      self.grid = [[[ self.addObject(Tile,[x, y, -1]) ] for y in range(self.mapHeight)] for x in range(self.mapWidth)]
+      generatedMaze = maze.generate(SIZE)
+      self.grid = [[[ self.addObject(Tile,[x, y, generatedMaze[x][y]]) ] for y in range(self.mapHeight)] for x in range(self.mapWidth)]
       self.nextTurn()
       return True
 
