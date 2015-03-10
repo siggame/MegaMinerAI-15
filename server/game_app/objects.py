@@ -22,7 +22,6 @@ class Player(object):
   def placeTrap(self, x, y, trapType):
     realX = self.game.getRealX(self.id, x, 0)
     tile = self.game.getTile(realX, y)
-    trapCount = 0
 
     if self.game.roundTurnNumber > 1:
       return "You cannot place traps after the first turn"
@@ -30,51 +29,60 @@ class Player(object):
       return "Turn {}: You cannot place a trap outside of the map. ({}, {})".format(self.game.turnNumber, x, y)
     if tile.type == 1:
       return "Turn {}: You cannot place a trap on a spawn point ({}, {})".format(self.game.turnNumber, x, y)
-    if tile.type == 2:
-      return "Turn {}: You cannot place a trap on a wall ({}, {})".format(self.game.turnNumber, x, y)
     if len(self.game.grid[x][y]) > 1:
       return "Turn {}: You cannot place a trap on a trap ({}, {})".format(self.game.turnNumber, x, y)
     if trapType < 0 or trapType >= len(self.game.objects.trapTypes):
-      return "Turn {}: You cannot spawn traps of this type. ({}, {})".format(self.game.turnNumber, x, y)
-   
-    for trap in self.game.traps:
-      if trap.owner == self.id and trap.type == trapType:
-        trapCount += 1
+      return "Turn {}: You cannot spawn traps of this type. (given: {})".format(self.game.turnNumber, trapType)
 
     type = self.game.objects.trapTypes[trapType]
+    if tile.type == 2 and not type.canPlaceOnWalls:
+      return "Turn {}: You cannot place this trap on a wall ({}, {})".format(self.game.turnNumber, x, y)
+    if tile.type == 0 and not type.canPlaceOnOpenTiles:
+      return "Turn {}: You cannot place this trap on an empty tile ({}, {})".format(self.game.turnNumber, x, y)
+
+    trapCount = len([trap for trap in self.game.traps if trap.owner == self.id and trap.type == trapType])
+
     if trapCount >= type.maxInstances:
-      return "Turn {}: You cannot buy any more of this type of trap".format(self.game.turnNumber, x, y)
+      return "Turn {}: You cannot buy any more of this type of trap (type: {}, have: {})".format(self.game.turnNumber, trapType, trapCount)
     if self.scarabs < type.cost:
-      return "Turn {}: You do not have enough scarabs to buy this thief".format(self.game.turnNumber, x, y)
+      return "Turn {}: You do not have enough scarabs to buy this trap (have: {}, cost: {})".format(self.game.turnNumber, self.scarabs, type.cost)
 
     self.scarabs -= type.cost
 
-    # 'id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount', 'activationsRemaining']
-    newTrapStats = [realX, y, self.id, trapType, type.startsVisible, 1, 0, type.maxActivations]
-    newTrap = self.game.addObject(Trap, newTrapStats)
-    self.game.grid[newTrap.x][newTrap.y].append(newTrap)
-    self.game.addAnimation(SpawnAnimation(self.id, realX, y))
+    # Move sarcophagus
+    if trapType == self.game.sarcohpagus:
+      sarcophagus = [trap for trap in self.game.traps if trap.type == self.game.sarcohpagus and trap.owner == self.id][0]
+      self.game.grid[sarcophagus.x][sarcophagus.y].remove(sarcophagus)
+      self.game.grid[realX][y].append(sarcophagus)
+    else: # Create new trap
+      # 'id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount', 'activationsRemaining']
+      newTrapStats = [realX, y, self.id, trapType, type.startsVisible, 1, 0, type.maxActivations]
+      newTrap = self.game.addObject(Trap, newTrapStats)
+      self.game.grid[newTrap.x][newTrap.y].append(newTrap)
+      self.game.addAnimation(SpawnAnimation(self.id, realX, y))
 
     return True
 
   def purchaseThief(self, x, y, thiefType):
     realX = self.game.getRealX(self.id, x, 1)
-    thiefCount = 0
-    if x < 0 or x >= self.game.mapWidth /2 or y < 0 or y >= self.game.mapHeight:
+
+    if self.game.roundTurnNumber < 2:
+      return "You cannot place thieves on the first turn"
+    if x < 0 or x >= self.game.mapWidth / 2 or y < 0 or y >= self.game.mapHeight:
       return 'Turn {}: You cannot place a thief out of bounds. ({}, {})'.format(self.game.turnNumber, x, y)
     tile = self.game.getTile(realX, y)
     if tile.type != 1:
       return 'Turn {}: You can only spawn thieves on spawn tiles. ({}, {})'.format(self.game.turnNumber, x, y)
     if thiefType < 0 or thiefType >= len(self.game.objects.thiefTypes):
-      return 'Turn {}: You cannot spawn thieves of this type. ({}, {})'.format(self.game.turnNumber, x, y)
+      return 'Turn {}: You cannot spawn thieves of this type. (given: {})'.format(self.game.turnNumber, thiefType)
     type = self.game.objects.thiefTypes[thiefType]
-    for thief in self.game.thieves:
-      if thief.owner == self.id and thief.type == thiefType:
-          thiefCount += 1
-    if thiefCount >= type.maxInstances:
-      return 'Turn {}: You cannot buy any more of this type of thief. ({}, {})'.format(self.game.turnNumber, x, y)
+
     if self.scarabs < type.cost:
-      return 'Turn {}: You do not have enough scarabs to buy this thief. ({}, {})'.format(self.game.turnNumber, x, y)
+      return 'Turn {}: You do not have enough scarabs to buy this thief. (have: {}, cost: {})'.format(self.game.turnNumber, self.scarabs, type.cost)
+
+    thiefCount = len([thief for thief in self.game.thiefs if thief.owner == self.id and thief.type == thiefType])
+    if thiefCount >= type.maxInstances:
+      return 'Turn {}: You cannot buy any more of this type of thief. (type: {}, have: {})'.format(self.game.turnNumber, thiefType, thiefCount)
 
     self.scarabs -= type.cost
     # 'id', 'x', 'y', 'owner', 'thiefType', 'alive', 'ninjaReflexesLeft', 'maxNinjaReflexes', 'movementLeft', 'maxMovement', 'frozenTurnsLeft'
