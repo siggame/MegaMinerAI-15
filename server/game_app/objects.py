@@ -40,7 +40,7 @@ class Player(object):
     if tile.type == 0 and not type.canPlaceOnOpenTiles:
       return "Turn {}: You cannot place this trap on an empty tile ({}, {})".format(self.game.turnNumber, x, y)
 
-    trapCount = len([trap for trap in self.game.traps if trap.owner == self.id and trap.type == trapType])
+    trapCount = sum(1 for trap in self.game.traps if trap.owner == self.id and trap.type == trapType)
 
     if trapCount >= type.maxInstances:
       return "Turn {}: You cannot buy any more of this type of trap (type: {}, have: {})".format(self.game.turnNumber, trapType, trapCount)
@@ -80,7 +80,7 @@ class Player(object):
     if self.scarabs < type.cost:
       return 'Turn {}: You do not have enough scarabs to buy this thief. (have: {}, cost: {})'.format(self.game.turnNumber, self.scarabs, type.cost)
 
-    thiefCount = len([thief for thief in self.game.thiefs if thief.owner == self.id and thief.type == thiefType])
+    thiefCount = sum(1 for thief in self.game.thiefs if thief.owner == self.id and thief.type == thiefType)
     if thiefCount >= type.maxInstances:
       return 'Turn {}: You cannot buy any more of this type of thief. (type: {}, have: {})'.format(self.game.turnNumber, thiefType, thiefCount)
 
