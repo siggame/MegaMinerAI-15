@@ -51,7 +51,7 @@ class Player(object):
 
     # Move sarcophagus
     if trapType == self.game.sarcohpagus:
-      sarcophagus = [trap for trap in self.game.traps if trap.type == self.game.sarcohpagus and trap.owner == self.id][0]
+      sarcophagus = next(trap for trap in self.game.traps if trap.type == self.game.sarcohpagus and trap.owner == self.id)
       self.game.grid[sarcophagus.x][sarcophagus.y].remove(sarcophagus)
       self.game.grid[realX][y].append(sarcophagus)
     else: # Create new trap
