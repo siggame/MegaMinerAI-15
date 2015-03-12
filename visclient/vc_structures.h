@@ -53,6 +53,7 @@ struct _Trap
   int active;
   int bodyCount;
   int activationsRemaining;
+  int turnsTillActive;
 };
 struct _Thief
 {

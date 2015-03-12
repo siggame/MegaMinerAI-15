@@ -437,6 +437,8 @@ void parseTrap(Connection* c, _Trap* object, sexp_t* expression)
   sub = sub->next;
   object->activationsRemaining = atoi(sub->val);
   sub = sub->next;
+  object->turnsTillActive = atoi(sub->val);
+  sub = sub->next;
 
 }
 void parseThief(Connection* c, _Thief* object, sexp_t* expression)

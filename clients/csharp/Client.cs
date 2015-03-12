@@ -145,6 +145,8 @@ public class Client {
   public static extern int trapGetBodyCount(IntPtr ptr);
   [DllImport("client")]
   public static extern int trapGetActivationsRemaining(IntPtr ptr);
+  [DllImport("client")]
+  public static extern int trapGetTurnsTillActive(IntPtr ptr);
 
   [DllImport("client")]
   public static extern int thiefGetId(IntPtr ptr);

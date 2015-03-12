@@ -49,6 +49,7 @@ std::ostream& operator<<(std::ostream& stream, Trap ob)
   stream << "active: " << ob.active  <<'\n';
   stream << "bodyCount: " << ob.bodyCount  <<'\n';
   stream << "activationsRemaining: " << ob.activationsRemaining  <<'\n';
+  stream << "turnsTillActive: " << ob.turnsTillActive  <<'\n';
   return stream;
 }
 

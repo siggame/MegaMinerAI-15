@@ -32,6 +32,8 @@ class Trap : public Mappable {
   int bodyCount();
   ///How many more times this trap can activate.
   int activationsRemaining();
+  ///How many more turns this trap is inactive due to cooldown.
+  int turnsTillActive();
 
   // Actions
   ///Commands a trap to act on a location.

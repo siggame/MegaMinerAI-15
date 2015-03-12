@@ -12,7 +12,6 @@ import maze
 
 Scribe = scribe.Scribe
 
-SIZE = 25
 
 def loadClassDefaults(cfgFile = "config/defaults.cfg"):
   cfg = networking.config.config.readConfig(cfgFile)

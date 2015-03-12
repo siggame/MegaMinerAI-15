@@ -57,6 +57,7 @@ struct Trap: public Mappable
   int active;
   int bodyCount;
   int activationsRemaining;
+  int turnsTillActive;
 
   friend std::ostream& operator<<(std::ostream& stream, Trap obj);
 };

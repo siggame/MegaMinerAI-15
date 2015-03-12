@@ -83,6 +83,7 @@ public interface Client extends Library {
   int trapGetActive(Pointer ptr);
   int trapGetBodyCount(Pointer ptr);
   int trapGetActivationsRemaining(Pointer ptr);
+  int trapGetTurnsTillActive(Pointer ptr);
 
   int thiefGetId(Pointer ptr);
   int thiefGetX(Pointer ptr);

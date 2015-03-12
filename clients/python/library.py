@@ -215,6 +215,9 @@ library.trapGetBodyCount.argtypes = [c_void_p]
 library.trapGetActivationsRemaining.restype = c_int
 library.trapGetActivationsRemaining.argtypes = [c_void_p]
 
+library.trapGetTurnsTillActive.restype = c_int
+library.trapGetTurnsTillActive.argtypes = [c_void_p]
+
 library.thiefGetId.restype = c_int
 library.thiefGetId.argtypes = [c_void_p]
 

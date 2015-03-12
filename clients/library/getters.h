@@ -39,6 +39,7 @@ DLLEXPORT int trapGetVisible(_Trap* ptr);
 DLLEXPORT int trapGetActive(_Trap* ptr);
 DLLEXPORT int trapGetBodyCount(_Trap* ptr);
 DLLEXPORT int trapGetActivationsRemaining(_Trap* ptr);
+DLLEXPORT int trapGetTurnsTillActive(_Trap* ptr);
 
 
 DLLEXPORT int thiefGetId(_Thief* ptr);

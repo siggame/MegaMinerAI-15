@@ -93,5 +93,11 @@ class Trap extends Mappable
     validify();
     return Client.INSTANCE.trapGetActivationsRemaining(ptr);
   }
+  ///How many more turns this trap is inactive due to cooldown.
+  public int getTurnsTillActive()
+  {
+    validify();
+    return Client.INSTANCE.trapGetTurnsTillActive(ptr);
+  }
 
 }

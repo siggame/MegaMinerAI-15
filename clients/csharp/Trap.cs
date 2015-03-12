@@ -170,6 +170,19 @@ public class Trap: Mappable
     }
   }
 
+  /// <summary>
+  /// How many more turns this trap is inactive due to cooldown.
+  /// </summary>
+  public int TurnsTillActive
+  {
+    get
+    {
+      validify();
+      int value = Client.trapGetTurnsTillActive(ptr);
+      return value;
+    }
+  }
+
   #endregion
 
   #region Properties

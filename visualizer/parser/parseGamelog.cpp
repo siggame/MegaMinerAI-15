@@ -248,6 +248,15 @@ static bool parseTrap(Trap& object, sexp_t* expression)
   object.activationsRemaining = atoi(sub->val);
   sub = sub->next;
 
+  if ( !sub ) 
+  {
+    cerr << "Error in parseTrap.\n Parsing: " << *expression << endl;
+    return false;
+  }
+
+  object.turnsTillActive = atoi(sub->val);
+  sub = sub->next;
+
   return true;
 
 }

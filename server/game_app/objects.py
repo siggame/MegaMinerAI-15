@@ -55,8 +55,8 @@ class Player(object):
       self.game.grid[sarcophagus.x][sarcophagus.y].remove(sarcophagus)
       self.game.grid[realX][y].append(sarcophagus)
     else: # Create new trap
-      # 'id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount', 'activationsRemaining']
-      newTrapStats = [realX, y, self.id, trapTypeIndex, trapType.startsVisible, 1, 0, trapType.maxActivations]
+      # ['id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount', 'activationsRemaining', 'turnsTillActive']
+      newTrapStats = [realX, y, self.id, trapTypeIndex, trapType.startsVisible, 1, 0, trapType.maxActivations, 0]
       newTrap = self.game.addObject(Trap, newTrapStats)
       self.game.grid[newTrap.x][newTrap.y].append(newTrap)
       self.game.addAnimation(SpawnAnimation(self.id, realX, y))
@@ -152,8 +152,8 @@ class Tile(Mappable):
       object.__setattr__(self, name, value)
 
 class Trap(Mappable):
-  game_state_attributes = ['id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount', 'activationsRemaining']
-  def __init__(self, game, id, x, y, owner, trapType, visible, active, bodyCount, activationsRemaining):
+  game_state_attributes = ['id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount', 'activationsRemaining', 'turnsTillActive']
+  def __init__(self, game, id, x, y, owner, trapType, visible, active, bodyCount, activationsRemaining, turnsTillActive):
     self.game = game
     self.id = id
     self.x = x
@@ -164,14 +164,15 @@ class Trap(Mappable):
     self.active = active
     self.bodyCount = bodyCount
     self.activationsRemaining = activationsRemaining
+    self.turnsTillActive = turnsTillActive
     self.updatedAt = game.turnNumber
 
   def toList(self):
-    return [self.id, self.x, self.y, self.owner, self.trapType, self.visible, self.active, self.bodyCount, self.activationsRemaining, ]
+    return [self.id, self.x, self.y, self.owner, self.trapType, self.visible, self.active, self.bodyCount, self.activationsRemaining, self.turnsTillActive, ]
   
   # This will not work if the object has variables other than primitives
   def toJson(self):
-    return dict(id = self.id, x = self.x, y = self.y, owner = self.owner, trapType = self.trapType, visible = self.visible, active = self.active, bodyCount = self.bodyCount, activationsRemaining = self.activationsRemaining, )
+    return dict(id = self.id, x = self.x, y = self.y, owner = self.owner, trapType = self.trapType, visible = self.visible, active = self.active, bodyCount = self.bodyCount, activationsRemaining = self.activationsRemaining, turnsTillActive = self.turnsTillActive, )
   
   def nextTurn(self):
     pass
@@ -183,6 +184,8 @@ class Trap(Mappable):
       return 'Turn {}: Trap type {} does not have an action.'.format(self.game.turnNumber, self.trapType)
     if self.activationsRemaining <= 0:
       return 'Turn {}: Trap ({}) has no activations remaining.'.format(self.game.turnNumber, self.id)
+    if self.turnsTillActive > 0:
+      return 'Turn {}: Trap ({}) must wait {} to act again.'.format(self.game.turnNumber, self.id, self.turnsTillActive)
     if not self.active:
       return 'Turn {}: You cannot use this trap ({}) because it is not active.'.format(self.game.turnNumber, self.id)
     

@@ -84,6 +84,10 @@ DLLEXPORT int trapGetActivationsRemaining(_Trap* ptr)
 {
   return ptr->activationsRemaining;
 }
+DLLEXPORT int trapGetTurnsTillActive(_Trap* ptr)
+{
+  return ptr->turnsTillActive;
+}
 DLLEXPORT int thiefGetId(_Thief* ptr)
 {
   return ptr->id;

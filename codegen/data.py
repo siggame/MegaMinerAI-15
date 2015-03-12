@@ -107,6 +107,7 @@ Trap = Model('Trap',
 
     Variable('bodyCount', int, 'How many thieves this trap has killed.'),
     Variable('activationsRemaining', int, 'How many more times this trap can activate.'),
+    Variable('turnsTillActive', int, 'How many more turns this trap is inactive due to cooldown.'),
     ],
   doc='Represents a single trap on the map.',
   functions=[

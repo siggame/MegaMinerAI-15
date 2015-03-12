@@ -322,6 +322,14 @@ class Trap(Mappable):
   ##How many more times this trap can activate.
   activationsRemaining = property(getActivationsRemaining)
 
+  #\cond
+  def getTurnsTillActive(self):
+    self.validify()
+    return library.trapGetTurnsTillActive(self._ptr)
+  #\endcond
+  ##How many more turns this trap is inactive due to cooldown.
+  turnsTillActive = property(getTurnsTillActive)
+
 
   def __str__(self):
     self.validify()
@@ -335,6 +343,7 @@ class Trap(Mappable):
     ret += "active: %s\n" % self.getActive()
     ret += "bodyCount: %s\n" % self.getBodyCount()
     ret += "activationsRemaining: %s\n" % self.getActivationsRemaining()
+    ret += "turnsTillActive: %s\n" % self.getTurnsTillActive()
     return ret
 
 ##Represents a single thief on the map.
