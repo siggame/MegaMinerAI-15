@@ -19,7 +19,7 @@ class Player(object):
   def nextTurn(self):
     pass
 
-  def placeTrap(self, x, y, trapType):
+  def placeTrap(self, x, y, trapTypeIndex):
     realX = self.game.getRealX(self.id, x, 0)
     tile = self.game.getTile(realX, y)
 
@@ -31,32 +31,32 @@ class Player(object):
       return "Turn {}: You cannot place a trap on a spawn point ({}, {})".format(self.game.turnNumber, x, y)
     if len(self.game.grid[x][y]) > 1:
       return "Turn {}: You cannot place a trap on a trap ({}, {})".format(self.game.turnNumber, x, y)
-    if trapType < 0 or trapType >= len(self.game.objects.trapTypes):
-      return "Turn {}: You cannot spawn traps of this type. (given: {})".format(self.game.turnNumber, trapType)
+    if trapTypeIndex < 0 or trapTypeIndex >= len(self.game.objects.trapTypes):
+      return "Turn {}: You cannot spawn traps of this type. (given: {})".format(self.game.turnNumber, trapTypeIndex)
 
-    type = self.game.objects.trapTypes[trapType]
-    if tile.type == 2 and not type.canPlaceOnWalls:
+    trapType = self.game.objects.trapTypes[trapTypeIndex]
+    if tile.type == self.game.wall and not trapType.canPlaceOnWalls:
       return "Turn {}: You cannot place this trap on a wall ({}, {})".format(self.game.turnNumber, x, y)
-    if tile.type == 0 and not type.canPlaceOnOpenTiles:
+    if tile.type == self.game.empty and not trapType.canPlaceOnOpenTiles:
       return "Turn {}: You cannot place this trap on an empty tile ({}, {})".format(self.game.turnNumber, x, y)
 
-    trapCount = sum(1 for trap in self.game.traps if trap.owner == self.id and trap.type == trapType)
+    if trapTypeIndex != self.game.sarcohpagus:
+      trapCount = sum(1 for trap in self.game.traps if trap.owner == self.id and trap.type == trapTypeIndex)
+      if trapCount >= trapType.maxInstances:
+        return "Turn {}: You cannot buy any more of this type of trap (type: {}, have: {})".format(self.game.turnNumber, trapTypeIndex, trapCount)
+    if self.scarabs < trapType.cost:
+      return "Turn {}: You do not have enough scarabs to buy this trap (have: {}, cost: {})".format(self.game.turnNumber, self.scarabs, trapType.cost)
 
-    if trapCount >= type.maxInstances:
-      return "Turn {}: You cannot buy any more of this type of trap (type: {}, have: {})".format(self.game.turnNumber, trapType, trapCount)
-    if self.scarabs < type.cost:
-      return "Turn {}: You do not have enough scarabs to buy this trap (have: {}, cost: {})".format(self.game.turnNumber, self.scarabs, type.cost)
-
-    self.scarabs -= type.cost
+    self.scarabs -= trapType.cost
 
     # Move sarcophagus
-    if trapType == self.game.sarcohpagus:
+    if trapTypeIndex == self.game.sarcohpagus:
       sarcophagus = next(trap for trap in self.game.traps if trap.type == self.game.sarcohpagus and trap.owner == self.id)
       self.game.grid[sarcophagus.x][sarcophagus.y].remove(sarcophagus)
       self.game.grid[realX][y].append(sarcophagus)
     else: # Create new trap
       # 'id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount', 'activationsRemaining']
-      newTrapStats = [realX, y, self.id, trapType, type.startsVisible, 1, 0, type.maxActivations]
+      newTrapStats = [realX, y, self.id, trapTypeIndex, trapType.startsVisible, 1, 0, trapType.maxActivations]
       newTrap = self.game.addObject(Trap, newTrapStats)
       self.game.grid[newTrap.x][newTrap.y].append(newTrap)
       self.game.addAnimation(SpawnAnimation(self.id, realX, y))
