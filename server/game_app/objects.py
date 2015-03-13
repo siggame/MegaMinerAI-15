@@ -185,41 +185,51 @@ class Trap(Mappable):
     if self.activationsRemaining <= 0:
       return 'Turn {}: Trap ({}) has no activations remaining.'.format(self.game.turnNumber, self.id)
     if self.turnsTillActive > 0:
-      return 'Turn {}: Trap ({}) must wait {} to act again.'.format(self.game.turnNumber, self.id, self.turnsTillActive)
+      return 'Turn {}: Trap ({}) must wait {} turns to act again.'.format(self.game.turnNumber, self.id, self.turnsTillActive)
     if not self.active:
       return 'Turn {}: You cannot use this trap ({}) because it is not active.'.format(self.game.turnNumber, self.id)
-    
-    # TODO: Requires adding thief types and trap types to global config
+
     if self.trapType == self.game.boulder:
-      if (x != 1 and x != -1) and (y != 1 and y != -1):
-        return 'Turn {}: Invalid rolling direction for boulder {}. ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y)
-      if (x == 1 or x == -1) and (y == 1 or y == -1):
-        return 'Turn {}: Cannot indicate two rolling directions for boulder {}. ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y)
+      if abs(x) + abs(y) != 1:
+        return 'Turn {}: Invalid rolling direction for boulder {}. ({}, {})'.format(self.game.turnNumber, self.id, x, y)
 
-      #Kill thieves as boulder rolls over them, until boulder runs into a wall
-      boulderRolling = True
-
-      while boulderRolling:
-        for unit in self.game.grid[boulderCounterX][boulderCounterY]:
-          if isinstance(unit, Thief) and unit.ninjaReflexesLeft == 0:
+      # Kill thieves as boulder rolls over them, until boulder runs into a wall
+      boulderX, boulderY = self.x, self.y
+      while self.game.grid[boulderX][boulderY][0].type == self.game.empty:
+        for unit in self.game.grid[boulderX][boulderY]:
+          if isinstance(unit, Thief) and unit.alive:
+            if unit.ninjaReflexesLeft == 0:
+              unit.alive = 0
+              self.bodyCount += 1
+            else:
+              unit.ninjaReflexesLeft -= 1
+        boulderX += x
+        boulderY += y
+    # Move mummy and kill thieves
+    elif self.trapType == self.game.mummy:
+      realX = self.game.getRealX(self.owner, x, 0)
+      # Check if desired space is adjacent to mummy's current space
+      if abs(realX - self.x) + abs(y - self.y) != 1:
+        return 'Turn {}: Cannot move mummy {} to non-adjacent space. ({}, {}) -> ({}, [})'.format(self.game.turnNumber, self.id, self.game.getUserX(self.owner, self.x, 0), self.y, x, y)
+      # Move trap (mummy)
+      self.game.grid[self.x][self.y].remove(self)
+      self.x, self.y = realX, y
+      self.game.grid[self.x][self.y].append(self)
+      # Kill thieves
+      for unit in self.game.grid[self.x][self.y]:
+        if isinstance(unit, Thief) and unit.alive:
+          if unit.ninjaReflexesLeft == 0:
             unit.alive = 0
-          if unit.ninjaReflexesLeft > 0:
+            self.bodyCount += 1
+          else:
             unit.ninjaReflexesLeft -= 1
-        boulderCounterX += x
-        boulderCounterY += y
 
-        #Check if the boulder has hit a wall
-        for units in self.game.grid[boulderCounterX][boulderCounterY]:
-          if isinstance(unit, Tile) == 2:
-            boulderRolling = False
-            self.activationsRemaining = 0
+    # General trap logic
+    self.activationsRemaining -= 1
+    self.turnsTillActive = self.game.trapTypes[self.trapType].cooldown
+    self.visible = 1
 
-
-    if self.trapType == self.game.mummy:
-      #Check if desired space is adjacent to mummy's current space
-      if (1 != abs(self.x - x)) or (1 != abs(self.y - y)):
-        return 'Turn {}: Cannot move mummy {} to non-adjacent space. ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y)
-      self.game.grid[x][y].append(self)
+    return True
 
   def toggle(self):
     pass
