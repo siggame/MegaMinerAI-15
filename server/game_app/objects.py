@@ -191,6 +191,7 @@ class Trap(Mappable):
       if thief.ninjaReflexesLeft <= 0:
         if self.game.objects.trapTypes[self.trapType].killsOnActivate:
           thief.alive = 0
+          thief.frozenTurnsLeft = 0
           self.bodyCount += 1
         if self.game.objects.trapTypes[self.trapType].freezesForTurns:
           thief.frozenTurnsLeft = self.game.objects.trapTypes[self.trapType].freezesForTurns
@@ -198,29 +199,30 @@ class Trap(Mappable):
         thief.ninjaReflexesLeft -= 1
 
   def nextTurn(self):
-    if self.turnsTillActive > 0:
-      self.turnsTillActive -= 1
-      if self.turnsTillActive == 0:
-        self.active = True
+    if self.game.playerID == self.owner:
+      if self.turnsTillActive > 0:
+        self.turnsTillActive -= 1
+        if self.turnsTillActive == 0:
+          self.active = True
 
-    if self.active:
-      trapType = self.game.objects.trapTypes[self.trapType]
-      if trapType.turnsToActivateOnTile:
-        # Find thieves
-        thieves = [unit for unit in self.game.grid[self.x][self.y] if isinstance(unit, Thief)]
-        # Forget thieves who moved off
-        self.standingThieves = {thief: turns for thief, turns in self.standingThieves if thief in thieves}
-        # Increase counter for thieves
-        activated = False
-        for thief in thieves:
-          if thief not in self.standingThieves:
-            self.standingThieves[thief] = 0
-          self.standingThieves[thief] += 1
-          if self.standingThieves[thief] >= trapType.turnsToActivateOnTile:
-            activated = True
-            self.attack(thief)
-        if activated:
-          self.activate()
+      if self.active:
+        trapType = self.game.objects.trapTypes[self.trapType]
+        if trapType.turnsToActivateOnTile:
+          # Find thieves
+          thieves = [unit for unit in self.game.grid[self.x][self.y] if isinstance(unit, Thief)]
+          # Forget thieves who moved off
+          self.standingThieves = {thief: turns for thief, turns in self.standingThieves if thief in thieves}
+          # Increase counter for thieves
+          activated = False
+          for thief in thieves:
+            if thief not in self.standingThieves:
+              self.standingThieves[thief] = 0
+            self.standingThieves[thief] += 1
+            if self.standingThieves[thief] >= trapType.turnsToActivateOnTile:
+              activated = True
+              self.attack(thief)
+          if activated:
+            self.activate()
 
       return True
 
@@ -269,11 +271,14 @@ class Trap(Mappable):
     return True
 
   def toggle(self):
-    if self.game.objects.trapTypes[self.trapType].deactivatable:
-      if self.active:
-        self.active = 0
-      elif self.activationsRemaining and self.turnsTillActive == 0:
-        self.active = 1
+    if not self.game.objects.trapTypes[self.trapType].deactivatable:
+      return 'Turn {}: Cannot toggle trap {} that is not deactivatable'.format(self.game.turnNumber, self.id)
+    if self.active:
+      self.active = 0
+    elif self.activationsRemaining and self.turnsTillActive == 0:
+      self.active = 1
+
+    return True
 
 
   def __setattr__(self, name, value):
@@ -306,7 +311,12 @@ class Thief(Mappable):
     return dict(id = self.id, x = self.x, y = self.y, owner = self.owner, thiefType = self.thiefType, alive = self.alive, ninjaReflexesLeft = self.ninjaReflexesLeft, maxNinjaReflexes = self.maxNinjaReflexes, movementLeft = self.movementLeft, maxMovement = self.maxMovement, frozenTurnsLeft = self.frozenTurnsLeft, )
   
   def nextTurn(self):
-    pass
+    if self.game.playerID == self.owner:
+      if self.alive:
+        if self.frozenTurnsLeft:
+          self.frozenTurnsLeft -= 1
+        if self.frozenTurnsLeft == 0:
+          self.movementLeft = self.maxMovement
 
   def thiefTalk(self, message):
     pass
