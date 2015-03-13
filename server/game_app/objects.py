@@ -167,15 +167,45 @@ class Trap(Mappable):
     self.turnsTillActive = turnsTillActive
     self.updatedAt = game.turnNumber
 
+    self.standingThieves = dict()
+    """:type : dict[Thief, int]"""
+
   def toList(self):
     return [self.id, self.x, self.y, self.owner, self.trapType, self.visible, self.active, self.bodyCount, self.activationsRemaining, self.turnsTillActive, ]
   
   # This will not work if the object has variables other than primitives
   def toJson(self):
     return dict(id = self.id, x = self.x, y = self.y, owner = self.owner, trapType = self.trapType, visible = self.visible, active = self.active, bodyCount = self.bodyCount, activationsRemaining = self.activationsRemaining, turnsTillActive = self.turnsTillActive, )
-  
+
+  def attack(self, thief):
+    if thief.alive:
+      if thief.ninjaReflexesLeft <= 0:
+        if self.game.objects.trapTypes[self.trapType].killsOnActivate:
+          thief.alive = 0
+        if self.game.objects.trapTypes[self.trapType].freezesForTurns:
+          thief.frozenTurnsLeft = self.game.objects.trapTypes[self.trapType].freezesForTurns
+        self.bodyCount += 1
+      else:
+        thief.ninjaReflexesLeft -= 1
+
   def nextTurn(self):
-    pass
+    trapType = self.game.objects.trapTypes[self.trapType]
+    if self.turnsTillActive > 0:
+      self.turnsTillActive -= 1
+    if self.active and self.activationsRemaining and self.turnsTillActive == 0:
+      if trapType.turnsToActivateOnTile:
+        # Find thieves
+        thieves = [unit for unit in self.game.grid[self.x][self.y] if isinstance(unit, Thief)]
+        # Forget thieves who moved off
+        self.standingThieves = {thief: turns for thief, turns in self.standingThieves if thief in thieves}
+        # Increase counter for thieves
+        for thief in thieves:
+          if thief not in self.standingThieves:
+            self.standingThieves[thief] = 0
+          self.standingThieves[thief] += 1
+          if self.standingThieves[thief] >= trapType.turnsToActivateOnTile:
+            self.attack(thief)
+            self.activationsRemaining -= 1
 
   def act(self, x, y):
     if self.owner != self.game.playerID:
@@ -197,12 +227,8 @@ class Trap(Mappable):
       boulderX, boulderY = self.x, self.y
       while self.game.grid[boulderX][boulderY][0].type == self.game.empty:
         for unit in self.game.grid[boulderX][boulderY]:
-          if isinstance(unit, Thief) and unit.alive:
-            if unit.ninjaReflexesLeft == 0:
-              unit.alive = 0
-              self.bodyCount += 1
-            else:
-              unit.ninjaReflexesLeft -= 1
+          if isinstance(unit, Thief):
+            self.attack(unit)
         boulderX += x
         boulderY += y
     # Move mummy and kill thieves
@@ -217,12 +243,8 @@ class Trap(Mappable):
       self.game.grid[self.x][self.y].append(self)
       # Kill thieves
       for unit in self.game.grid[self.x][self.y]:
-        if isinstance(unit, Thief) and unit.alive:
-          if unit.ninjaReflexesLeft == 0:
-            unit.alive = 0
-            self.bodyCount += 1
-          else:
-            unit.ninjaReflexesLeft -= 1
+        if isinstance(unit, Thief):
+          self.attack(unit)
 
     # General trap logic
     self.activationsRemaining -= 1
