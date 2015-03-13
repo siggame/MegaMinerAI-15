@@ -177,35 +177,52 @@ class Trap(Mappable):
   def toJson(self):
     return dict(id = self.id, x = self.x, y = self.y, owner = self.owner, trapType = self.trapType, visible = self.visible, active = self.active, bodyCount = self.bodyCount, activationsRemaining = self.activationsRemaining, turnsTillActive = self.turnsTillActive, )
 
+  def activate(self):
+    self.activationsRemaining -= 1
+    if self.activationsRemaining <= 0:
+      self.active = 0
+    elif self.game.trapTypes[self.trapType].cooldown:
+      self.active = 0
+      self.turnsTillActive = self.game.trapTypes[self.trapType].cooldown
+    self.visible = 1
+
   def attack(self, thief):
     if thief.alive:
       if thief.ninjaReflexesLeft <= 0:
         if self.game.objects.trapTypes[self.trapType].killsOnActivate:
           thief.alive = 0
+          self.bodyCount += 1
         if self.game.objects.trapTypes[self.trapType].freezesForTurns:
           thief.frozenTurnsLeft = self.game.objects.trapTypes[self.trapType].freezesForTurns
-        self.bodyCount += 1
       else:
         thief.ninjaReflexesLeft -= 1
 
   def nextTurn(self):
-    trapType = self.game.objects.trapTypes[self.trapType]
     if self.turnsTillActive > 0:
       self.turnsTillActive -= 1
-    if self.active and self.activationsRemaining and self.turnsTillActive == 0:
+      if self.turnsTillActive == 0:
+        self.active = True
+
+    if self.active:
+      trapType = self.game.objects.trapTypes[self.trapType]
       if trapType.turnsToActivateOnTile:
         # Find thieves
         thieves = [unit for unit in self.game.grid[self.x][self.y] if isinstance(unit, Thief)]
         # Forget thieves who moved off
         self.standingThieves = {thief: turns for thief, turns in self.standingThieves if thief in thieves}
         # Increase counter for thieves
+        activated = False
         for thief in thieves:
           if thief not in self.standingThieves:
             self.standingThieves[thief] = 0
           self.standingThieves[thief] += 1
           if self.standingThieves[thief] >= trapType.turnsToActivateOnTile:
+            activated = True
             self.attack(thief)
-            self.activationsRemaining -= 1
+        if activated:
+          self.activate()
+
+      return True
 
   def act(self, x, y):
     if self.owner != self.game.playerID:
@@ -247,9 +264,7 @@ class Trap(Mappable):
           self.attack(unit)
 
     # General trap logic
-    self.activationsRemaining -= 1
-    self.turnsTillActive = self.game.trapTypes[self.trapType].cooldown
-    self.visible = 1
+    self.activate()
 
     return True
 
@@ -292,30 +307,41 @@ class Thief(Mappable):
     pass
 
   def move(self, x, y):
+    userX = self.game.getUserX(self.owner, self.x, 1)
+    realX = self.game.getRealX(self.owner, x, 1)
     if self.owner != self.game.playerID:
-      return 'Turn {}: You cannot use the other player\'s thief {}. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-    elif self.movementLeft <= 0:
-      return 'Turn {}: Your thief {} does not have any movement left. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-    elif not ((self.game.mapWidth / 2) * self.game.playerID^1 <= x < (self.game.mapWidth / 2) + (self.game.mapWidth / 2) * self.game.playerID^1) or not (0 <= y < self.game.mapHeight):
-      return 'Turn {}: Your thief {} cannot move off its side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-    elif self.game.getTile(x, y).type == 2:
-      return 'Turn {}: Your thief {} is trying to run into a wall. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-    elif abs(self.x-x) + abs(self.y-y) != 1:
-      return 'Turn {}: Your thief {} can only move one unit away. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+      return 'Turn {}: You cannot use the other player\'s thief {}. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, userX, self.y, x, y)
+    if not self.alive:
+      return 'Turn {}: You cannot move a dead thief {}. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, userX, self.y, x, y)
+    if self.frozenTurnsLeft > 0:
+      return 'Turn {}: You cannot move a thief {} that is frozen for {} turns. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.frozenTurnsLeft, userX, self.y, x, y)
+    if self.movementLeft <= 0:
+      return 'Turn {}: Your thief {} does not have any movement left. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, userX, self.y, x, y)
+    if not (0 <= x < self.game.mapWidth / 2) or not (0 <= y < self.game.mapHeight):
+      return 'Turn {}: Your thief {} cannot move off its side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, userX, self.y, x, y)
+    if self.game.getTile(x, y).type == self.game.wall:
+      return 'Turn {}: Your thief {} is trying to run into a wall. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, userX, self.y, x, y)
+    if abs(self.x - realX) + abs(self.y - y) != 1:
+      return 'Turn {}: Your thief {} can only move one unit away. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, userX, self.y, x, y)
 
-    self.game.grid[self.x][self.y].remove(self)
+    trap = next((trap for trap in self.game.grid[self.x][self.y] if isinstance(trap, Trap) and trap.active and self.game.objects.trapTypes[trap.trapType].activatesOnWalkThrough), None)
 
-    self.game.addAnimation(MoveAnimation(self.id,self.x,self.y,x,y))
-    self.x = x
-    self.y = y
-    self.movementLeft -= 1
-    self.game.grid[x][y].append(self)
-    
-    #TODO: Figure out trap activation
-    for unit in self.game.grid[x][y]:             
-      if isinstance(unit, Trap) and unit.active:
-        unit.act(x, y)
-    self.actionsLeft = 0
+    if trap and self.movementLeft < self.maxMovement:
+      trap.attack(self)
+      trap.activate()
+
+    blockingTrap = next((trap for trap in self.game.grid[realX][y] if isinstance(trap, Trap) and trap.active and self.game.objects.trapTypes[trap.trapType].unpassable), None)
+
+    if blockingTrap:
+      blockingTrap.activate()
+
+    if self.alive and not blockingTrap:
+      self.game.grid[self.x][self.y].remove(self)
+      self.x, self.y = realX, y
+      self.game.grid[self.x][self.y].append(self)
+      self.movementLeft -= 1
+      self.game.addAnimation(MoveAnimation(self.id, self.x, self.y, realX, y))
+
     return True
 
   def act(self, x, y):
