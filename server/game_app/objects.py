@@ -318,6 +318,8 @@ class Thief(Mappable):
         if self.frozenTurnsLeft == 0:
           self.movementLeft = self.maxMovement
 
+    return True
+
   def thiefTalk(self, message):
     pass
 
