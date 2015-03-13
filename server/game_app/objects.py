@@ -179,7 +179,7 @@ class Trap(Mappable):
 
   def activate(self):
     self.activationsRemaining -= 1
-    if self.activationsRemaining <= 0:
+    if self.activationsRemaining == 0:
       self.active = 0
     elif self.game.trapTypes[self.trapType].cooldown:
       self.active = 0
@@ -269,7 +269,12 @@ class Trap(Mappable):
     return True
 
   def toggle(self):
-    pass
+    if self.game.objects.trapTypes[self.trapType].deactivatable:
+      if self.active:
+        self.active = 0
+      elif self.activationsRemaining and self.turnsTillActive == 0:
+        self.active = 1
+
 
   def __setattr__(self, name, value):
       if name in self.game_state_attributes:
