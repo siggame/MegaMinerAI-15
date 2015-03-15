@@ -67,6 +67,7 @@ DLLEXPORT Connection* createConnection()
   c->scarabsForThieves = 0;
   c->maxStack = 0;
   c->roundsToWin = 0;
+  c->roundTurnLimit = 0;
   c->Players = NULL;
   c->PlayerCount = 0;
   c->Mappables = NULL;
@@ -652,6 +653,9 @@ DLLEXPORT int networkLoop(Connection* c)
           c->roundsToWin = atoi(sub->val);
           sub = sub->next;
 
+          c->roundTurnLimit = atoi(sub->val);
+          sub = sub->next;
+
         }
         else if(string(sub->val) == "Player")
         {
@@ -943,4 +947,8 @@ DLLEXPORT int getMaxStack(Connection* c)
 DLLEXPORT int getRoundsToWin(Connection* c)
 {
   return c->roundsToWin;
+}
+DLLEXPORT int getRoundTurnLimit(Connection* c)
+{
+  return c->roundTurnLimit;
 }

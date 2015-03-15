@@ -208,6 +208,7 @@ struct GameState
   int scarabsForThieves;
   int maxStack;
   int roundsToWin;
+  int roundTurnLimit;
 
   std::map< int, std::vector< SmartPointer< Animation > > > animations;
   friend std::ostream& operator<<(std::ostream& stream, GameState obj);

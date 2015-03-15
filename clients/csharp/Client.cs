@@ -68,6 +68,8 @@ public class Client {
   public static extern int getMaxStack(IntPtr connection);
   [DllImport("client")]
   public static extern int getRoundsToWin(IntPtr connection);
+  [DllImport("client")]
+  public static extern int getRoundTurnLimit(IntPtr connection);
 
   [DllImport("client")]
   public static extern IntPtr getPlayer(IntPtr connection, int num);

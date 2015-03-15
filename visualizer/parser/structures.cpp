@@ -191,6 +191,7 @@ std::ostream& operator<<(std::ostream& stream, GameState ob)
   stream << "scarabsForThieves: " << ob.scarabsForThieves  <<'\n';
   stream << "maxStack: " << ob.maxStack  <<'\n';
   stream << "roundsToWin: " << ob.roundsToWin  <<'\n';
+  stream << "roundTurnLimit: " << ob.roundTurnLimit  <<'\n';
 
   stream << "\n\nPlayers:\n";
   for(std::map<int,Player>::iterator i = ob.players.begin(); i != ob.players.end(); i++)

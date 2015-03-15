@@ -9,7 +9,7 @@ cp -r output/csharp ../clients
 cp -r output/library ../clients
 
 # Client repos
-for lang in $( echo "python cpp java csharp"); do
+for lang in $(echo "python cpp java csharp"); do
   if [ ! -d ../../pharaoh-$lang ]; then
     git -C ../.. clone git@github.com:siggame/pharaoh-$lang
   fi

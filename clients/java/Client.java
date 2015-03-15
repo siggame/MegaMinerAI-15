@@ -41,6 +41,7 @@ public interface Client extends Library {
   int getScarabsForThieves(Pointer connection);
   int getMaxStack(Pointer connection);
   int getRoundsToWin(Pointer connection);
+  int getRoundTurnLimit(Pointer connection);
 
   Pointer getPlayer(Pointer connection, int num);
   int getPlayerCount(Pointer connection);

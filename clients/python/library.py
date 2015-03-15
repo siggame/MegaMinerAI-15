@@ -107,6 +107,9 @@ library.getMaxStack.argtypes = [c_void_p]
 library.getRoundsToWin.restype = c_int
 library.getRoundsToWin.argtypes = [c_void_p]
 
+library.getRoundTurnLimit.restype = c_int
+library.getRoundTurnLimit.argtypes = [c_void_p]
+
 library.getPlayer.restype = c_void_p
 library.getPlayer.argtypes = [c_void_p, c_int]
 

@@ -24,6 +24,7 @@ globals = [
   Variable('scarabsForThieves', int, 'The scarabs given to a player to purchase thieves per round.'),
   Variable('maxStack', int, 'The maximum number of thieves per tile.'),
   Variable('roundsToWin', int, 'The number of won rounds required to win.'),
+  Variable('roundTurnLimit', int, 'The maximum number of round turns before a winner is decided.'),
 ]
 
 playerData = [

@@ -59,6 +59,8 @@ public:
   int maxStack();
   ///The number of won rounds required to win.
   int roundsToWin();
+  ///The maximum number of round turns before a winner is decided.
+  int roundTurnLimit();
   
   BaseAI(Connection* c);
   virtual ~BaseAI();

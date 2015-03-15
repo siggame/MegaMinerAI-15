@@ -866,6 +866,9 @@ static bool parseSexp(Game& game, sexp_t* expression)
           if ( !sub ) return false;
           gs.roundsToWin = atoi(sub->val);
           sub = sub->next;
+          if ( !sub ) return false;
+          gs.roundTurnLimit = atoi(sub->val);
+          sub = sub->next;
       }
       else if(string(sub->val) == "Player")
       {

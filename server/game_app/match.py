@@ -45,6 +45,7 @@ class Match(DefaultGameWorld):
     self.scarabsForThieves = self.scarabsForThieves
     self.maxStack = self.maxStack
     self.roundsToWin = self.roundsToWin
+    self.roundTurnLimit = self.roundTurnLimit
 
   #this is here to be wrapped
   def __del__(self):
@@ -179,6 +180,7 @@ class Match(DefaultGameWorld):
           scarabsForThieves = self.scarabsForThieves,
           maxStack = self.maxStack,
           roundsToWin = self.roundsToWin,
+          roundTurnLimit = self.roundTurnLimit,
           Players = [i.toJson() for i in self.objects.values() if i.__class__ is Player],
           Mappables = [i.toJson() for i in self.objects.values() if i.__class__ is Mappable],
           Tiles = [i.toJson() for i in self.objects.values() if i.__class__ is Tile],
@@ -207,9 +209,8 @@ class Match(DefaultGameWorld):
         self.declareRoundWinner(self.objects.players[0], "Player {} reached the sarcophagus")
 
     #TODO: Make this check if a player won, and call declareWinner with a player if they did
-    if self.roundTurnNumber >= self.turnLimit:
+    if self.roundTurnNumber >= self.roundTurnLimit:
        self.declareRoundWinner(self.objects.players[0], "Because I said so, this should be removed")
-    pass
 
   #declare the round winner and reset the match
   def declareRoundWinner(self, winner, reason=''):
@@ -309,7 +310,7 @@ class Match(DefaultGameWorld):
   def status(self):
     msg = ["status"]
 
-    msg.append(["game", self.mapWidth, self.mapHeight, self.turnNumber, self.roundTurnNumber, self.maxThieves, self.maxTraps, self.playerID, self.gameNumber, self.roundNumber, self.scarabsForTraps, self.scarabsForThieves, self.maxStack, self.roundsToWin])
+    msg.append(["game", self.mapWidth, self.mapHeight, self.turnNumber, self.roundTurnNumber, self.maxThieves, self.maxTraps, self.playerID, self.gameNumber, self.roundNumber, self.scarabsForTraps, self.scarabsForThieves, self.maxStack, self.roundsToWin, self.roundTurnLimit])
 
     typeLists = []
     typeLists.append(["Player"] + [i.toList() for i in self.objects.values() if i.__class__ is Player])
