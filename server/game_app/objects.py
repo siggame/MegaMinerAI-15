@@ -40,7 +40,7 @@ class Player(object):
     if tile.type == self.game.empty and not trapType.canPlaceOnOpenTiles:
       return "Turn {}: You cannot place this trap on an empty tile ({}, {})".format(self.game.turnNumber, x, y)
 
-    if trapTypeIndex != self.game.sarcohpagus:
+    if trapTypeIndex != self.game.sarcophagus:
       trapCount = sum(1 for trap in self.game.traps if trap.owner == self.id and trap.type == trapTypeIndex)
       if trapCount >= trapType.maxInstances:
         return "Turn {}: You cannot buy any more of this type of trap (type: {}, have: {})".format(self.game.turnNumber, trapTypeIndex, trapCount)
@@ -50,8 +50,8 @@ class Player(object):
     self.scarabs -= trapType.cost
 
     # Move sarcophagus
-    if trapTypeIndex == self.game.sarcohpagus:
-      sarcophagus = next(trap for trap in self.game.traps if trap.type == self.game.sarcohpagus and trap.owner == self.id)
+    if trapTypeIndex == self.game.sarcophagus:
+      sarcophagus = next(trap for trap in self.game.objects.traps if trap.trapType == self.game.sarcophagus and trap.owner == self.id)
       self.game.grid[sarcophagus.x][sarcophagus.y].remove(sarcophagus)
       self.game.grid[realX][y].append(sarcophagus)
     else: # Create new trap

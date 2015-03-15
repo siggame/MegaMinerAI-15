@@ -76,11 +76,27 @@ class Match(DefaultGameWorld):
     else:
       self.spectators.remove(connection)
 
+  def loadTypeConfig(self):
+    cfgTrapTypes = networking.config.config.readConfig("config/trapTypes.cfg")
+    cfgThiefTypes = networking.config.config.readConfig("config/thiefTypes.cfg")
+    trapTypeStatlist = ['name', 'type', 'cost', 'maxInstances', 'startsVisible', 'hasAction', 'deactivatable', 'maxActivations', 'activatesOnWalkedThrough', 'turnsToActivateOnTile', 'canPlaceOnWalls', 'canPlaceOnOpenTiles', 'freezesForTurns', 'killsOnActivate', 'cooldown', 'explosive', 'unpassable']
+    thiefTypeStatlist = ['name', 'type', 'cost', 'maxMovement', 'maxNinjaReflexes', 'maxInstances']
+    trapTypes = cfgTrapTypes.values()
+    trapTypes.sort(key=lambda trapType: trapType['type'])
+    for trapTypeStats in trapTypes:
+      self.addObject(TrapType, [trapTypeStats[key] for key in trapTypeStatlist])
+    thiefTypes = cfgThiefTypes.values()
+    thiefTypes.sort(key=lambda thiefType: thiefType['type'])
+    for thiefTypeStats in thiefTypes:
+      self.addObject(ThiefType, [thiefTypeStats[key] for key in thiefTypeStatlist])
+
   def start(self):
     if len(self.players) < 2:
       return "Game is not full"
     if self.winner is not None or self.turn is not None:
       return "Game has already begun"
+
+    self.loadTypeConfig()
 
     #TODO: START STUFF
     self.turn = self.players[-1]
@@ -90,8 +106,20 @@ class Match(DefaultGameWorld):
 
   def startRound(self):
       self.roundTurnNumber = -1
-      generatedMaze = maze.generate(SIZE)
-      self.grid = [[[ self.addObject(Tile,[x, y, generatedMaze[x][y]]) ] for y in range(self.mapHeight)] for x in range(self.mapWidth)]
+      generatedMaze = maze.generate(self.mapHeight)
+      #print('dimensions: {}, {}'.format(len(generatedMaze), len(generatedMaze[0])))
+      #for x in range(self.mapWidth):
+      #    for y in range(self.mapHeight):
+      #        print('{}, {}'.format(x, y))
+      self.grid = [[[ self.addObject(Tile,[x, y, generatedMaze[x % (self.mapWidth / 2)][y]]) ] for y in range(self.mapHeight)] for x in range(self.mapWidth)]
+
+      # Place a sarcophagus, players can still move it later
+      # ['id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount', 'activationsRemaining', 'turnsTillActive']
+      sarcophagus_stats = [self.mapWidth / 4 + 1, self.mapHeight / 2 + 1, 0, self.sarcophagus, 1, 1, 0, 0, 0]
+      self.grid[self.mapWidth / 4 + 1][self.mapHeight / 2 + 1].append( self.addObject(Trap, sarcophagus_stats))
+      sarcophagus_stats = [self.mapWidth / 4 + 1 + self.mapWidth / 2, self.mapHeight / 2 + 1, 1, self.sarcophagus, 1, 1, 0, 0, 0]
+      self.grid[self.mapWidth / 4 + 1 + self.mapWidth / 2][self.mapHeight / 2 + 1].append( self.addObject(Trap, sarcophagus_stats))
+
       self.nextTurn()
       return True
 

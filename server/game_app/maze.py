@@ -164,13 +164,3 @@ def generate(size):
   map[size/2-1][0] = SPAWN
   
   return map
-  
-maze = generate(25)
-  
-for y in range(0, 25):
-  for x in range(0,25):
-    if maze[x][y] == WALL:
-      print "#",
-    else:
-      print " ",
-  print "\n"
