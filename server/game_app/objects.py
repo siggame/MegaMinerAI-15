@@ -27,7 +27,7 @@ class Player(object):
       return "Turn {}: You cannot place a trap outside of the map. ({}, {})".format(self.game.turnNumber, x, y)
     if not (self.id * (self.game.mapWidth / 2) < x < (1 + self.id) * (self.game.mapWidth / 2)):
       return "Turn {}: You cannot place a trap outside of your pyramid. ({}, {})".format(self.game.turnNumber, x, y)
-    if tile.type == 1:
+    if tile.type == self.game.spawn:
       return "Turn {}: You cannot place a trap on a spawn point ({}, {})".format(self.game.turnNumber, x, y)
     if len(self.game.grid[x][y]) > 1:
       return "Turn {}: You cannot place a trap on a trap ({}, {})".format(self.game.turnNumber, x, y)
@@ -41,7 +41,7 @@ class Player(object):
       return "Turn {}: You cannot place this trap on an empty tile ({}, {})".format(self.game.turnNumber, x, y)
 
     if trapTypeIndex != self.game.sarcophagus:
-      trapCount = sum(1 for trap in self.game.traps if trap.owner == self.id and trap.type == trapTypeIndex)
+      trapCount = sum(1 for trap in self.game.objects.traps if trap.owner == self.id and trap.trapType == trapTypeIndex)
       if trapCount >= trapType.maxInstances:
         return "Turn {}: You cannot buy any more of this type of trap (type: {}, have: {})".format(self.game.turnNumber, trapTypeIndex, trapCount)
     if self.scarabs < trapType.cost:
@@ -53,7 +53,8 @@ class Player(object):
     if trapTypeIndex == self.game.sarcophagus:
       sarcophagus = next(trap for trap in self.game.objects.traps if trap.trapType == self.game.sarcophagus and trap.owner == self.id)
       self.game.grid[sarcophagus.x][sarcophagus.y].remove(sarcophagus)
-      self.game.grid[x][y].append(sarcophagus)
+      sarcophagus.x, sarcophagus.y = x, y
+      self.game.grid[sarcophagus.x][sarcophagus.y].append(sarcophagus)
     else: # Create new trap
       # ['id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount', 'activationsRemaining', 'turnsTillActive']
       newTrapStats = [x, y, self.id, trapTypeIndex, trapType.startsVisible, 1, 0, trapType.maxActivations, 0]
@@ -80,7 +81,7 @@ class Player(object):
     if self.scarabs < type.cost:
       return 'Turn {}: You do not have enough scarabs to buy this thief. (have: {}, cost: {})'.format(self.game.turnNumber, self.scarabs, type.cost)
 
-    thiefCount = sum(1 for thief in self.game.thiefs if thief.owner == self.id and thief.type == thiefType)
+    thiefCount = sum(1 for thief in self.game.objects.thiefs if thief.owner == self.id and thief.thiefType == thiefType)
     if thiefCount >= type.maxInstances:
       return 'Turn {}: You cannot buy any more of this type of thief. (type: {}, have: {})'.format(self.game.turnNumber, thiefType, thiefCount)
 
