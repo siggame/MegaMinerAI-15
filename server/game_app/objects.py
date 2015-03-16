@@ -20,13 +20,13 @@ class Player(object):
     pass
 
   def placeTrap(self, x, y, trapTypeIndex):
-    realX = self.game.getRealX(self.id, x, 0)
-    tile = self.game.getTile(realX, y)
-
     if self.game.roundTurnNumber > 1:
       return "You cannot place traps after the first turn"
+    tile = self.game.getTile(x, y)
     if not tile:
       return "Turn {}: You cannot place a trap outside of the map. ({}, {})".format(self.game.turnNumber, x, y)
+    if not (self.id * (self.game.mapWidth / 2) < x < (1 + self.id) * (self.game.mapWidth / 2)):
+      return "Turn {}: You cannot place a trap outside of your pyramid. ({}, {})".format(self.game.turnNumber, x, y)
     if tile.type == 1:
       return "Turn {}: You cannot place a trap on a spawn point ({}, {})".format(self.game.turnNumber, x, y)
     if len(self.game.grid[x][y]) > 1:
@@ -53,25 +53,25 @@ class Player(object):
     if trapTypeIndex == self.game.sarcophagus:
       sarcophagus = next(trap for trap in self.game.objects.traps if trap.trapType == self.game.sarcophagus and trap.owner == self.id)
       self.game.grid[sarcophagus.x][sarcophagus.y].remove(sarcophagus)
-      self.game.grid[realX][y].append(sarcophagus)
+      self.game.grid[x][y].append(sarcophagus)
     else: # Create new trap
       # ['id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount', 'activationsRemaining', 'turnsTillActive']
-      newTrapStats = [realX, y, self.id, trapTypeIndex, trapType.startsVisible, 1, 0, trapType.maxActivations, 0]
+      newTrapStats = [x, y, self.id, trapTypeIndex, trapType.startsVisible, 1, 0, trapType.maxActivations, 0]
       newTrap = self.game.addObject(Trap, newTrapStats)
       self.game.grid[newTrap.x][newTrap.y].append(newTrap)
-      self.game.addAnimation(SpawnAnimation(self.id, realX, y))
+      self.game.addAnimation(SpawnAnimation(self.id, x, y))
 
     return True
 
   def purchaseThief(self, x, y, thiefType):
-    realX = self.game.getRealX(self.id, x, 1)
-
     if self.game.roundTurnNumber < 2:
       return "You cannot place thieves on the first turn"
-    if x < 0 or x >= self.game.mapWidth / 2 or y < 0 or y >= self.game.mapHeight:
-      return 'Turn {}: You cannot place a thief out of bounds. ({}, {})'.format(self.game.turnNumber, x, y)
-    tile = self.game.getTile(realX, y)
-    if tile.type != 1:
+    tile = self.game.getTile(x, y)
+    if not tile:
+      return 'Turn {}: You cannot place a thief outside of the map. ({}, {})'.format(self.game.turnNumber, x, y)
+    if not (0 < x - (self.id ^ 1) * (self.game.mapWidth / 2) < self.game.mapWidth / 2):
+      return "Turn {}: You cannot place a thief inside of your own pyramid. ({}, {})".format(self.game.turnNumber, x, y)
+    if tile.type != self.game.spawn:
       return 'Turn {}: You can only spawn thieves on spawn tiles. ({}, {})'.format(self.game.turnNumber, x, y)
     if thiefType < 0 or thiefType >= len(self.game.objects.thiefTypes):
       return 'Turn {}: You cannot spawn thieves of this type. (given: {})'.format(self.game.turnNumber, thiefType)
@@ -86,11 +86,11 @@ class Player(object):
 
     self.scarabs -= type.cost
     # 'id', 'x', 'y', 'owner', 'thiefType', 'alive', 'ninjaReflexesLeft', 'maxNinjaReflexes', 'movementLeft', 'maxMovement', 'frozenTurnsLeft'
-    newThiefStats = [realX, y, self.id, thiefType, 1, type.maxNinjaReflexes, type.maxNinjaReflexes, type.maxMovement, type.maxMovement, 0]
+    newThiefStats = [x, y, self.id, thiefType, 1, type.maxNinjaReflexes, type.maxNinjaReflexes, type.maxMovement, type.maxMovement, 0]
     newThief = self.game.addObject(Thief, newThiefStats)
     self.game.grid[newThief.x][newThief.y].append(newThief)
 
-    self.game.addAnimation(SpawnAnimation(self.id, realX, y))
+    self.game.addAnimation(SpawnAnimation(self.id, x, y))
 
     return True
 	
@@ -252,13 +252,12 @@ class Trap(Mappable):
         boulderY += y
     # Move mummy and kill thieves
     elif self.trapType == self.game.mummy:
-      realX = self.game.getRealX(self.owner, x, 0)
       # Check if desired space is adjacent to mummy's current space
-      if abs(realX - self.x) + abs(y - self.y) != 1:
-        return 'Turn {}: Cannot move mummy {} to non-adjacent space. ({}, {}) -> ({}, [})'.format(self.game.turnNumber, self.id, self.game.getUserX(self.owner, self.x, 0), self.y, x, y)
+      if abs(x - self.x) + abs(y - self.y) != 1:
+        return 'Turn {}: Cannot move mummy {} to non-adjacent space. ({}, {}) -> ({}, [})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       # Move trap (mummy)
       self.game.grid[self.x][self.y].remove(self)
-      self.x, self.y = realX, y
+      self.x, self.y = x, y
       self.game.grid[self.x][self.y].append(self)
       # Kill thieves
       for unit in self.game.grid[self.x][self.y]:
@@ -324,22 +323,20 @@ class Thief(Mappable):
     pass
 
   def move(self, x, y):
-    userX = self.game.getUserX(self.owner, self.x, 1)
-    realX = self.game.getRealX(self.owner, x, 1)
     if self.owner != self.game.playerID:
-      return 'Turn {}: You cannot use the other player\'s thief {}. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, userX, self.y, x, y)
+      return 'Turn {}: You cannot use the other player\'s thief {}. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
     if not self.alive:
-      return 'Turn {}: You cannot move a dead thief {}. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, userX, self.y, x, y)
+      return 'Turn {}: You cannot move a dead thief {}. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
     if self.frozenTurnsLeft > 0:
-      return 'Turn {}: You cannot move a thief {} that is frozen for {} turns. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.frozenTurnsLeft, userX, self.y, x, y)
+      return 'Turn {}: You cannot move a thief {} that is frozen for {} turns. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.frozenTurnsLeft, self.x, self.y, x, y)
     if self.movementLeft <= 0:
-      return 'Turn {}: Your thief {} does not have any movement left. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, userX, self.y, x, y)
-    if not (0 <= x < self.game.mapWidth / 2) or not (0 <= y < self.game.mapHeight):
-      return 'Turn {}: Your thief {} cannot move off its side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, userX, self.y, x, y)
+      return 'Turn {}: Your thief {} does not have any movement left. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+    if not (0 <= x - (self.game.mapWidth / 2) * (self.owner ^ 1) < self.game.mapWidth / 2) or not (0 <= y < self.game.mapHeight):
+      return 'Turn {}: Your thief {} cannot move off its side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
     if self.game.getTile(x, y).type == self.game.wall:
-      return 'Turn {}: Your thief {} is trying to run into a wall. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, userX, self.y, x, y)
-    if abs(self.x - realX) + abs(self.y - y) != 1:
-      return 'Turn {}: Your thief {} can only move one unit away. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, userX, self.y, x, y)
+      return 'Turn {}: Your thief {} is trying to run into a wall. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+    if abs(self.x - x) + abs(self.y - y) != 1:
+      return 'Turn {}: Your thief {} can only move one unit away. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
 
     trap = next((trap for trap in self.game.grid[self.x][self.y] if isinstance(trap, Trap) and trap.active and self.game.objects.trapTypes[trap.trapType].activatesOnWalkThrough), None)
 
@@ -347,17 +344,17 @@ class Thief(Mappable):
       trap.attack(self)
       trap.activate()
 
-    blockingTrap = next((trap for trap in self.game.grid[realX][y] if isinstance(trap, Trap) and trap.active and self.game.objects.trapTypes[trap.trapType].unpassable), None)
+    blockingTrap = next((trap for trap in self.game.grid[x][y] if isinstance(trap, Trap) and trap.active and self.game.objects.trapTypes[trap.trapType].unpassable), None)
 
     if blockingTrap:
       blockingTrap.activate()
 
     if self.alive and not blockingTrap:
       self.game.grid[self.x][self.y].remove(self)
-      self.x, self.y = realX, y
+      self.x, self.y = x, y
       self.game.grid[self.x][self.y].append(self)
       self.movementLeft -= 1
-      self.game.addAnimation(MoveAnimation(self.id, self.x, self.y, realX, y))
+      self.game.addAnimation(MoveAnimation(self.id, self.x, self.y, x, y))
 
     return True
 

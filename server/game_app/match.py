@@ -130,18 +130,6 @@ class Match(DefaultGameWorld):
     else:
       return None
 
-  def getRealX(self, player, x, side):
-    if player ^ side:
-      return x + (self.mapWidth / 2)
-    else:
-      return x
-
-  def getUserX(self, player, x, side):
-    if player ^ side:
-      return x - (self.mapWidth / 2)
-    else:
-      return x
-
   def nextTurn(self):
     self.turnNumber += 1
     self.roundTurnNumber += 1
