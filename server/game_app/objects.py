@@ -17,7 +17,8 @@ class Player(object):
     return dict(id = self.id, playerName = self.playerName, time = self.time, scarabs = self.scarabs, roundsWon = self.roundsWon, )
   
   def nextTurn(self):
-    pass
+    if self.game.turnNumber in [2, 3]:
+      self.scarabs = self.game.scarabsForThieves
 
   def placeTrap(self, x, y, trapTypeIndex):
     if self.game.roundTurnNumber > 1:
@@ -70,8 +71,8 @@ class Player(object):
     tile = self.game.getTile(x, y)
     if not tile:
       return 'Turn {}: You cannot place a thief outside of the map. ({}, {})'.format(self.game.turnNumber, x, y)
-    if not (0 < x - (self.id ^ 1) * (self.game.mapWidth / 2) < self.game.mapWidth / 2):
-      return "Turn {}: You cannot place a thief inside of your own pyramid. ({}, {})".format(self.game.turnNumber, x, y)
+    if not (0 <= x - (self.id ^ 1) * (self.game.mapWidth / 2) < self.game.mapWidth / 2):
+      return "Turn {}: You cannot place a thief inside of your own pyramid. ({}, {}) {}".format(self.game.turnNumber, x, y, self.id)
     if tile.type != self.game.spawn:
       return 'Turn {}: You can only spawn thieves on spawn tiles. ({}, {})'.format(self.game.turnNumber, x, y)
     if thiefType < 0 or thiefType >= len(self.game.objects.thiefTypes):

@@ -139,7 +139,6 @@ class Match(DefaultGameWorld):
     elif self.turn == self.players[1]:
       self.turn = self.players[0]
       self.playerID = 0
-
     else:
       return "Game is over."
 
