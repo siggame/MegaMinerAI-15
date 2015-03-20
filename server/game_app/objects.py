@@ -17,7 +17,9 @@ class Player(object):
     return dict(id = self.id, playerName = self.playerName, time = self.time, scarabs = self.scarabs, roundsWon = self.roundsWon, )
   
   def nextTurn(self):
-    if self.game.turnNumber in [2, 3]:
+    if self.game.roundTurnNumber in [0, 1]:
+      self.scarabs = self.game.scarabsForTraps
+    if self.game.roundTurnNumber in [2, 3]:
       self.scarabs = self.game.scarabsForThieves
 
   def placeTrap(self, x, y, trapTypeIndex):
@@ -340,7 +342,7 @@ class Thief(Mappable):
     if abs(self.x - x) + abs(self.y - y) != 1:
       return 'Turn {}: Your thief {} can only move one unit away. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
 
-    trap = next((trap for trap in self.game.grid[self.x][self.y] if isinstance(trap, Trap) and trap.active and self.game.objects.trapTypes[trap.trapType].activatesOnWalkThrough), None)
+    trap = next((trap for trap in self.game.grid[self.x][self.y] if isinstance(trap, Trap) and trap.active and self.game.objects.trapTypes[trap.trapType].activatesOnWalkedThrough), None)
 
     if trap and self.movementLeft < self.maxMovement:
       trap.attack(self)

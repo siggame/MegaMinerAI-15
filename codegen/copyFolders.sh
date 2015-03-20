@@ -1,7 +1,4 @@
 #! /bin/bash
-cp -r output/visualizer ..
-cp -r output/visclient ..
-cp -r output/plugins ..
 cp -r output/python ../clients
 cp -r output/cpp ../clients
 cp -r output/java ../clients

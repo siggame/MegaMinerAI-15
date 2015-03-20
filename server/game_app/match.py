@@ -102,17 +102,26 @@ class Match(DefaultGameWorld):
     #TODO: START STUFF
     self.turn = self.players[-1]
     self.turnNumber = -1
+
+    self.grid = [[[ self.addObject(Tile,[x, y, self.empty]) ] for y in range(self.mapHeight)] for x in range(self.mapWidth)]
+
     self.startRound()
     return True
 
   def startRound(self):
       self.roundTurnNumber = -1
       generatedMaze = maze.generate(self.mapHeight)
-      #print('dimensions: {}, {}'.format(len(generatedMaze), len(generatedMaze[0])))
-      #for x in range(self.mapWidth):
-      #    for y in range(self.mapHeight):
-      #        print('{}, {}'.format(x, y))
-      self.grid = [[[ self.addObject(Tile,[x, y, generatedMaze[x % (self.mapWidth / 2)][y]]) ] for y in range(self.mapHeight)] for x in range(self.mapWidth)]
+      for y in range(self.mapHeight):
+        for x in range(self.mapWidth):
+          self.grid[x][y][0].type = generatedMaze[x % (self.mapWidth / 2)][y]
+          self.grid[x][y][0].updatedAt = self.turnNumber # updatedAt tells the server to resend tile data
+
+
+      # Remove any traps and thieves from the previous round
+      for trap in list(self.objects.traps):
+        self.removeObject(trap)
+      for thief in list(self.objects.thiefs):
+        self.removeObject(thief)
 
       # Place a sarcophagus, players can still move it later
       # ['id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount', 'activationsRemaining', 'turnsTillActive']
