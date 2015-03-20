@@ -200,13 +200,28 @@ class Match(DefaultGameWorld):
         sarcophagus[trap.owner] = (trap.x, trap.y)
 
     #check if there are any enemy thieves on the sarcophagus
-    for thief in self.objects.thiefs:
-      if thief.x == sarcophagus[thief.owner^1] and thief.y == sarcophagus[thief.owner^1]:
-        self.declareRoundWinner(self.objects.players[0], "Player {} reached the sarcophagus")
+    for obj in self.grid[sarcophagus[obj.owner^1].x][sarcophagus[obj.owner^1].y]:
+      if isinstance(obj, Thief):
+        self.declareRoundWinner(self.objects.players[obj.owner^1], "Player {} reached the sarcophagus".format(obj.owner^1))
+        break
 
     #TODO: Make this check if a player won, and call declareWinner with a player if they did
     if self.roundTurnNumber >= self.roundTurnLimit:
-       self.declareRoundWinner(self.objects.players[0], "Because I said so, this should be removed")
+      #the winner at this point is the player who is closest to their sarcophagus
+      player0Closest = 100
+      player1Closest = 100
+      for thief in self.objects.thiefs:
+        if thief.owner == 0:
+          player0Closest = min(player0Closest, abs(thief.x-sarcophagus[0].x) + abs(thief.y-sarcophagus[0].y))
+        else:
+          player1Closest = min(player1Closest, abs(thief.x-sarcophagus[0].x) + abs(thief.y-sarcophagus[1].y))
+      
+      if player0Closest < player1Closest:
+        self.declareRoundWinner(self.objects.players[0], "Player 0 was closest to their sarcophagus") 
+      elif player1Closest < player0Closest:
+        self.declareRoundWinner(self.objects.players[1], "Player 1 was closest to their sarcophagus")
+         
+      self.declareRoundWinner(self.objects.players[0], "Because I said so, this should be removed")
 
   #declare the round winner and reset the match
   def declareRoundWinner(self, winner, reason=''):
