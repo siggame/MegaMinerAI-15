@@ -190,6 +190,7 @@ class Trap(Mappable):
           for unit in self.game.grid[boulderCounterX][boulderCounterY]: 
             if isinstance(unit, Thief) and unit.ninjaReflexesLeft == 0:
               unit.alive = 0
+              #TODO: Find out if dead thieves are removed from map, code appropriately.
             if unit.ninjaReflexesLeft > 0:
               unit.ninjaReflexesLeft -= 1
           boulderCounterX += x
@@ -197,16 +198,23 @@ class Trap(Mappable):
           
           #Check if the boulder has hit a wall
           for units in self.game.grid[boulderCounterX][boulderCounterY]: 
-            if isinstance(unit, Tile) == 2:
+            #TODO: Check syntactical correctness of conditional below
+            if isinstance(unit, Tile) and unit == 2:
               boulderRolling = False
               self.activationsRemaining = 0
-      
 
       if self.trapType == self.game.mummy:
         #Check if desired space is adjacent to mummy's current space
         if (1 != abs(self.x - x)) or (1 != abs(self.y - y)):
           return: 'Turn {}: Cannot move mummy {} to non-adjacent space. ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y)
+        #Move mummy to space
         self.game.grid[x][y].append(self)
+        #Kill any thieves on mummy's space
+        for unit in self.game.grid[x][y]:
+          if isinstance(unit, Thief):
+            unit.alive = 0
+            #TODO: Find out if dead thieves are removed from map, code appropriately.
+
 
         
 
@@ -259,7 +267,7 @@ class Thief(Mappable):
       return 'Turn {}: Your thief {} cannot move off its side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
     elif self.game.getTile(x, y).type == 2:
       return 'Turn {}: Your thief {} is trying to run into a wall. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-    elif abs(self.x-x) + abs(self.y-y) != 1:
+    elif abs(self.x-x) != 1 or abs(self.y-y) != 1:
       return 'Turn {}: Your thief {} can only move one unit away. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
 
     self.game.grid[self.x][self.y].remove(self)
@@ -278,7 +286,38 @@ class Thief(Mappable):
     return True
 
   def act(self, x, y):
-    pass
+    if self.owner != self.game.playerID:
+      return 'Turn {}: You cannot use the other player\'s thief {}. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
+    elif (self.thiefType != self.game.bomber) and (self.thiefType != self.game.digger):
+      return 'Turn {}: act() is function of the digger and bomber, not the {} {}. ({},{})'.format(self.game.turnNumber, self.thiefType, self.id, self.x, self.y)
+    if self.thiefType == self.game.bomber:
+      if bombsLeft == 0:
+        return 'Turn {}: No bombs remaining for your bomber {}. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
+      elif movementLeft != maxMovement:
+        return 'Turn {}: Your bomber {} cannot move and throw a bomb on the same turn. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
+      elif abs(self.x-x) != 1 or abs(self.y-y) != 1:
+        return 'Turn {}: Your bomber {} must throw onto an adjacent tile. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+      #Blow stuff up
+      for unit in self.game.grid[x][y]:
+        #Blow up traps
+        if isinstance(unit, Trap):
+          #TODO: Remove trap
+        #Blow up thieves
+        if isinstance(unit, Thief):
+          #TODO: Set thief's life to 0, remove from map if necessary
+        #Blow up walls
+        if isinstance(unit, Tile) and unit == 2:
+          #TODO: Determine if conditional above is syntactically correct
+          #TODO: Make wall a normal tile
+      self.bombsLeft -= 1
+
+
+
+
+
+
+
+
 
   def __setattr__(self, name, value):
       if name in self.game_state_attributes:
