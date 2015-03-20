@@ -17,7 +17,10 @@ class Player(object):
     return dict(id = self.id, playerName = self.playerName, time = self.time, scarabs = self.scarabs, roundsWon = self.roundsWon, )
   
   def nextTurn(self):
-    pass
+    if self.game.roundTurnNumber in [0, 1]:
+      self.scarabs = self.game.scarabsForTraps
+    if self.game.roundTurnNumber in [2, 3]:
+      self.scarabs = self.game.scarabsForThieves
 
   def placeTrap(self, x, y, trapTypeIndex):
     if self.game.roundTurnNumber > 1:
@@ -70,8 +73,8 @@ class Player(object):
     tile = self.game.getTile(x, y)
     if not tile:
       return 'Turn {}: You cannot place a thief outside of the map. ({}, {})'.format(self.game.turnNumber, x, y)
-    if not (0 < x - (self.id ^ 1) * (self.game.mapWidth / 2) < self.game.mapWidth / 2):
-      return "Turn {}: You cannot place a thief inside of your own pyramid. ({}, {})".format(self.game.turnNumber, x, y)
+    if not (0 <= x - (self.id ^ 1) * (self.game.mapWidth / 2) < self.game.mapWidth / 2):
+      return "Turn {}: You cannot place a thief inside of your own pyramid. ({}, {}) {}".format(self.game.turnNumber, x, y, self.id)
     if tile.type != self.game.spawn:
       return 'Turn {}: You can only spawn thieves on spawn tiles. ({}, {})'.format(self.game.turnNumber, x, y)
     if thiefType < 0 or thiefType >= len(self.game.objects.thiefTypes):
@@ -339,7 +342,7 @@ class Thief(Mappable):
     if abs(self.x - x) + abs(self.y - y) != 1:
       return 'Turn {}: Your thief {} can only move one unit away. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
 
-    trap = next((trap for trap in self.game.grid[self.x][self.y] if isinstance(trap, Trap) and trap.active and self.game.objects.trapTypes[trap.trapType].activatesOnWalkThrough), None)
+    trap = next((trap for trap in self.game.grid[self.x][self.y] if isinstance(trap, Trap) and trap.active and self.game.objects.trapTypes[trap.trapType].activatesOnWalkedThrough), None)
 
     if trap and self.movementLeft < self.maxMovement:
       trap.attack(self)
