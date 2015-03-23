@@ -140,27 +140,27 @@ public class Thief: Mappable
   }
 
   /// <summary>
-  /// How many more deaths this thief can escape.
+  /// How many more times this thief can use its special ability.
   /// </summary>
-  public int NinjaReflexesLeft
+  public int SpecialsLeft
   {
     get
     {
       validify();
-      int value = Client.thiefGetNinjaReflexesLeft(ptr);
+      int value = Client.thiefGetSpecialsLeft(ptr);
       return value;
     }
   }
 
   /// <summary>
-  /// The maximum number of times this thief can escape death.
+  /// The maximum number of times this thief can use its special ability.
   /// </summary>
-  public int MaxNinjaReflexes
+  public int MaxSpecials
   {
     get
     {
       validify();
-      int value = Client.thiefGetMaxNinjaReflexes(ptr);
+      int value = Client.thiefGetMaxSpecials(ptr);
       return value;
     }
   }

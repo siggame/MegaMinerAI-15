@@ -239,11 +239,11 @@ library.thiefGetThiefType.argtypes = [c_void_p]
 library.thiefGetAlive.restype = c_int
 library.thiefGetAlive.argtypes = [c_void_p]
 
-library.thiefGetNinjaReflexesLeft.restype = c_int
-library.thiefGetNinjaReflexesLeft.argtypes = [c_void_p]
+library.thiefGetSpecialsLeft.restype = c_int
+library.thiefGetSpecialsLeft.argtypes = [c_void_p]
 
-library.thiefGetMaxNinjaReflexes.restype = c_int
-library.thiefGetMaxNinjaReflexes.argtypes = [c_void_p]
+library.thiefGetMaxSpecials.restype = c_int
+library.thiefGetMaxSpecials.argtypes = [c_void_p]
 
 library.thiefGetMovementLeft.restype = c_int
 library.thiefGetMovementLeft.argtypes = [c_void_p]
@@ -269,8 +269,8 @@ library.thiefTypeGetCost.argtypes = [c_void_p]
 library.thiefTypeGetMaxMovement.restype = c_int
 library.thiefTypeGetMaxMovement.argtypes = [c_void_p]
 
-library.thiefTypeGetMaxNinjaReflexes.restype = c_int
-library.thiefTypeGetMaxNinjaReflexes.argtypes = [c_void_p]
+library.thiefTypeGetMaxSpecials.restype = c_int
+library.thiefTypeGetMaxSpecials.argtypes = [c_void_p]
 
 library.thiefTypeGetMaxInstances.restype = c_int
 library.thiefTypeGetMaxInstances.argtypes = [c_void_p]

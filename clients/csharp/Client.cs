@@ -163,9 +163,9 @@ public class Client {
   [DllImport("client")]
   public static extern int thiefGetAlive(IntPtr ptr);
   [DllImport("client")]
-  public static extern int thiefGetNinjaReflexesLeft(IntPtr ptr);
+  public static extern int thiefGetSpecialsLeft(IntPtr ptr);
   [DllImport("client")]
-  public static extern int thiefGetMaxNinjaReflexes(IntPtr ptr);
+  public static extern int thiefGetMaxSpecials(IntPtr ptr);
   [DllImport("client")]
   public static extern int thiefGetMovementLeft(IntPtr ptr);
   [DllImport("client")]
@@ -184,7 +184,7 @@ public class Client {
   [DllImport("client")]
   public static extern int thiefTypeGetMaxMovement(IntPtr ptr);
   [DllImport("client")]
-  public static extern int thiefTypeGetMaxNinjaReflexes(IntPtr ptr);
+  public static extern int thiefTypeGetMaxSpecials(IntPtr ptr);
   [DllImport("client")]
   public static extern int thiefTypeGetMaxInstances(IntPtr ptr);
 

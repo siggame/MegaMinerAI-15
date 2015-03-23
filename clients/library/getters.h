@@ -48,8 +48,8 @@ DLLEXPORT int thiefGetY(_Thief* ptr);
 DLLEXPORT int thiefGetOwner(_Thief* ptr);
 DLLEXPORT int thiefGetThiefType(_Thief* ptr);
 DLLEXPORT int thiefGetAlive(_Thief* ptr);
-DLLEXPORT int thiefGetNinjaReflexesLeft(_Thief* ptr);
-DLLEXPORT int thiefGetMaxNinjaReflexes(_Thief* ptr);
+DLLEXPORT int thiefGetSpecialsLeft(_Thief* ptr);
+DLLEXPORT int thiefGetMaxSpecials(_Thief* ptr);
 DLLEXPORT int thiefGetMovementLeft(_Thief* ptr);
 DLLEXPORT int thiefGetMaxMovement(_Thief* ptr);
 DLLEXPORT int thiefGetFrozenTurnsLeft(_Thief* ptr);
@@ -60,7 +60,7 @@ DLLEXPORT char* thiefTypeGetName(_ThiefType* ptr);
 DLLEXPORT int thiefTypeGetType(_ThiefType* ptr);
 DLLEXPORT int thiefTypeGetCost(_ThiefType* ptr);
 DLLEXPORT int thiefTypeGetMaxMovement(_ThiefType* ptr);
-DLLEXPORT int thiefTypeGetMaxNinjaReflexes(_ThiefType* ptr);
+DLLEXPORT int thiefTypeGetMaxSpecials(_ThiefType* ptr);
 DLLEXPORT int thiefTypeGetMaxInstances(_ThiefType* ptr);
 
 

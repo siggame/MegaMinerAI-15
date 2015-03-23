@@ -89,8 +89,8 @@ class Player(object):
       return 'Turn {}: You cannot buy any more of this type of thief. (type: {}, have: {})'.format(self.game.turnNumber, thiefType, thiefCount)
 
     self.scarabs -= type.cost
-    # 'id', 'x', 'y', 'owner', 'thiefType', 'alive', 'ninjaReflexesLeft', 'maxNinjaReflexes', 'movementLeft', 'maxMovement', 'frozenTurnsLeft'
-    newThiefStats = [x, y, self.id, thiefType, 1, type.maxNinjaReflexes, type.maxNinjaReflexes, type.maxMovement, type.maxMovement, 0]
+    # ['id', 'x', 'y', 'owner', 'thiefType', 'alive', 'specialsLeft', 'maxSpecials', 'movementLeft', 'maxMovement', 'frozenTurnsLeft']
+    newThiefStats = [x, y, self.id, thiefType, 1, type.maxSpecials, type.maxSpecials, type.maxMovement, type.maxMovement, 0]
     newThief = self.game.addObject(Thief, newThiefStats)
     self.game.grid[newThief.x][newThief.y].append(newThief)
 
@@ -192,15 +192,15 @@ class Trap(Mappable):
 
   def attack(self, thief):
     if thief.alive:
-      if thief.ninjaReflexesLeft <= 0:
+      if thief.thiefType != self.game.ninja or thief.specialsLeft <= 0:
         if self.game.objects.trapTypes[self.trapType].killsOnActivate:
           thief.alive = 0
           thief.frozenTurnsLeft = 0
           self.bodyCount += 1
         if self.game.objects.trapTypes[self.trapType].freezesForTurns:
           thief.frozenTurnsLeft = self.game.objects.trapTypes[self.trapType].freezesForTurns
-      else:
-        thief.ninjaReflexesLeft -= 1
+      elif thief.thiefType == self.game.ninja:
+        thief.specialsLeft -= 1
 
   def nextTurn(self):
     if self.game.playerID == self.owner:
@@ -290,8 +290,8 @@ class Trap(Mappable):
       object.__setattr__(self, name, value)
 
 class Thief(Mappable):
-  game_state_attributes = ['id', 'x', 'y', 'owner', 'thiefType', 'alive', 'ninjaReflexesLeft', 'maxNinjaReflexes', 'movementLeft', 'maxMovement', 'frozenTurnsLeft']
-  def __init__(self, game, id, x, y, owner, thiefType, alive, ninjaReflexesLeft, maxNinjaReflexes, movementLeft, maxMovement, frozenTurnsLeft):
+  game_state_attributes = ['id', 'x', 'y', 'owner', 'thiefType', 'alive', 'specialsLeft', 'maxSpecials', 'movementLeft', 'maxMovement', 'frozenTurnsLeft']
+  def __init__(self, game, id, x, y, owner, thiefType, alive, specialsLeft, maxSpecials, movementLeft, maxMovement, frozenTurnsLeft):
     self.game = game
     self.id = id
     self.x = x
@@ -299,19 +299,19 @@ class Thief(Mappable):
     self.owner = owner
     self.thiefType = thiefType
     self.alive = alive
-    self.ninjaReflexesLeft = ninjaReflexesLeft
-    self.maxNinjaReflexes = maxNinjaReflexes
+    self.specialsLeft = specialsLeft
+    self.maxSpecials = maxSpecials
     self.movementLeft = movementLeft
     self.maxMovement = maxMovement
     self.frozenTurnsLeft = frozenTurnsLeft
     self.updatedAt = game.turnNumber
 
   def toList(self):
-    return [self.id, self.x, self.y, self.owner, self.thiefType, self.alive, self.ninjaReflexesLeft, self.maxNinjaReflexes, self.movementLeft, self.maxMovement, self.frozenTurnsLeft, ]
+    return [self.id, self.x, self.y, self.owner, self.thiefType, self.alive, self.specialsLeft, self.maxSpecials, self.movementLeft, self.maxMovement, self.frozenTurnsLeft, ]
   
   # This will not work if the object has variables other than primitives
   def toJson(self):
-    return dict(id = self.id, x = self.x, y = self.y, owner = self.owner, thiefType = self.thiefType, alive = self.alive, ninjaReflexesLeft = self.ninjaReflexesLeft, maxNinjaReflexes = self.maxNinjaReflexes, movementLeft = self.movementLeft, maxMovement = self.maxMovement, frozenTurnsLeft = self.frozenTurnsLeft, )
+    return dict(id = self.id, x = self.x, y = self.y, owner = self.owner, thiefType = self.thiefType, alive = self.alive, specialsLeft = self.specialsLeft, maxSpecials = self.maxSpecials, movementLeft = self.movementLeft, maxMovement = self.maxMovement, frozenTurnsLeft = self.frozenTurnsLeft, )
   
   def nextTurn(self):
     if self.game.playerID == self.owner:
@@ -378,24 +378,24 @@ class Thief(Mappable):
       object.__setattr__(self, name, value)
 
 class ThiefType(object):
-  game_state_attributes = ['id', 'name', 'type', 'cost', 'maxMovement', 'maxNinjaReflexes', 'maxInstances']
-  def __init__(self, game, id, name, type, cost, maxMovement, maxNinjaReflexes, maxInstances):
+  game_state_attributes = ['id', 'name', 'type', 'cost', 'maxMovement', 'maxSpecials', 'maxInstances']
+  def __init__(self, game, id, name, type, cost, maxMovement, maxSpecials, maxInstances):
     self.game = game
     self.id = id
     self.name = name
     self.type = type
     self.cost = cost
     self.maxMovement = maxMovement
-    self.maxNinjaReflexes = maxNinjaReflexes
+    self.maxSpecials = maxSpecials
     self.maxInstances = maxInstances
     self.updatedAt = game.turnNumber
 
   def toList(self):
-    return [self.id, self.name, self.type, self.cost, self.maxMovement, self.maxNinjaReflexes, self.maxInstances, ]
+    return [self.id, self.name, self.type, self.cost, self.maxMovement, self.maxSpecials, self.maxInstances, ]
   
   # This will not work if the object has variables other than primitives
   def toJson(self):
-    return dict(id = self.id, name = self.name, type = self.type, cost = self.cost, maxMovement = self.maxMovement, maxNinjaReflexes = self.maxNinjaReflexes, maxInstances = self.maxInstances, )
+    return dict(id = self.id, name = self.name, type = self.type, cost = self.cost, maxMovement = self.maxMovement, maxSpecials = self.maxSpecials, maxInstances = self.maxInstances, )
   
   def nextTurn(self):
     pass

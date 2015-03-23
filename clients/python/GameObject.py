@@ -432,20 +432,20 @@ class Thief(Mappable):
   alive = property(getAlive)
 
   #\cond
-  def getNinjaReflexesLeft(self):
+  def getSpecialsLeft(self):
     self.validify()
-    return library.thiefGetNinjaReflexesLeft(self._ptr)
+    return library.thiefGetSpecialsLeft(self._ptr)
   #\endcond
-  ##How many more deaths this thief can escape.
-  ninjaReflexesLeft = property(getNinjaReflexesLeft)
+  ##How many more times this thief can use its special ability.
+  specialsLeft = property(getSpecialsLeft)
 
   #\cond
-  def getMaxNinjaReflexes(self):
+  def getMaxSpecials(self):
     self.validify()
-    return library.thiefGetMaxNinjaReflexes(self._ptr)
+    return library.thiefGetMaxSpecials(self._ptr)
   #\endcond
-  ##The maximum number of times this thief can escape death.
-  maxNinjaReflexes = property(getMaxNinjaReflexes)
+  ##The maximum number of times this thief can use its special ability.
+  maxSpecials = property(getMaxSpecials)
 
   #\cond
   def getMovementLeft(self):
@@ -481,8 +481,8 @@ class Thief(Mappable):
     ret += "owner: %s\n" % self.getOwner()
     ret += "thiefType: %s\n" % self.getThiefType()
     ret += "alive: %s\n" % self.getAlive()
-    ret += "ninjaReflexesLeft: %s\n" % self.getNinjaReflexesLeft()
-    ret += "maxNinjaReflexes: %s\n" % self.getMaxNinjaReflexes()
+    ret += "specialsLeft: %s\n" % self.getSpecialsLeft()
+    ret += "maxSpecials: %s\n" % self.getMaxSpecials()
     ret += "movementLeft: %s\n" % self.getMovementLeft()
     ret += "maxMovement: %s\n" % self.getMaxMovement()
     ret += "frozenTurnsLeft: %s\n" % self.getFrozenTurnsLeft()
@@ -551,12 +551,12 @@ class ThiefType(GameObject):
   maxMovement = property(getMaxMovement)
 
   #\cond
-  def getMaxNinjaReflexes(self):
+  def getMaxSpecials(self):
     self.validify()
-    return library.thiefTypeGetMaxNinjaReflexes(self._ptr)
+    return library.thiefTypeGetMaxSpecials(self._ptr)
   #\endcond
-  ##The maximum number of times this thief can escape death.
-  maxNinjaReflexes = property(getMaxNinjaReflexes)
+  ##The maximum number of times this thief can use its special ability.
+  maxSpecials = property(getMaxSpecials)
 
   #\cond
   def getMaxInstances(self):
@@ -575,7 +575,7 @@ class ThiefType(GameObject):
     ret += "type: %s\n" % self.getType()
     ret += "cost: %s\n" % self.getCost()
     ret += "maxMovement: %s\n" % self.getMaxMovement()
-    ret += "maxNinjaReflexes: %s\n" % self.getMaxNinjaReflexes()
+    ret += "maxSpecials: %s\n" % self.getMaxSpecials()
     ret += "maxInstances: %s\n" % self.getMaxInstances()
     return ret
 

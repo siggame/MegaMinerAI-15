@@ -81,17 +81,17 @@ class Thief extends Mappable
     validify();
     return Client.INSTANCE.thiefGetAlive(ptr);
   }
-  ///How many more deaths this thief can escape.
-  public int getNinjaReflexesLeft()
+  ///How many more times this thief can use its special ability.
+  public int getSpecialsLeft()
   {
     validify();
-    return Client.INSTANCE.thiefGetNinjaReflexesLeft(ptr);
+    return Client.INSTANCE.thiefGetSpecialsLeft(ptr);
   }
-  ///The maximum number of times this thief can escape death.
-  public int getMaxNinjaReflexes()
+  ///The maximum number of times this thief can use its special ability.
+  public int getMaxSpecials()
   {
     validify();
-    return Client.INSTANCE.thiefGetMaxNinjaReflexes(ptr);
+    return Client.INSTANCE.thiefGetMaxSpecials(ptr);
   }
   ///The remaining number of times this thief can move.
   public int getMovementLeft()

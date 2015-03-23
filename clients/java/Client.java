@@ -92,8 +92,8 @@ public interface Client extends Library {
   int thiefGetOwner(Pointer ptr);
   int thiefGetThiefType(Pointer ptr);
   int thiefGetAlive(Pointer ptr);
-  int thiefGetNinjaReflexesLeft(Pointer ptr);
-  int thiefGetMaxNinjaReflexes(Pointer ptr);
+  int thiefGetSpecialsLeft(Pointer ptr);
+  int thiefGetMaxSpecials(Pointer ptr);
   int thiefGetMovementLeft(Pointer ptr);
   int thiefGetMaxMovement(Pointer ptr);
   int thiefGetFrozenTurnsLeft(Pointer ptr);
@@ -103,7 +103,7 @@ public interface Client extends Library {
   int thiefTypeGetType(Pointer ptr);
   int thiefTypeGetCost(Pointer ptr);
   int thiefTypeGetMaxMovement(Pointer ptr);
-  int thiefTypeGetMaxNinjaReflexes(Pointer ptr);
+  int thiefTypeGetMaxSpecials(Pointer ptr);
   int thiefTypeGetMaxInstances(Pointer ptr);
 
   int trapTypeGetId(Pointer ptr);

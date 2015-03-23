@@ -200,10 +200,11 @@ class Match(DefaultGameWorld):
         sarcophagus[trap.owner] = (trap.x, trap.y)
 
     #check if there are any enemy thieves on the sarcophagus
-    for obj in self.grid[sarcophagus[obj.owner^1].x][sarcophagus[obj.owner^1].y]:
-      if isinstance(obj, Thief):
-        self.declareRoundWinner(self.objects.players[obj.owner^1], "Player {} reached the sarcophagus".format(obj.owner^1))
-        break
+    for playerID in [0, 1]:
+      for obj in self.grid[sarcophagus[playerID][0]][sarcophagus[playerID][1]]:
+        if isinstance(obj, Thief):
+          self.declareRoundWinner(self.objects.players[obj.owner^1], "Player {} reached the sarcophagus".format(obj.owner^1))
+          break
 
     #TODO: Make this check if a player won, and call declareWinner with a player if they did
     if self.roundTurnNumber >= self.roundTurnLimit:

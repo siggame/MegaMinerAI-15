@@ -106,14 +106,14 @@ public class ThiefType
   }
 
   /// <summary>
-  /// The maximum number of times this thief can escape death.
+  /// The maximum number of times this thief can use its special ability.
   /// </summary>
-  public int MaxNinjaReflexes
+  public int MaxSpecials
   {
     get
     {
       validify();
-      int value = Client.thiefTypeGetMaxNinjaReflexes(ptr);
+      int value = Client.thiefTypeGetMaxSpecials(ptr);
       return value;
     }
   }
