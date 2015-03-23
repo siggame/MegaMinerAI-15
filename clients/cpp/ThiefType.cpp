@@ -34,9 +34,9 @@ int ThiefType::maxMovement()
   return ((_ThiefType*)ptr)->maxMovement;
 }
 
-int ThiefType::maxNinjaReflexes()
+int ThiefType::maxSpecials()
 {
-  return ((_ThiefType*)ptr)->maxNinjaReflexes;
+  return ((_ThiefType*)ptr)->maxSpecials;
 }
 
 int ThiefType::maxInstances()
@@ -54,7 +54,7 @@ std::ostream& operator<<(std::ostream& stream,ThiefType ob)
   stream << "type: " << ((_ThiefType*)ob.ptr)->type  <<'\n';
   stream << "cost: " << ((_ThiefType*)ob.ptr)->cost  <<'\n';
   stream << "maxMovement: " << ((_ThiefType*)ob.ptr)->maxMovement  <<'\n';
-  stream << "maxNinjaReflexes: " << ((_ThiefType*)ob.ptr)->maxNinjaReflexes  <<'\n';
+  stream << "maxSpecials: " << ((_ThiefType*)ob.ptr)->maxSpecials  <<'\n';
   stream << "maxInstances: " << ((_ThiefType*)ob.ptr)->maxInstances  <<'\n';
   return stream;
 }

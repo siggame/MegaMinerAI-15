@@ -24,8 +24,8 @@ class ThiefType {
   int cost();
   ///The maximum number of times this thief can move.
   int maxMovement();
-  ///The maximum number of times this thief can escape death.
-  int maxNinjaReflexes();
+  ///The maximum number of times this thief can use its special ability.
+  int maxSpecials();
   ///The maximum number of this type thief that can be purchased each round.
   int maxInstances();
 

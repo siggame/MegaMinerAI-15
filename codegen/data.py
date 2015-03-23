@@ -57,8 +57,8 @@ Thief = Model('Thief',
     Variable('thiefType', int, 'The type of this thief. This type refers to list of thiefTypes.'),
 
     Variable('alive', int, 'Whether the thief is alive or not.'),
-    Variable('ninjaReflexesLeft', int, 'How many more deaths this thief can escape.'),
-    Variable('maxNinjaReflexes', int, 'The maximum number of times this thief can escape death.'),
+    Variable('specialsLeft', int, 'How many more times this thief can use its special ability.'),
+    Variable('maxSpecials', int, 'The maximum number of times this thief can use its special ability.'),
 
     Variable('movementLeft', int, 'The remaining number of times this thief can move.'),
     Variable('maxMovement', int, 'The maximum number of times this thief can move.'),
@@ -86,7 +86,7 @@ ThiefType = Model('ThiefType',
     Variable('cost', int, 'The number of scarabs required to purchase this thief.'),
 
     Variable('maxMovement', int, 'The maximum number of times this thief can move.'),
-    Variable('maxNinjaReflexes', int, 'The maximum number of times this thief can escape death.'),
+    Variable('maxSpecials', int, 'The maximum number of times this thief can use its special ability.'),
 
     Variable('maxInstances', int, 'The maximum number of this type thief that can be purchased each round.'),
     ],

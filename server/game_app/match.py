@@ -81,7 +81,7 @@ class Match(DefaultGameWorld):
     cfgTrapTypes = networking.config.config.readConfig("config/trapTypes.cfg")
     cfgThiefTypes = networking.config.config.readConfig("config/thiefTypes.cfg")
     trapTypeStatlist = ['name', 'type', 'cost', 'maxInstances', 'startsVisible', 'hasAction', 'deactivatable', 'maxActivations', 'activatesOnWalkedThrough', 'turnsToActivateOnTile', 'canPlaceOnWalls', 'canPlaceOnOpenTiles', 'freezesForTurns', 'killsOnActivate', 'cooldown', 'explosive', 'unpassable']
-    thiefTypeStatlist = ['name', 'type', 'cost', 'maxMovement', 'maxNinjaReflexes', 'maxInstances']
+    thiefTypeStatlist = ['name', 'type', 'cost', 'maxMovement', 'maxSpecials', 'maxInstances']
     trapTypes = cfgTrapTypes.values()
     trapTypes.sort(key=lambda trapType: trapType['type'])
     for trapTypeStats in trapTypes:
@@ -193,17 +193,18 @@ class Match(DefaultGameWorld):
     return True
 
   def checkWinner(self):
-    sarcophagus = {}
+    sarcophagus = dict()
     #set the sarcophagus locations
     for trap in self.objects.traps:
       if trap.trapType == 0: #SARCOPHAGUS
-        sarcophagus[trap.owner] = (trap.x, trap.y)
+        sarcophagus[trap.owner] = trap
 
     #check if there are any enemy thieves on the sarcophagus
-    for obj in self.grid[sarcophagus[obj.owner^1].x][sarcophagus[obj.owner^1].y]:
-      if isinstance(obj, Thief):
-        self.declareRoundWinner(self.objects.players[obj.owner^1], "Player {} reached the sarcophagus".format(obj.owner^1))
-        break
+    for playerID in [0, 1]:
+      for obj in self.grid[sarcophagus[playerID].x][sarcophagus[playerID].y]:
+        if isinstance(obj, Thief):
+          self.declareRoundWinner(self.objects.players[obj.owner], "Player {} reached the sarcophagus".format(obj.owner))
+          break
 
     #TODO: Make this check if a player won, and call declareWinner with a player if they did
     if self.roundTurnNumber >= self.roundTurnLimit:
@@ -214,10 +215,10 @@ class Match(DefaultGameWorld):
         if thief.owner == 0:
           player0Closest = min(player0Closest, abs(thief.x-sarcophagus[0].x) + abs(thief.y-sarcophagus[0].y))
         else:
-          player1Closest = min(player1Closest, abs(thief.x-sarcophagus[0].x) + abs(thief.y-sarcophagus[1].y))
+          player1Closest = min(player1Closest, abs(thief.x-sarcophagus[1].x) + abs(thief.y-sarcophagus[1].y))
       
       if player0Closest < player1Closest:
-        self.declareRoundWinner(self.objects.players[0], "Player 0 was closest to their sarcophagus") 
+        self.declareRoundWinner(self.objects.players[0], "Player 0 was closest to their sarcophagus")
       elif player1Closest < player0Closest:
         self.declareRoundWinner(self.objects.players[1], "Player 1 was closest to their sarcophagus")
          
@@ -225,18 +226,19 @@ class Match(DefaultGameWorld):
 
   #declare the round winner and reset the match
   def declareRoundWinner(self, winner, reason=''):
+    winnerName = self.players[winner.id].user
     winner.roundsWon = winner.roundsWon + 1
     if winner.roundsWon >= self.roundsToWin:
-      self.declareWinner(self.players[winner.id], "Player {} reached {} points".format(winner.id, self.roundsToWin))
+      self.declareWinner(winner, "Player {} ({}) reached {} points".format(winner.id, winnerName, self.roundsToWin))
     else:
       #TODO: Add an animation declaring the round winner
       self.startRound()
-      print "Player", winner.id, "wins round", self.id
+      print "Player {} ({}) wins round {} for game {}".format(winner.id, winnerName, self.roundNumber, self.id)
     pass
 
   def declareWinner(self, winner, reason=''):
-    print "Player", self.getPlayerIndex(self.winner), "wins game", self.id
-    self.winner = winner
+    self.winner = self.players[winner.id]
+    print "Player {} ({}) wins game {} because {}".format(self.getPlayerIndex(self.winner), self.winner.user, self.id, reason)
 
     msg = ["game-winner", self.id, self.winner.user, self.getPlayerIndex(self.winner), reason]
     
