@@ -115,13 +115,16 @@ class Match(DefaultGameWorld):
       generatedMaze = maze.generate(self.mapHeight)
       for y in range(self.mapHeight):
         for x in range(self.mapWidth):
+          self.grid[x][y][:] = self.grid[x][y][0:1] # Remove everything except tile
           self.grid[x][y][0].type = generatedMaze[x % (self.mapWidth / 2)][y]
           self.grid[x][y][0].updatedAt = self.turnNumber # updatedAt tells the server to resend tile data
 
       # Remove any traps and thieves from the previous round
       for trap in list(self.objects.traps):
+        #self.grid[trap.x][trap.y].remove(trap)
         self.removeObject(trap)
       for thief in list(self.objects.thiefs):
+        #self.grid[thief.x][thief.y].remove(thief)
         self.removeObject(thief)
 
       # Place a sarcophagus, players can still move it later
@@ -237,6 +240,7 @@ class Match(DefaultGameWorld):
     winnerName = self.players[winner.id].user
     winner.roundsWon = winner.roundsWon + 1
     print "Turn {}: Player {} ({}) wins round {} for game {} because {}".format(self.turnNumber, winner.id, winnerName, self.roundNumber, self.id, reason)
+    self.roundNumber += 1
     if winner.roundsWon < self.roundsToWin:
       #TODO: Add an animation declaring the round winner
       self.setupRound()
