@@ -197,8 +197,12 @@ class Trap(Mappable):
           thief.alive = 0
           thief.frozenTurnsLeft = 0
           self.bodyCount += 1
+          if not self.visible:
+            thief.hidden = True
         if self.game.objects.trapTypes[self.trapType].freezesForTurns:
           thief.frozenTurnsLeft = self.game.objects.trapTypes[self.trapType].freezesForTurns
+          if not self.visible:
+            thief.hidden = True
       elif thief.thiefType == self.game.ninja:
         thief.specialsLeft -= 1
 
@@ -315,6 +319,7 @@ class Thief(Mappable):
   
   def nextTurn(self):
     if self.game.playerID == self.owner:
+      self.hidden = False
       if self.alive:
         if self.frozenTurnsLeft:
           self.frozenTurnsLeft -= 1
@@ -330,9 +335,15 @@ class Thief(Mappable):
     if self.owner != self.game.playerID:
       return 'Turn {}: You cannot use the other player\'s thief {}. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
     if not self.alive:
-      return 'Turn {}: You cannot move a dead thief {}. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+      if self.hidden:
+        return True
+      else:
+        return 'Turn {}: You cannot move a dead thief {}. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
     if self.frozenTurnsLeft > 0:
-      return 'Turn {}: You cannot move a thief {} that is frozen for {} turns. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.frozenTurnsLeft, self.x, self.y, x, y)
+      if self.hidden:
+        return True
+      else:
+        return 'Turn {}: You cannot move a thief {} that is frozen for {} turns. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.frozenTurnsLeft, self.x, self.y, x, y)
     if self.movementLeft <= 0:
       return 'Turn {}: Your thief {} does not have any movement left. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
     if not (0 <= x - (self.game.mapWidth / 2) * (self.owner ^ 1) < self.game.mapWidth / 2) or not (0 <= y < self.game.mapHeight):
