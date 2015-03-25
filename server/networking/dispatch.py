@@ -1,7 +1,7 @@
 # -*- coding: iso-8859-1 -*-
 
-from twisted.internet import epollreactor
-epollreactor.install()
+from twisted.internet import selectreactor
+selectreactor.install()
 
 from sexpr.sexpr import sexpr2str, str2sexpr
 
