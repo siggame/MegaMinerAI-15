@@ -183,6 +183,13 @@ class Thief(Mappable):
     return dict(id = self.id, x = self.x, y = self.y, owner = self.owner, thiefType = self.thiefType, alive = self.alive, ninjaReflexesLeft = self.ninjaReflexesLeft, maxNinjaReflexes = self.maxNinjaReflexes, movementLeft = self.movementLeft, maxMovement = self.maxMovement, frozenTurnsLeft = self.frozenTurnsLeft, )
   
   def nextTurn(self):
+    if self.thiefType == 3:
+      xchange = [-1, 1, 0,  0]
+      ychange = [ 0, 0, 1, -1]
+      for i in range(4):
+        for obj in self.game.getTile(self.x + xchange[i], self.y + ychange[i]):
+          if isinstance(obj, Trap):
+            obj.visible = 1
     pass
 
   def thiefTalk(self, message):
