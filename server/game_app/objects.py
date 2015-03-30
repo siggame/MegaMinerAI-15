@@ -416,18 +416,21 @@ class Thief(Mappable):
         return 'Turn {}: Your bomber {} must throw onto an adjacent tile. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       #Blow stuff up
       for unit in self.game.grid[x][y]:
-        #Blow up traps
-        if isinstance(unit, Trap):
-          #TODO: Remove trap
-        #Blow up thieves
-        if isinstance(unit, Thief):
-          #TODO: Set thief's life to 0, remove from map if necessary
         #Blow up walls
         if isinstance(unit, Tile) and unit == 2:
-          #TODO: Determine if conditional above is syntactically correct
+          
+        #Blow up traps
+        if isinstance(unit, Trap):
+          self.game.grid[x][y].remove(unit)
+        #Blow up thieves
+        if isinstance(unit, Thief):
+          self.game.grid[x][y].remove(unit)
+        
+          
           #TODO: Make wall a normal tile
       self.bombsLeft -= 1
 
+    if self.thiefType == self.game.bomber:
 
 
 
