@@ -353,30 +353,36 @@ class Thief(Mappable):
     if abs(self.x - x) + abs(self.y - y) != 1:
       return 'Turn {}: Your thief {} can only move one unit away. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
 
-    # Only check for activatesOnWalkedThrough traps when thief moves off of them and not on the thief's first move
-    if self.movementLeft < self.maxMovement:
-      backstabTrap = next((trap for trap in self.game.grid[self.x][self.y] if isinstance(trap, Trap) and trap.active and self.game.objects.trapTypes[trap.trapType].activatesOnWalkedThrough), None)
-      if backstabTrap:
-        backstabTrap.attack(self)
-        backstabTrap.activate()
+    trap = self.game.getTrap(x, y)
+    blocked = False
+    if trap and trap.active:
 
-    blockingTrap = next((trap for trap in self.game.grid[x][y] if isinstance(trap, Trap) and trap.active and self.game.objects.trapTypes[trap.trapType].unpassable), None)
+      # Only check for activatesOnWalkedThrough traps when thief moves off of them and not on the thief's first move
+      if self.movementLeft < self.maxMovement and self.game.objects.trapTypes[trap.trapType].activatesOnWalkedThrough:
+        #backstab trap
+        trap.attack(self)
+        trap.activate()
 
-    if blockingTrap:
-      blockingTrap.activate()
+      blocked = self.game.objects.trapTypes[trap.trapType].unpassable
+      if blocked:
+        #blocking trap
+        self.game.objects.trapTypes[trap.trapType].unpassable
 
-    if self.alive and not blockingTrap:
+
+    if self.alive and not blocked:
       self.game.grid[self.x][self.y].remove(self)
       self.x, self.y = x, y
       self.game.grid[self.x][self.y].append(self)
       self.movementLeft -= 1
       self.game.addAnimation(MoveAnimation(self.id, self.x, self.y, x, y))
 
-      instaTrap = next((trap for trap in self.game.grid[x][y] if isinstance(trap, Trap) and trap.active and self.game.objects.trapTypes[trap.trapType].activatesOnWalkedThrough and self.game.objects.trapTypes[trap.trapType].turnsToActivateOnTile == 1), None)
 
-      if instaTrap:
-        instaTrap.attack(self)
-        instaTrap.activate()
+      if trap and trap.active and \
+         self.game.objects.trapTypes[trap.trapType].activatesOnWalkedThrough and \
+         self.game.objects.trapTypes[trap.trapType].turnsToActivateOnTile == 1:
+        # insta trap
+        trap.attack(self)
+        trap.activate()
 
     return True
 
