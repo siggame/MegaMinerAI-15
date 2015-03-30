@@ -313,7 +313,6 @@ class Thief(Mappable):
           #TODO: Make wall a normal tile
       self.bombsLeft -= 1
 
-    if self.thiefType == self.game.bomber:
 
 
 
