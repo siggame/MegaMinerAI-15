@@ -185,9 +185,9 @@ class Trap(Mappable):
     self.activationsRemaining -= 1
     if self.activationsRemaining == 0:
       self.active = 0
-    elif self.game.trapTypes[self.trapType].cooldown:
+    elif self.game.objects.trapTypes[self.trapType].cooldown:
       self.active = 0
-      self.turnsTillActive = self.game.trapTypes[self.trapType].cooldown
+      self.turnsTillActive = self.game.objects.trapTypes[self.trapType].cooldown
     self.visible = 1
 
   def attack(self, thief):
@@ -219,7 +219,7 @@ class Trap(Mappable):
           # Find thieves
           thieves = [unit for unit in self.game.grid[self.x][self.y] if isinstance(unit, Thief)]
           # Forget thieves who moved off
-          self.standingThieves = {thief: turns for thief, turns in self.standingThieves if thief in thieves}
+          self.standingThieves = {thief: turns for thief, turns in self.standingThieves.iteritems() if thief in thieves}
           # Increase counter for thieves
           activated = False
           for thief in thieves:
