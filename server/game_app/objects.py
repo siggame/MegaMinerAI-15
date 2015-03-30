@@ -380,7 +380,39 @@ class Thief(Mappable):
 
     return True
 
-  def act(self, x, y):
+  def act(self, x, y):\
+	if self.thiefType == self.thiefType.digger
+		#checks for any thief actions return strings aren't generic
+		if self.owner != self.game.playerID
+			return 'Cannot move other players thief'
+		if self.specialsLeft == 0
+			return 'This digger has no more specials left'
+		if not self.alive
+			return 'The dead can\'t dig'
+		if self.maxMovement != self.movementLeft
+			return 'Can\'t dig after moving'
+		if self.frozenTurnsLeft
+			return 'Can\'t dig when frozen'
+		#checks for digger specifically
+		if self.game.grid[x][y][0].type !=  self.game.wall
+			return 'Cannot dig into an empty tile'
+		if x>=self.game.mapWidth or y>=self.game.mapHeight
+			return 'Cannot move thief off the Map'
+		newx= x-self.x
+		newy= y-self.y
+		#need to add code for dealing with rotating wall trap
+		if (abs(newx)+abs(newy)!=1)
+			return 'Must dig into an adjacent tile'
+		if(self.game.grid[x+newx][y+newy][0].type==self.game.wall)
+			return 'Can\'t dig through a wall more than 1 tile thick'
+		self.game.grid[self.x][self.y].remove(self)
+		if next(trap for trap in self.game.grid[x][y] if isinstance(trap, Trap))
+			self.x,self.y=x,y
+			trap.attack(self)
+		else
+			self.x,self.y=x,y
+		self.game.grid[self.x][self.y].append(self)
+
     pass
 
   def __setattr__(self, name, value):
