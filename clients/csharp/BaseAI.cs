@@ -230,4 +230,24 @@ public abstract class BaseAI
     int value = Client.getMaxStack(connection);
     return value;
   }
+
+  /// <summary>
+  /// The number of won rounds required to win.
+  /// </summary>
+  /// <returns>Returns the number of won rounds required to win.</returns>
+  public int roundsToWin()
+  {
+    int value = Client.getRoundsToWin(connection);
+    return value;
+  }
+
+  /// <summary>
+  /// The maximum number of round turns before a winner is decided.
+  /// </summary>
+  /// <returns>Returns the maximum number of round turns before a winner is decided.</returns>
+  public int roundTurnLimit()
+  {
+    int value = Client.getRoundTurnLimit(connection);
+    return value;
+  }
 }

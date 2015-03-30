@@ -49,6 +49,8 @@ struct _Trap
   int visible;
   int active;
   int bodyCount;
+  int activationsRemaining;
+  int turnsTillActive;
 };
 struct _Thief
 {
@@ -59,8 +61,8 @@ struct _Thief
   int owner;
   int thiefType;
   int alive;
-  int ninjaReflexesLeft;
-  int maxNinjaReflexes;
+  int specialsLeft;
+  int maxSpecials;
   int movementLeft;
   int maxMovement;
   int frozenTurnsLeft;
@@ -73,7 +75,7 @@ struct _ThiefType
   int type;
   int cost;
   int maxMovement;
-  int maxNinjaReflexes;
+  int maxSpecials;
   int maxInstances;
 };
 struct _TrapType
@@ -83,16 +85,20 @@ struct _TrapType
   char* name;
   int type;
   int cost;
+  int maxInstances;
   int startsVisible;
   int hasAction;
-  int activatable;
-  int maxBodyCount;
-  int maxInstances;
-  int killsOnWalkThrough;
-  int turnsToKillOnTile;
-  int canPlaceInWalls;
-  int canPlaceInEmptyTiles;
+  int deactivatable;
+  int maxActivations;
+  int activatesOnWalkedThrough;
+  int turnsToActivateOnTile;
+  int canPlaceOnWalls;
+  int canPlaceOnOpenTiles;
   int freezesForTurns;
+  int killsOnActivate;
+  int cooldown;
+  int explosive;
+  int unpassable;
 };
 
 #endif

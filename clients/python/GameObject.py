@@ -205,7 +205,7 @@ class Tile(Mappable):
     self.validify()
     return library.tileGetType(self._ptr)
   #\endcond
-  ##What type of tile this is. 0: empty, 1: wall: 2: spawn.
+  ##What type of tile this is. 0: empty, 1: spawn: 2: wall.
   type = property(getType)
 
 
@@ -314,6 +314,22 @@ class Trap(Mappable):
   ##How many thieves this trap has killed.
   bodyCount = property(getBodyCount)
 
+  #\cond
+  def getActivationsRemaining(self):
+    self.validify()
+    return library.trapGetActivationsRemaining(self._ptr)
+  #\endcond
+  ##How many more times this trap can activate.
+  activationsRemaining = property(getActivationsRemaining)
+
+  #\cond
+  def getTurnsTillActive(self):
+    self.validify()
+    return library.trapGetTurnsTillActive(self._ptr)
+  #\endcond
+  ##How many more turns this trap is inactive due to cooldown.
+  turnsTillActive = property(getTurnsTillActive)
+
 
   def __str__(self):
     self.validify()
@@ -326,6 +342,8 @@ class Trap(Mappable):
     ret += "visible: %s\n" % self.getVisible()
     ret += "active: %s\n" % self.getActive()
     ret += "bodyCount: %s\n" % self.getBodyCount()
+    ret += "activationsRemaining: %s\n" % self.getActivationsRemaining()
+    ret += "turnsTillActive: %s\n" % self.getTurnsTillActive()
     return ret
 
 ##Represents a single thief on the map.
@@ -414,20 +432,20 @@ class Thief(Mappable):
   alive = property(getAlive)
 
   #\cond
-  def getNinjaReflexesLeft(self):
+  def getSpecialsLeft(self):
     self.validify()
-    return library.thiefGetNinjaReflexesLeft(self._ptr)
+    return library.thiefGetSpecialsLeft(self._ptr)
   #\endcond
-  ##How many more deaths this thief can escape.
-  ninjaReflexesLeft = property(getNinjaReflexesLeft)
+  ##How many more times this thief can use its special ability.
+  specialsLeft = property(getSpecialsLeft)
 
   #\cond
-  def getMaxNinjaReflexes(self):
+  def getMaxSpecials(self):
     self.validify()
-    return library.thiefGetMaxNinjaReflexes(self._ptr)
+    return library.thiefGetMaxSpecials(self._ptr)
   #\endcond
-  ##The maximum number of times this thief can escape death.
-  maxNinjaReflexes = property(getMaxNinjaReflexes)
+  ##The maximum number of times this thief can use its special ability.
+  maxSpecials = property(getMaxSpecials)
 
   #\cond
   def getMovementLeft(self):
@@ -463,8 +481,8 @@ class Thief(Mappable):
     ret += "owner: %s\n" % self.getOwner()
     ret += "thiefType: %s\n" % self.getThiefType()
     ret += "alive: %s\n" % self.getAlive()
-    ret += "ninjaReflexesLeft: %s\n" % self.getNinjaReflexesLeft()
-    ret += "maxNinjaReflexes: %s\n" % self.getMaxNinjaReflexes()
+    ret += "specialsLeft: %s\n" % self.getSpecialsLeft()
+    ret += "maxSpecials: %s\n" % self.getMaxSpecials()
     ret += "movementLeft: %s\n" % self.getMovementLeft()
     ret += "maxMovement: %s\n" % self.getMaxMovement()
     ret += "frozenTurnsLeft: %s\n" % self.getFrozenTurnsLeft()
@@ -533,12 +551,12 @@ class ThiefType(GameObject):
   maxMovement = property(getMaxMovement)
 
   #\cond
-  def getMaxNinjaReflexes(self):
+  def getMaxSpecials(self):
     self.validify()
-    return library.thiefTypeGetMaxNinjaReflexes(self._ptr)
+    return library.thiefTypeGetMaxSpecials(self._ptr)
   #\endcond
-  ##The maximum number of times this thief can escape death.
-  maxNinjaReflexes = property(getMaxNinjaReflexes)
+  ##The maximum number of times this thief can use its special ability.
+  maxSpecials = property(getMaxSpecials)
 
   #\cond
   def getMaxInstances(self):
@@ -557,7 +575,7 @@ class ThiefType(GameObject):
     ret += "type: %s\n" % self.getType()
     ret += "cost: %s\n" % self.getCost()
     ret += "maxMovement: %s\n" % self.getMaxMovement()
-    ret += "maxNinjaReflexes: %s\n" % self.getMaxNinjaReflexes()
+    ret += "maxSpecials: %s\n" % self.getMaxSpecials()
     ret += "maxInstances: %s\n" % self.getMaxInstances()
     return ret
 
@@ -616,6 +634,14 @@ class TrapType(GameObject):
   cost = property(getCost)
 
   #\cond
+  def getMaxInstances(self):
+    self.validify()
+    return library.trapTypeGetMaxInstances(self._ptr)
+  #\endcond
+  ##The maximum number of this type of trap that can be placed in a round by a player.
+  maxInstances = property(getMaxInstances)
+
+  #\cond
   def getStartsVisible(self):
     self.validify()
     return library.trapTypeGetStartsVisible(self._ptr)
@@ -632,60 +658,52 @@ class TrapType(GameObject):
   hasAction = property(getHasAction)
 
   #\cond
-  def getActivatable(self):
+  def getDeactivatable(self):
     self.validify()
-    return library.trapTypeGetActivatable(self._ptr)
+    return library.trapTypeGetDeactivatable(self._ptr)
   #\endcond
-  ##Whether the trap can be activated by the player.
-  activatable = property(getActivatable)
+  ##Whether the trap can be deactivated by the player, stopping the trap from automatically activating.
+  deactivatable = property(getDeactivatable)
 
   #\cond
-  def getMaxBodyCount(self):
+  def getMaxActivations(self):
     self.validify()
-    return library.trapTypeGetMaxBodyCount(self._ptr)
+    return library.trapTypeGetMaxActivations(self._ptr)
   #\endcond
-  ##The maximum number of bodies needed to disable this trap.
-  maxBodyCount = property(getMaxBodyCount)
+  ##The maximum number of times this trap can be activated before being disabled.
+  maxActivations = property(getMaxActivations)
 
   #\cond
-  def getMaxInstances(self):
+  def getActivatesOnWalkedThrough(self):
     self.validify()
-    return library.trapTypeGetMaxInstances(self._ptr)
+    return library.trapTypeGetActivatesOnWalkedThrough(self._ptr)
   #\endcond
-  ##The maximum number of this type of trap that can be placed in a round by a player.
-  maxInstances = property(getMaxInstances)
+  ##This trap activates when a thief moves onto and then off of this tile.
+  activatesOnWalkedThrough = property(getActivatesOnWalkedThrough)
 
   #\cond
-  def getKillsOnWalkThrough(self):
+  def getTurnsToActivateOnTile(self):
     self.validify()
-    return library.trapTypeGetKillsOnWalkThrough(self._ptr)
+    return library.trapTypeGetTurnsToActivateOnTile(self._ptr)
   #\endcond
-  ##Thieves who move onto and then off of this tile die.
-  killsOnWalkThrough = property(getKillsOnWalkThrough)
+  ##The maximum number of turns a thief can stay on this tile before it activates.
+  turnsToActivateOnTile = property(getTurnsToActivateOnTile)
 
   #\cond
-  def getTurnsToKillOnTile(self):
+  def getCanPlaceOnWalls(self):
     self.validify()
-    return library.trapTypeGetTurnsToKillOnTile(self._ptr)
-  #\endcond
-  ##The maximum number of turns a thief can stay on this tile before it dies.
-  turnsToKillOnTile = property(getTurnsToKillOnTile)
-
-  #\cond
-  def getCanPlaceInWalls(self):
-    self.validify()
-    return library.trapTypeGetCanPlaceInWalls(self._ptr)
+    return library.trapTypeGetCanPlaceOnWalls(self._ptr)
   #\endcond
   ##Whether this trap can be placed inside of walls.
-  canPlaceInWalls = property(getCanPlaceInWalls)
+  canPlaceOnWalls = property(getCanPlaceOnWalls)
 
   #\cond
-  def getCanPlaceInEmptyTiles(self):
+  def getCanPlaceOnOpenTiles(self):
     self.validify()
-    return library.trapTypeGetCanPlaceInEmptyTiles(self._ptr)
+    return library.trapTypeGetCanPlaceOnOpenTiles(self._ptr)
   #\endcond
   ##Whether this trap can be placed on empty tiles.
-  canPlaceInEmptyTiles = property(getCanPlaceInEmptyTiles)
+  canPlaceOnOpenTiles = property(getCanPlaceOnOpenTiles)
 
   #\cond
   def getFreezesForTurns(self):
@@ -695,6 +713,38 @@ class TrapType(GameObject):
   ##How many turns a thief will be frozen when this trap activates.
   freezesForTurns = property(getFreezesForTurns)
 
+  #\cond
+  def getKillsOnActivate(self):
+    self.validify()
+    return library.trapTypeGetKillsOnActivate(self._ptr)
+  #\endcond
+  ##Whether this trap kills thieves when activated.
+  killsOnActivate = property(getKillsOnActivate)
+
+  #\cond
+  def getCooldown(self):
+    self.validify()
+    return library.trapTypeGetCooldown(self._ptr)
+  #\endcond
+  ##How many turns this trap has to wait between activations.
+  cooldown = property(getCooldown)
+
+  #\cond
+  def getExplosive(self):
+    self.validify()
+    return library.trapTypeGetExplosive(self._ptr)
+  #\endcond
+  ##When destroyed via dynamite kills adjacent thieves.
+  explosive = property(getExplosive)
+
+  #\cond
+  def getUnpassable(self):
+    self.validify()
+    return library.trapTypeGetUnpassable(self._ptr)
+  #\endcond
+  ##Cannot be passed through, stopping a thief that tries to move onto its tile.
+  unpassable = property(getUnpassable)
+
 
   def __str__(self):
     self.validify()
@@ -703,14 +753,18 @@ class TrapType(GameObject):
     ret += "name: %s\n" % self.getName()
     ret += "type: %s\n" % self.getType()
     ret += "cost: %s\n" % self.getCost()
+    ret += "maxInstances: %s\n" % self.getMaxInstances()
     ret += "startsVisible: %s\n" % self.getStartsVisible()
     ret += "hasAction: %s\n" % self.getHasAction()
-    ret += "activatable: %s\n" % self.getActivatable()
-    ret += "maxBodyCount: %s\n" % self.getMaxBodyCount()
-    ret += "maxInstances: %s\n" % self.getMaxInstances()
-    ret += "killsOnWalkThrough: %s\n" % self.getKillsOnWalkThrough()
-    ret += "turnsToKillOnTile: %s\n" % self.getTurnsToKillOnTile()
-    ret += "canPlaceInWalls: %s\n" % self.getCanPlaceInWalls()
-    ret += "canPlaceInEmptyTiles: %s\n" % self.getCanPlaceInEmptyTiles()
+    ret += "deactivatable: %s\n" % self.getDeactivatable()
+    ret += "maxActivations: %s\n" % self.getMaxActivations()
+    ret += "activatesOnWalkedThrough: %s\n" % self.getActivatesOnWalkedThrough()
+    ret += "turnsToActivateOnTile: %s\n" % self.getTurnsToActivateOnTile()
+    ret += "canPlaceOnWalls: %s\n" % self.getCanPlaceOnWalls()
+    ret += "canPlaceOnOpenTiles: %s\n" % self.getCanPlaceOnOpenTiles()
     ret += "freezesForTurns: %s\n" % self.getFreezesForTurns()
+    ret += "killsOnActivate: %s\n" % self.getKillsOnActivate()
+    ret += "cooldown: %s\n" % self.getCooldown()
+    ret += "explosive: %s\n" % self.getExplosive()
+    ret += "unpassable: %s\n" % self.getUnpassable()
     return ret

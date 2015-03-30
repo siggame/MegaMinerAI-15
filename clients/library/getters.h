@@ -38,6 +38,8 @@ DLLEXPORT int trapGetTrapType(_Trap* ptr);
 DLLEXPORT int trapGetVisible(_Trap* ptr);
 DLLEXPORT int trapGetActive(_Trap* ptr);
 DLLEXPORT int trapGetBodyCount(_Trap* ptr);
+DLLEXPORT int trapGetActivationsRemaining(_Trap* ptr);
+DLLEXPORT int trapGetTurnsTillActive(_Trap* ptr);
 
 
 DLLEXPORT int thiefGetId(_Thief* ptr);
@@ -46,8 +48,8 @@ DLLEXPORT int thiefGetY(_Thief* ptr);
 DLLEXPORT int thiefGetOwner(_Thief* ptr);
 DLLEXPORT int thiefGetThiefType(_Thief* ptr);
 DLLEXPORT int thiefGetAlive(_Thief* ptr);
-DLLEXPORT int thiefGetNinjaReflexesLeft(_Thief* ptr);
-DLLEXPORT int thiefGetMaxNinjaReflexes(_Thief* ptr);
+DLLEXPORT int thiefGetSpecialsLeft(_Thief* ptr);
+DLLEXPORT int thiefGetMaxSpecials(_Thief* ptr);
 DLLEXPORT int thiefGetMovementLeft(_Thief* ptr);
 DLLEXPORT int thiefGetMaxMovement(_Thief* ptr);
 DLLEXPORT int thiefGetFrozenTurnsLeft(_Thief* ptr);
@@ -58,7 +60,7 @@ DLLEXPORT char* thiefTypeGetName(_ThiefType* ptr);
 DLLEXPORT int thiefTypeGetType(_ThiefType* ptr);
 DLLEXPORT int thiefTypeGetCost(_ThiefType* ptr);
 DLLEXPORT int thiefTypeGetMaxMovement(_ThiefType* ptr);
-DLLEXPORT int thiefTypeGetMaxNinjaReflexes(_ThiefType* ptr);
+DLLEXPORT int thiefTypeGetMaxSpecials(_ThiefType* ptr);
 DLLEXPORT int thiefTypeGetMaxInstances(_ThiefType* ptr);
 
 
@@ -66,16 +68,20 @@ DLLEXPORT int trapTypeGetId(_TrapType* ptr);
 DLLEXPORT char* trapTypeGetName(_TrapType* ptr);
 DLLEXPORT int trapTypeGetType(_TrapType* ptr);
 DLLEXPORT int trapTypeGetCost(_TrapType* ptr);
+DLLEXPORT int trapTypeGetMaxInstances(_TrapType* ptr);
 DLLEXPORT int trapTypeGetStartsVisible(_TrapType* ptr);
 DLLEXPORT int trapTypeGetHasAction(_TrapType* ptr);
-DLLEXPORT int trapTypeGetActivatable(_TrapType* ptr);
-DLLEXPORT int trapTypeGetMaxBodyCount(_TrapType* ptr);
-DLLEXPORT int trapTypeGetMaxInstances(_TrapType* ptr);
-DLLEXPORT int trapTypeGetKillsOnWalkThrough(_TrapType* ptr);
-DLLEXPORT int trapTypeGetTurnsToKillOnTile(_TrapType* ptr);
-DLLEXPORT int trapTypeGetCanPlaceInWalls(_TrapType* ptr);
-DLLEXPORT int trapTypeGetCanPlaceInEmptyTiles(_TrapType* ptr);
+DLLEXPORT int trapTypeGetDeactivatable(_TrapType* ptr);
+DLLEXPORT int trapTypeGetMaxActivations(_TrapType* ptr);
+DLLEXPORT int trapTypeGetActivatesOnWalkedThrough(_TrapType* ptr);
+DLLEXPORT int trapTypeGetTurnsToActivateOnTile(_TrapType* ptr);
+DLLEXPORT int trapTypeGetCanPlaceOnWalls(_TrapType* ptr);
+DLLEXPORT int trapTypeGetCanPlaceOnOpenTiles(_TrapType* ptr);
 DLLEXPORT int trapTypeGetFreezesForTurns(_TrapType* ptr);
+DLLEXPORT int trapTypeGetKillsOnActivate(_TrapType* ptr);
+DLLEXPORT int trapTypeGetCooldown(_TrapType* ptr);
+DLLEXPORT int trapTypeGetExplosive(_TrapType* ptr);
+DLLEXPORT int trapTypeGetUnpassable(_TrapType* ptr);
 
 
 

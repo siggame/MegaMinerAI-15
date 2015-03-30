@@ -56,6 +56,14 @@ int BaseAI::maxStack()
 {
   return getMaxStack(c);
 }
+int BaseAI::roundsToWin()
+{
+  return getRoundsToWin(c);
+}
+int BaseAI::roundTurnLimit()
+{
+  return getRoundTurnLimit(c);
+}
 
 bool BaseAI::startTurn()
 {

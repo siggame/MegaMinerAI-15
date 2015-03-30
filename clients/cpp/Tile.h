@@ -20,7 +20,7 @@ class Tile : public Mappable {
   int x();
   ///Y position of the object
   int y();
-  ///What type of tile this is. 0: empty, 1: wall: 2: spawn.
+  ///What type of tile this is. 0: empty, 1: spawn: 2: wall.
   int type();
 
   // Actions

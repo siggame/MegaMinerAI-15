@@ -52,6 +52,16 @@ int Trap::bodyCount()
   return ((_Trap*)ptr)->bodyCount;
 }
 
+int Trap::activationsRemaining()
+{
+  return ((_Trap*)ptr)->activationsRemaining;
+}
+
+int Trap::turnsTillActive()
+{
+  return ((_Trap*)ptr)->turnsTillActive;
+}
+
 
 int Trap::act(int x, int y)
 {
@@ -75,6 +85,8 @@ std::ostream& operator<<(std::ostream& stream,Trap ob)
   stream << "visible: " << ((_Trap*)ob.ptr)->visible  <<'\n';
   stream << "active: " << ((_Trap*)ob.ptr)->active  <<'\n';
   stream << "bodyCount: " << ((_Trap*)ob.ptr)->bodyCount  <<'\n';
+  stream << "activationsRemaining: " << ((_Trap*)ob.ptr)->activationsRemaining  <<'\n';
+  stream << "turnsTillActive: " << ((_Trap*)ob.ptr)->turnsTillActive  <<'\n';
   return stream;
 }
 

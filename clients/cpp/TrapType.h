@@ -22,26 +22,34 @@ class TrapType {
   int type();
   ///The number of scarabs required to purchase this trap.
   int cost();
+  ///The maximum number of this type of trap that can be placed in a round by a player.
+  int maxInstances();
   ///Whether the trap starts visible to the enemy player.
   int startsVisible();
   ///Whether the trap is able to act().
   int hasAction();
-  ///Whether the trap can be activated by the player.
-  int activatable();
-  ///The maximum number of bodies needed to disable this trap.
-  int maxBodyCount();
-  ///The maximum number of this type of trap that can be placed in a round by a player.
-  int maxInstances();
-  ///Thieves who move onto and then off of this tile die.
-  int killsOnWalkThrough();
-  ///The maximum number of turns a thief can stay on this tile before it dies.
-  int turnsToKillOnTile();
+  ///Whether the trap can be deactivated by the player, stopping the trap from automatically activating.
+  int deactivatable();
+  ///The maximum number of times this trap can be activated before being disabled.
+  int maxActivations();
+  ///This trap activates when a thief moves onto and then off of this tile.
+  int activatesOnWalkedThrough();
+  ///The maximum number of turns a thief can stay on this tile before it activates.
+  int turnsToActivateOnTile();
   ///Whether this trap can be placed inside of walls.
-  int canPlaceInWalls();
+  int canPlaceOnWalls();
   ///Whether this trap can be placed on empty tiles.
-  int canPlaceInEmptyTiles();
+  int canPlaceOnOpenTiles();
   ///How many turns a thief will be frozen when this trap activates.
   int freezesForTurns();
+  ///Whether this trap kills thieves when activated.
+  int killsOnActivate();
+  ///How many turns this trap has to wait between activations.
+  int cooldown();
+  ///When destroyed via dynamite kills adjacent thieves.
+  int explosive();
+  ///Cannot be passed through, stopping a thief that tries to move onto its tile.
+  int unpassable();
 
   // Actions
 

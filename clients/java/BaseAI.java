@@ -159,4 +159,14 @@ public abstract class BaseAI
   {
     return Client.INSTANCE.getMaxStack(connection);
   }
+  ///The number of won rounds required to win.
+  int roundsToWin()
+  {
+    return Client.INSTANCE.getRoundsToWin(connection);
+  }
+  ///The maximum number of round turns before a winner is decided.
+  int roundTurnLimit()
+  {
+    return Client.INSTANCE.getRoundTurnLimit(connection);
+  }
 }

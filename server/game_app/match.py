@@ -8,8 +8,10 @@ import os
 import itertools
 import scribe
 import jsonLogger
+import maze
 
 Scribe = scribe.Scribe
+
 
 def loadClassDefaults(cfgFile = "config/defaults.cfg"):
   cfg = networking.config.config.readConfig(cfgFile)
@@ -42,6 +44,8 @@ class Match(DefaultGameWorld):
     self.scarabsForTraps = self.scarabsForTraps
     self.scarabsForThieves = self.scarabsForThieves
     self.maxStack = self.maxStack
+    self.roundsToWin = self.roundsToWin
+    self.roundTurnLimit = self.roundTurnLimit
 
   #this is here to be wrapped
   def __del__(self):
@@ -73,38 +77,70 @@ class Match(DefaultGameWorld):
     else:
       self.spectators.remove(connection)
 
+  def loadTypeConfig(self):
+    cfgTrapTypes = networking.config.config.readConfig("config/trapTypes.cfg")
+    cfgThiefTypes = networking.config.config.readConfig("config/thiefTypes.cfg")
+    trapTypeStatlist = ['name', 'type', 'cost', 'maxInstances', 'startsVisible', 'hasAction', 'deactivatable', 'maxActivations', 'activatesOnWalkedThrough', 'turnsToActivateOnTile', 'canPlaceOnWalls', 'canPlaceOnOpenTiles', 'freezesForTurns', 'killsOnActivate', 'cooldown', 'explosive', 'unpassable']
+    thiefTypeStatlist = ['name', 'type', 'cost', 'maxMovement', 'maxSpecials', 'maxInstances']
+    trapTypes = cfgTrapTypes.values()
+    trapTypes.sort(key=lambda trapType: trapType['type'])
+    for trapTypeStats in trapTypes:
+      newTrapType = self.addObject(TrapType, [trapTypeStats[key] for key in trapTypeStatlist])
+    thiefTypes = cfgThiefTypes.values()
+    thiefTypes.sort(key=lambda thiefType: thiefType['type'])
+    for thiefTypeStats in thiefTypes:
+      self.addObject(ThiefType, [thiefTypeStats[key] for key in thiefTypeStatlist])
+
   def start(self):
     if len(self.players) < 2:
       return "Game is not full"
     if self.winner is not None or self.turn is not None:
       return "Game has already begun"
 
+    self.loadTypeConfig()
+
     #TODO: START STUFF
     self.turn = self.players[-1]
     self.turnNumber = -1
     self.roundTurnNumber = -1
-    self.grid = [[[ self.addObject(Tile,[x, y, -1]) ] for y in range(self.mapHeight)] for x in range(self.mapWidth)]
+
+    self.grid = [[[ self.addObject(Tile,[x, y, self.empty]) ] for y in range(self.mapHeight)] for x in range(self.mapWidth)]
+
+    self.setupRound()
 
     self.nextTurn()
     return True
+
+  def setupRound(self):
+      generatedMaze = maze.generate(self.mapHeight)
+      for y in range(self.mapHeight):
+        for x in range(self.mapWidth):
+          self.grid[x][y][:] = self.grid[x][y][0:1] # Remove everything except tile
+          self.grid[x][y][0].type = generatedMaze[x % (self.mapWidth / 2)][y]
+          self.grid[x][y][0].updatedAt = self.turnNumber # updatedAt tells the server to resend tile data
+
+      # Remove any traps and thieves from the previous round
+      for trap in list(self.objects.traps):
+        #self.grid[trap.x][trap.y].remove(trap)
+        self.removeObject(trap)
+      for thief in list(self.objects.thiefs):
+        #self.grid[thief.x][thief.y].remove(thief)
+        self.removeObject(thief)
+
+      # Place a sarcophagus, players can still move it later
+      # ['id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount', 'activationsRemaining', 'turnsTillActive']
+      sarcophagus_stats = [self.mapWidth / 4 + 1, self.mapHeight / 2 + 1, 0, self.sarcophagus, 1, 1, 0, 0, 0]
+      self.grid[self.mapWidth / 4 + 1][self.mapHeight / 2 + 1].append( self.addObject(Trap, sarcophagus_stats))
+      sarcophagus_stats = [self.mapWidth / 4 + 1 + self.mapWidth / 2, self.mapHeight / 2 + 1, 1, self.sarcophagus, 1, 1, 0, 0, 0]
+      self.grid[self.mapWidth / 4 + 1 + self.mapWidth / 2][self.mapHeight / 2 + 1].append( self.addObject(Trap, sarcophagus_stats))
+
+      return True
 
   def getTile(self, x, y):
     if (0 <= x < self.mapWidth) and (0 <= y < self.mapHeight):
       return self.grid[x][y][0]
     else:
       return None
-
-  def getRealX(self, player, x, side):
-	if player == 0:
-		if side == 0:# left player placing traps
-			return x
-		else:# left player placing thieves
-			return x + (self.mapWidth / 2)
-	else:
-		if side == 1:# right player placing traps
-			return x + (self.mapWidth / 2)
-		else:# right player placing thieves
-			return x
 
   def nextTurn(self):
     self.turnNumber += 1
@@ -115,9 +151,10 @@ class Match(DefaultGameWorld):
     elif self.turn == self.players[1]:
       self.turn = self.players[0]
       self.playerID = 0
-
     else:
       return "Game is over."
+
+    self.checkRoundWinner()
 
     for obj in self.objects.values():
       obj.nextTurn()
@@ -143,6 +180,8 @@ class Match(DefaultGameWorld):
           scarabsForTraps = self.scarabsForTraps,
           scarabsForThieves = self.scarabsForThieves,
           maxStack = self.maxStack,
+          roundsToWin = self.roundsToWin,
+          roundTurnLimit = self.roundTurnLimit,
           Players = [i.toJson() for i in self.objects.values() if i.__class__ is Player],
           Mappables = [i.toJson() for i in self.objects.values() if i.__class__ is Mappable],
           Tiles = [i.toJson() for i in self.objects.values() if i.__class__ is Tile],
@@ -158,15 +197,58 @@ class Match(DefaultGameWorld):
     self.animations = ["animations"]
     return True
 
-  def checkWinner(self):
-    #TODO: Make this check if a player won, and call declareWinner with a player if they did
-    if self.turnNumber >= self.turnLimit:
-       self.declareWinner(self.players[0], "Because I said so, this should be removed")
+  def checkRoundWinner(self):
+    sarcophagi = dict()
+    for trap in self.objects.traps:
+      if trap.trapType == self.sarcophagus:
+        sarcophagi[trap.owner] = trap
 
+    #check if there are any enemy thieves on the sarcophagus
+    for playerID in [0, 1]:
+      for obj in self.grid[sarcophagi[playerID].x][sarcophagi[playerID].y]:
+        if isinstance(obj, Thief):
+          self.declareRoundWinner(self.objects.players[obj.owner], "Player {} reached the sarcophagus".format(obj.owner))
+          return True
+
+    if self.roundTurnNumber >= self.roundTurnLimit:
+      #the winner at this point is the player who is closest to their sarcophagus
+      player0Closest = 100
+      player1Closest = 100
+      for thief in self.objects.thiefs:
+        if thief.owner == 0:
+          player0Closest = min(player0Closest, abs(thief.x-sarcophagi[0].x) + abs(thief.y-sarcophagi[0].y))
+        else:
+          player1Closest = min(player1Closest, abs(thief.x-sarcophagi[1].x) + abs(thief.y-sarcophagi[1].y))
+
+      if player0Closest < player1Closest:
+        self.declareRoundWinner(self.objects.players[0], "Player 0 was closest to their sarcophagus")
+      elif player1Closest < player0Closest:
+        self.declareRoundWinner(self.objects.players[1], "Player 1 was closest to their sarcophagus")
+      else:
+        #TODO: Add more tiebreakers
+        self.declareRoundWinner(self.objects.players[0], "Because I said so, this should be removed")
+      return True
+    return False
+
+  def checkWinner(self):
+    for playerObj in self.objects.players:
+      if playerObj.roundsWon >= self.roundsToWin:
+        self.declareWinner(self.players[playerObj.id], "Player {} ({}) reached {} points".format(playerObj.id, self.players[playerObj.id].user, self.roundsToWin))
+
+  #declare the round winner and reset the match
+  def declareRoundWinner(self, winner, reason=''):
+    winnerName = self.players[winner.id].user
+    winner.roundsWon = winner.roundsWon + 1
+    print "Turn {}: Player {} ({}) wins round {} for game {} because {}".format(self.turnNumber, winner.id, winnerName, self.roundNumber, self.id, reason)
+    self.roundNumber += 1
+    if winner.roundsWon < self.roundsToWin:
+      #TODO: Add an animation declaring the round winner
+      self.setupRound()
+      self.roundTurnNumber = 0
 
   def declareWinner(self, winner, reason=''):
-    print "Player", self.getPlayerIndex(self.winner), "wins game", self.id
     self.winner = winner
+    print "Player {} ({}) wins game {} because {}".format(self.getPlayerIndex(self.winner), self.winner.user, self.id, reason)
 
     msg = ["game-winner", self.id, self.winner.user, self.getPlayerIndex(self.winner), reason]
     
@@ -251,20 +333,20 @@ class Match(DefaultGameWorld):
   def status(self):
     msg = ["status"]
 
-    msg.append(["game", self.mapWidth, self.mapHeight, self.turnNumber, self.roundTurnNumber, self.maxThieves, self.maxTraps, self.playerID, self.gameNumber, self.roundNumber, self.scarabsForTraps, self.scarabsForThieves, self.maxStack])
+    msg.append(["game", self.mapWidth, self.mapHeight, self.turnNumber, self.roundTurnNumber, self.maxThieves, self.maxTraps, self.playerID, self.gameNumber, self.roundNumber, self.scarabsForTraps, self.scarabsForThieves, self.maxStack, self.roundsToWin, self.roundTurnLimit])
 
     typeLists = []
-    typeLists.append(["Player"] + [i.toList() for i in self.objects.values() if i.__class__ is Player])
+    typeLists.append(["Player"] + [i.toList() for i in self.objects.players])
     typeLists.append(["Mappable"] + [i.toList() for i in self.objects.values() if i.__class__ is Mappable])
-    updated = [i for i in self.objects.values() if i.__class__ is Tile and i.updatedAt > self.turnNumber-3]
+    updated = [i for i in self.objects.tiles if i.updatedAt > self.turnNumber-3]
     if updated:
       typeLists.append(["Tile"] + [i.toList() for i in updated])
-    typeLists.append(["Trap"] + [i.toList() for i in self.objects.values() if i.__class__ is Trap])
-    typeLists.append(["Thief"] + [i.toList() for i in self.objects.values() if i.__class__ is Thief])
-    updated = [i for i in self.objects.values() if i.__class__ is ThiefType and i.updatedAt > self.turnNumber-3]
+    typeLists.append(["Trap"] + [i.toList() for i in self.objects.traps])
+    typeLists.append(["Thief"] + [i.toList() for i in self.objects.thiefs])
+    updated = [i for i in self.objects.thiefTypes if i.updatedAt > self.turnNumber-3]
     if updated:
       typeLists.append(["ThiefType"] + [i.toList() for i in updated])
-    updated = [i for i in self.objects.values() if i.__class__ is TrapType and i.updatedAt > self.turnNumber-3]
+    updated = [i for i in self.objects.trapTypes if i.updatedAt > self.turnNumber-3]
     if updated:
       typeLists.append(["TrapType"] + [i.toList() for i in updated])
 

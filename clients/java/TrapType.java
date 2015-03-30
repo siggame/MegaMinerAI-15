@@ -56,6 +56,12 @@ class TrapType
     validify();
     return Client.INSTANCE.trapTypeGetCost(ptr);
   }
+  ///The maximum number of this type of trap that can be placed in a round by a player.
+  public int getMaxInstances()
+  {
+    validify();
+    return Client.INSTANCE.trapTypeGetMaxInstances(ptr);
+  }
   ///Whether the trap starts visible to the enemy player.
   public int getStartsVisible()
   {
@@ -68,53 +74,71 @@ class TrapType
     validify();
     return Client.INSTANCE.trapTypeGetHasAction(ptr);
   }
-  ///Whether the trap can be activated by the player.
-  public int getActivatable()
+  ///Whether the trap can be deactivated by the player, stopping the trap from automatically activating.
+  public int getDeactivatable()
   {
     validify();
-    return Client.INSTANCE.trapTypeGetActivatable(ptr);
+    return Client.INSTANCE.trapTypeGetDeactivatable(ptr);
   }
-  ///The maximum number of bodies needed to disable this trap.
-  public int getMaxBodyCount()
+  ///The maximum number of times this trap can be activated before being disabled.
+  public int getMaxActivations()
   {
     validify();
-    return Client.INSTANCE.trapTypeGetMaxBodyCount(ptr);
+    return Client.INSTANCE.trapTypeGetMaxActivations(ptr);
   }
-  ///The maximum number of this type of trap that can be placed in a round by a player.
-  public int getMaxInstances()
+  ///This trap activates when a thief moves onto and then off of this tile.
+  public int getActivatesOnWalkedThrough()
   {
     validify();
-    return Client.INSTANCE.trapTypeGetMaxInstances(ptr);
+    return Client.INSTANCE.trapTypeGetActivatesOnWalkedThrough(ptr);
   }
-  ///Thieves who move onto and then off of this tile die.
-  public int getKillsOnWalkThrough()
+  ///The maximum number of turns a thief can stay on this tile before it activates.
+  public int getTurnsToActivateOnTile()
   {
     validify();
-    return Client.INSTANCE.trapTypeGetKillsOnWalkThrough(ptr);
-  }
-  ///The maximum number of turns a thief can stay on this tile before it dies.
-  public int getTurnsToKillOnTile()
-  {
-    validify();
-    return Client.INSTANCE.trapTypeGetTurnsToKillOnTile(ptr);
+    return Client.INSTANCE.trapTypeGetTurnsToActivateOnTile(ptr);
   }
   ///Whether this trap can be placed inside of walls.
-  public int getCanPlaceInWalls()
+  public int getCanPlaceOnWalls()
   {
     validify();
-    return Client.INSTANCE.trapTypeGetCanPlaceInWalls(ptr);
+    return Client.INSTANCE.trapTypeGetCanPlaceOnWalls(ptr);
   }
   ///Whether this trap can be placed on empty tiles.
-  public int getCanPlaceInEmptyTiles()
+  public int getCanPlaceOnOpenTiles()
   {
     validify();
-    return Client.INSTANCE.trapTypeGetCanPlaceInEmptyTiles(ptr);
+    return Client.INSTANCE.trapTypeGetCanPlaceOnOpenTiles(ptr);
   }
   ///How many turns a thief will be frozen when this trap activates.
   public int getFreezesForTurns()
   {
     validify();
     return Client.INSTANCE.trapTypeGetFreezesForTurns(ptr);
+  }
+  ///Whether this trap kills thieves when activated.
+  public int getKillsOnActivate()
+  {
+    validify();
+    return Client.INSTANCE.trapTypeGetKillsOnActivate(ptr);
+  }
+  ///How many turns this trap has to wait between activations.
+  public int getCooldown()
+  {
+    validify();
+    return Client.INSTANCE.trapTypeGetCooldown(ptr);
+  }
+  ///When destroyed via dynamite kills adjacent thieves.
+  public int getExplosive()
+  {
+    validify();
+    return Client.INSTANCE.trapTypeGetExplosive(ptr);
+  }
+  ///Cannot be passed through, stopping a thief that tries to move onto its tile.
+  public int getUnpassable()
+  {
+    validify();
+    return Client.INSTANCE.trapTypeGetUnpassable(ptr);
   }
 
 }

@@ -62,11 +62,11 @@ class ThiefType
     validify();
     return Client.INSTANCE.thiefTypeGetMaxMovement(ptr);
   }
-  ///The maximum number of times this thief can escape death.
-  public int getMaxNinjaReflexes()
+  ///The maximum number of times this thief can use its special ability.
+  public int getMaxSpecials()
   {
     validify();
-    return Client.INSTANCE.thiefTypeGetMaxNinjaReflexes(ptr);
+    return Client.INSTANCE.thiefTypeGetMaxSpecials(ptr);
   }
   ///The maximum number of this type thief that can be purchased each round.
   public int getMaxInstances()
