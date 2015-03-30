@@ -291,7 +291,11 @@ class Thief(Mappable):
     elif (self.thiefType != self.game.bomber) and (self.thiefType != self.game.digger):
       return 'Turn {}: act() is function of the digger and bomber, not the {} {}. ({},{})'.format(self.game.turnNumber, self.thiefType, self.id, self.x, self.y)
     if self.thiefType == self.game.bomber:
+<<<<<<< Updated upstream
       if bombsLeft == 0:
+=======
+      if specialsLeft == 0:
+>>>>>>> Stashed changes
         return 'Turn {}: No bombs remaining for your bomber {}. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
       elif movementLeft != maxMovement:
         return 'Turn {}: Your bomber {} cannot move and throw a bomb on the same turn. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
@@ -301,18 +305,32 @@ class Thief(Mappable):
       for unit in self.game.grid[x][y]:
         #Blow up walls
         if isinstance(unit, Tile) and unit == 2:
+<<<<<<< Updated upstream
           
+=======
+>>>>>>> Stashed changes
         #Blow up traps
         if isinstance(unit, Trap):
           self.game.grid[x][y].remove(unit)
         #Blow up thieves
         if isinstance(unit, Thief):
+<<<<<<< Updated upstream
           self.game.grid[x][y].remove(unit)
         
           
           #TODO: Make wall a normal tile
       self.bombsLeft -= 1
 
+=======
+          unit.alive = 0
+        
+          
+          #TODO: Make wall a normal tile
+          #TODO: Make sure specialsLeft is correct var name
+      self.specialsLeft -= 1
+
+    if self.thiefType == self.game.bomber:
+>>>>>>> Stashed changes
 
 
 
