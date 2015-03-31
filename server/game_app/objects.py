@@ -207,6 +207,8 @@ class Trap(Mappable):
         thief.specialsLeft -= 1
 
   def nextTurn(self):
+    trapType = self.game.objects.trapTypes[self.trapType]
+
     if self.game.playerID == self.owner:
       if self.turnsTillActive > 0:
         self.turnsTillActive -= 1
@@ -217,24 +219,22 @@ class Trap(Mappable):
       elif self.trapType == 2:
         self.active = self.active^1
 
-      if self.active:
-        trapType = self.game.objects.trapTypes[self.trapType]
-        if trapType.turnsToActivateOnTile:
-          # Find thieves
-          thieves = [unit for unit in self.game.grid[self.x][self.y] if isinstance(unit, Thief)]
-          # Forget thieves who moved off
-          self.standingThieves = {thief: turns for thief, turns in self.standingThieves.iteritems() if thief in thieves}
-          # Increase counter for thieves
-          activated = False
-          for thief in thieves:
-            if thief not in self.standingThieves:
-              self.standingThieves[thief] = 0
-            self.standingThieves[thief] += 1
-            if self.standingThieves[thief] >= trapType.turnsToActivateOnTile:
-              activated = True
-              self.attack(thief)
-          if activated:
-            self.activate()
+      elif trapType.turnsToActivateOnTile:
+        # Find thieves
+        thieves = [unit for unit in self.game.grid[self.x][self.y] if isinstance(unit, Thief)]
+        # Forget thieves who moved off
+        self.standingThieves = {thief: turns for thief, turns in self.standingThieves.iteritems() if thief in thieves}
+        # Increase counter for thieves
+        activated = False
+        for thief in thieves:
+          if thief not in self.standingThieves:
+            self.standingThieves[thief] = 0
+          self.standingThieves[thief] += 1
+          if self.standingThieves[thief] >= trapType.turnsToActivateOnTile:
+            activated = True
+            self.attack(thief)
+        if activated:
+          self.activate()
 
       return True
 
