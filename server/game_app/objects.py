@@ -323,6 +323,14 @@ class Thief(Mappable):
   
   def nextTurn(self):
     if self.game.playerID == self.owner:
+      if self.thiefType == 3:
+        xchange = [-1, 1, 0,  0]
+        ychange = [ 0, 0, 1, -1]
+        for i in range(4):
+          if 0 <= self.x + xchange[i] < self.game.mapWidth and 0 <= self.y + ychange[i] < self.game.mapHeight:
+            for obj in self.game.grid[self.x + xchange[i]][self.y + ychange[i]]:
+              if isinstance(obj, Trap):
+                obj.visible = 1
       self.hidden = False
       if self.alive:
         if self.frozenTurnsLeft:
