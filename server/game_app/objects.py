@@ -211,7 +211,7 @@ class Trap(Mappable):
       if self.turnsTillActive > 0:
         self.turnsTillActive -= 1
         if self.turnsTillActive == 0:
-          self.active = True
+          self.active = 1
 
       if self.active:
         trapType = self.game.objects.trapTypes[self.trapType]
