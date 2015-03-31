@@ -213,6 +213,10 @@ class Trap(Mappable):
         if self.turnsTillActive == 0:
           self.active = 1
 
+      # swinging blade
+      elif self.trapType == 2:
+        self.active = self.active^1
+
       if self.active:
         trapType = self.game.objects.trapTypes[self.trapType]
         if trapType.turnsToActivateOnTile:
