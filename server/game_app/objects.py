@@ -362,11 +362,7 @@ class Thief(Mappable):
       return 'Turn {}: Your thief {} cannot move off its side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
     if self.game.getTile(x, y).type == self.game.wall:
       return 'Turn {}: Your thief {} is trying to run into a wall. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-<<<<<<< HEAD
     if abs(self.x - x) + abs(self.y - y) != 1:
-=======
-    elif abs(self.x-x) != 1 or abs(self.y-y) != 1:
->>>>>>> Added thief act() function, modified trap act() function
       return 'Turn {}: Your thief {} can only move one unit away. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
 
     trap = self.game.getTrap(x, y)
@@ -405,39 +401,30 @@ class Thief(Mappable):
   def act(self, x, y):
     if self.owner != self.game.playerID:
       return 'Turn {}: You cannot use the other player\'s thief {}. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
-    elif (self.thiefType != self.game.bomber) and (self.thiefType != self.game.digger):
+    if (self.thiefType != self.game.bomber) and (self.thiefType != self.game.digger):
       return 'Turn {}: act() is function of the digger and bomber, not the {} {}. ({},{})'.format(self.game.turnNumber, self.thiefType, self.id, self.x, self.y)
     if self.thiefType == self.game.bomber:
-      if bombsLeft == 0:
+      if self.specialsLeft <= 0:
         return 'Turn {}: No bombs remaining for your bomber {}. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
       elif movementLeft != maxMovement:
         return 'Turn {}: Your bomber {} cannot move and throw a bomb on the same turn. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
-      elif abs(self.x-x) != 1 or abs(self.y-y) != 1:
+      elif abs(self.x-x) + abs(self.y-y) != 1:
         return 'Turn {}: Your bomber {} must throw onto an adjacent tile. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+
       #Blow stuff up
       for unit in self.game.grid[x][y]:
         #Blow up walls
-        if isinstance(unit, Tile) and unit == 2:
-          
+        if isinstance(unit, Tile) and unit.type == 2:
+          unit.type = 1          
         #Blow up traps
-        if isinstance(unit, Trap):
+        if isinstance(unit, Trap) and unit.trapType != 0:
           self.game.grid[x][y].remove(unit)
         #Blow up thieves
         if isinstance(unit, Thief):
+          unit.alive = 0
           self.game.grid[x][y].remove(unit)
         
-          
-          #TODO: Make wall a normal tile
-      self.bombsLeft -= 1
-
-    if self.thiefType == self.game.bomber:
-
-
-
-
-
-
-
+      self.specialsLeft -= 1
 
   def __setattr__(self, name, value):
       if name in self.game_state_attributes:
