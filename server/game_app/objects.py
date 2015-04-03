@@ -173,6 +173,7 @@ class Trap(Mappable):
 
     self.standingThieves = dict()
     """:type : dict[Thief, int]"""
+    self.movementLeft = 1
 
   def toList(self):
     return [self.id, self.x, self.y, self.owner, self.trapType, self.visible, self.active, self.bodyCount, self.activationsRemaining, self.turnsTillActive, ]
@@ -216,8 +217,11 @@ class Trap(Mappable):
           self.active = 1
 
       # swinging blade
-      elif self.trapType == 2:
-        self.active = self.active^1
+      elif self.trapType == self.game.swingingBlade:
+        self.active = self.active ^ 1
+
+      if self.trapType == self.game.mummy:
+        self.movementLeft = 1
 
       elif trapType.turnsToActivateOnTile:
         # Find thieves
@@ -268,19 +272,20 @@ class Trap(Mappable):
       if abs(x - self.x) + abs(y - self.y) != 1:
         return 'Turn {}: Cannot move mummy {} to non-adjacent space. ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       # Check if desired space is within grid
-      if not (0 <= x - (self.game.mapWidth/2) * (self.owner ^ 1) < self.game.mapWidth/2) or not (0 <= y < self.game.mapHeight):
-        return 'Turn {}: Cannot move mummy {} outside of grid ({}, {}) - ({}, {})'.format(self.game.turnNumber, self.id, self.x self.y, x, y)
+      if not (0 <= x - (self.game.mapWidth/2) * (self.owner) < self.game.mapWidth/2) or not (0 <= y < self.game.mapHeight):
+        return 'Turn {}: Cannot move mummy {} outside of grid ({}, {}) - ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       # Check if desired space is not a wall
-      if self.game.grid[x][y].type == self.game.wall:
-        return 'Turn {}: Cannot move mummy {} into a wall. ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)            
+      if self.game.grid[x][y].type != self.game.empty:
+        return 'Turn {}: Cannot move mummy {} into a wall or spawn. ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       # Check if the mummy still has moves left
       if self.movementLeft <= 0:
-        return 'Turn {}: Mummy {} has no more movement left. ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)               
+        return 'Turn {}: Mummy {} can only move once per turn. ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       
       # Move trap (mummy)
       self.game.grid[self.x][self.y].remove(self)
       self.x, self.y = x, y
       self.game.grid[self.x][self.y].append(self)
+      self.movementLeft -= 1
       # Kill thieves
       for unit in self.game.grid[self.x][self.y]:
         if isinstance(unit, Thief):
