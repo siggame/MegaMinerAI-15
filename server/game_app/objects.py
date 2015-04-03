@@ -269,7 +269,7 @@ class Trap(Mappable):
         return 'Turn {}: Cannot move mummy {} to non-adjacent space. ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       # Check if desired space is within grid
       if not (0 <= x - (self.game.mapWidth/2) * (self.owner ^ 1) < self.game.mapWidth/2) or not (0 <= y < self.game.mapHeight):
-        return 'Turn {}: Cannot move mummy {} outside of grid ({}, {}) - ({}, {})'.format(self.game.turnNumber, self.id, self.x self.y, x, y)
+        return 'Turn {}: Cannot move mummy {} outside of grid ({}, {}) - ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       # Check if desired space is not a wall
       if self.game.grid[x][y].type == self.game.wall:
         return 'Turn {}: Cannot move mummy {} into a wall. ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)            
