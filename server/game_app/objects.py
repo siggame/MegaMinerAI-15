@@ -266,7 +266,17 @@ class Trap(Mappable):
     elif self.trapType == self.game.mummy:
       # Check if desired space is adjacent to mummy's current space
       if abs(x - self.x) + abs(y - self.y) != 1:
-        return 'Turn {}: Cannot move mummy {} to non-adjacent space. ({}, {}) -> ({}, [})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+        return 'Turn {}: Cannot move mummy {} to non-adjacent space. ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+      # Check if desired space is within grid
+      if not (0 <= x - (self.game.mapWidth/2) * (self.owner ^ 1) < self.game.mapWidth/2) or not (0 <= y < self.game.mapHeight):
+        return 'Turn {}: Cannot move mummy {} outside of grid ({}, {}) - ({}, {})'.format(self.game.turnNumber, self.id, self.x self.y, x, y)
+      # Check if desired space is not a wall
+      if self.game.grid[x][y].type == self.game.wall:
+        return 'Turn {}: Cannot move mummy {} into a wall. ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)            
+      # Check if the mummy still has moves left
+      if self.movementLeft <= 0:
+        return 'Turn {}: Mummy {} has no more movement left. ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)               
+      
       # Move trap (mummy)
       self.game.grid[self.x][self.y].remove(self)
       self.x, self.y = x, y
@@ -399,7 +409,32 @@ class Thief(Mappable):
     return True
 
   def act(self, x, y):
-    pass
+    if self.owner != self.game.playerID:
+      return 'Turn {}: You cannot use the other player\'s thief {}. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
+    if (self.thiefType != self.game.bomber) and (self.thiefType != self.game.digger):
+      return 'Turn {}: act() is function of the digger and bomber, not the {} {}. ({},{})'.format(self.game.turnNumber, self.thiefType, self.id, self.x, self.y)
+    if self.thiefType == self.game.bomber:
+      if self.specialsLeft <= 0:
+        return 'Turn {}: No bombs remaining for your bomber {}. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
+      elif movementLeft != maxMovement:
+        return 'Turn {}: Your bomber {} cannot move and throw a bomb on the same turn. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
+      elif abs(self.x-x) + abs(self.y-y) != 1:
+        return 'Turn {}: Your bomber {} must throw onto an adjacent tile. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+
+      #Blow stuff up
+      for unit in self.game.grid[x][y]:
+        #Blow up walls
+        if isinstance(unit, Tile) and unit.type == 2:
+          unit.type = 1          
+        #Blow up traps
+        if isinstance(unit, Trap) and unit.trapType != 0:
+          self.game.grid[x][y].remove(unit)
+        #Blow up thieves
+        if isinstance(unit, Thief):
+          unit.alive = 0
+          self.game.grid[x][y].remove(unit)
+        
+      self.specialsLeft -= 1
 
   def __setattr__(self, name, value):
       if name in self.game_state_attributes:
