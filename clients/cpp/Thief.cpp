@@ -39,14 +39,14 @@ int Thief::alive()
   return ((_Thief*)ptr)->alive;
 }
 
-int Thief::ninjaReflexesLeft()
+int Thief::specialsLeft()
 {
-  return ((_Thief*)ptr)->ninjaReflexesLeft;
+  return ((_Thief*)ptr)->specialsLeft;
 }
 
-int Thief::maxNinjaReflexes()
+int Thief::maxSpecials()
 {
-  return ((_Thief*)ptr)->maxNinjaReflexes;
+  return ((_Thief*)ptr)->maxSpecials;
 }
 
 int Thief::movementLeft()
@@ -90,8 +90,8 @@ std::ostream& operator<<(std::ostream& stream,Thief ob)
   stream << "owner: " << ((_Thief*)ob.ptr)->owner  <<'\n';
   stream << "thiefType: " << ((_Thief*)ob.ptr)->thiefType  <<'\n';
   stream << "alive: " << ((_Thief*)ob.ptr)->alive  <<'\n';
-  stream << "ninjaReflexesLeft: " << ((_Thief*)ob.ptr)->ninjaReflexesLeft  <<'\n';
-  stream << "maxNinjaReflexes: " << ((_Thief*)ob.ptr)->maxNinjaReflexes  <<'\n';
+  stream << "specialsLeft: " << ((_Thief*)ob.ptr)->specialsLeft  <<'\n';
+  stream << "maxSpecials: " << ((_Thief*)ob.ptr)->maxSpecials  <<'\n';
   stream << "movementLeft: " << ((_Thief*)ob.ptr)->movementLeft  <<'\n';
   stream << "maxMovement: " << ((_Thief*)ob.ptr)->maxMovement  <<'\n';
   stream << "frozenTurnsLeft: " << ((_Thief*)ob.ptr)->frozenTurnsLeft  <<'\n';

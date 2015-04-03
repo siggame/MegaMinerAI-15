@@ -1,4 +1,5 @@
 .idea/*
+server/.idea/*
 *.pyc
 lex.*
 *.gamelog
@@ -7,3 +8,4 @@ lex.*
 *.o
 *.out
 server/logs/*
+logs/*

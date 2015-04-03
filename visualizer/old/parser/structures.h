@@ -56,6 +56,8 @@ struct Trap: public Mappable
   int visible;
   int active;
   int bodyCount;
+  int activationsRemaining;
+  int turnsTillActive;
 
   friend std::ostream& operator<<(std::ostream& stream, Trap obj);
 };
@@ -93,16 +95,20 @@ struct TrapType
   char* name;
   int type;
   int cost;
+  int maxInstances;
   int startsVisible;
   int hasAction;
-  int activatable;
-  int maxBodyCount;
-  int maxInstances;
-  int killsOnWalkThrough;
-  int turnsToKillOnTile;
-  int canPlaceInWalls;
-  int canPlaceInEmptyTiles;
+  int deactivatable;
+  int maxActivations;
+  int activatesOnWalkedThrough;
+  int turnsToActivateOnTile;
+  int canPlaceOnWalls;
+  int canPlaceOnOpenTiles;
   int freezesForTurns;
+  int killsOnActivate;
+  int cooldown;
+  int explosive;
+  int unpassable;
 
   friend std::ostream& operator<<(std::ostream& stream, TrapType obj);
 };
@@ -201,6 +207,8 @@ struct GameState
   int scarabsForTraps;
   int scarabsForThieves;
   int maxStack;
+  int roundsToWin;
+  int roundTurnLimit;
 
   std::map< int, std::vector< SmartPointer< Animation > > > animations;
   friend std::ostream& operator<<(std::ostream& stream, GameState obj);

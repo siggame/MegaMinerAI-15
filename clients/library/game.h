@@ -43,6 +43,8 @@ struct Connection
   int scarabsForTraps;
   int scarabsForThieves;
   int maxStack;
+  int roundsToWin;
+  int roundTurnLimit;
 
   _Player* Players;
   int PlayerCount;
@@ -113,6 +115,8 @@ DLLEXPORT int getRoundNumber(Connection* c);
 DLLEXPORT int getScarabsForTraps(Connection* c);
 DLLEXPORT int getScarabsForThieves(Connection* c);
 DLLEXPORT int getMaxStack(Connection* c);
+DLLEXPORT int getRoundsToWin(Connection* c);
+DLLEXPORT int getRoundTurnLimit(Connection* c);
 
 DLLEXPORT _Player* getPlayer(Connection* c, int num);
 DLLEXPORT int getPlayerCount(Connection* c);

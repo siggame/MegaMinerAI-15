@@ -239,6 +239,24 @@ static bool parseTrap(Trap& object, sexp_t* expression)
   object.bodyCount = atoi(sub->val);
   sub = sub->next;
 
+  if ( !sub ) 
+  {
+    cerr << "Error in parseTrap.\n Parsing: " << *expression << endl;
+    return false;
+  }
+
+  object.activationsRemaining = atoi(sub->val);
+  sub = sub->next;
+
+  if ( !sub ) 
+  {
+    cerr << "Error in parseTrap.\n Parsing: " << *expression << endl;
+    return false;
+  }
+
+  object.turnsTillActive = atoi(sub->val);
+  sub = sub->next;
+
   return true;
 
 }
@@ -474,6 +492,15 @@ static bool parseTrapType(TrapType& object, sexp_t* expression)
     return false;
   }
 
+  object.maxInstances = atoi(sub->val);
+  sub = sub->next;
+
+  if ( !sub ) 
+  {
+    cerr << "Error in parseTrapType.\n Parsing: " << *expression << endl;
+    return false;
+  }
+
   object.startsVisible = atoi(sub->val);
   sub = sub->next;
 
@@ -492,7 +519,7 @@ static bool parseTrapType(TrapType& object, sexp_t* expression)
     return false;
   }
 
-  object.activatable = atoi(sub->val);
+  object.deactivatable = atoi(sub->val);
   sub = sub->next;
 
   if ( !sub ) 
@@ -501,7 +528,7 @@ static bool parseTrapType(TrapType& object, sexp_t* expression)
     return false;
   }
 
-  object.maxBodyCount = atoi(sub->val);
+  object.maxActivations = atoi(sub->val);
   sub = sub->next;
 
   if ( !sub ) 
@@ -510,7 +537,7 @@ static bool parseTrapType(TrapType& object, sexp_t* expression)
     return false;
   }
 
-  object.maxInstances = atoi(sub->val);
+  object.activatesOnWalkedThrough = atoi(sub->val);
   sub = sub->next;
 
   if ( !sub ) 
@@ -519,7 +546,7 @@ static bool parseTrapType(TrapType& object, sexp_t* expression)
     return false;
   }
 
-  object.killsOnWalkThrough = atoi(sub->val);
+  object.turnsToActivateOnTile = atoi(sub->val);
   sub = sub->next;
 
   if ( !sub ) 
@@ -528,7 +555,7 @@ static bool parseTrapType(TrapType& object, sexp_t* expression)
     return false;
   }
 
-  object.turnsToKillOnTile = atoi(sub->val);
+  object.canPlaceOnWalls = atoi(sub->val);
   sub = sub->next;
 
   if ( !sub ) 
@@ -537,16 +564,7 @@ static bool parseTrapType(TrapType& object, sexp_t* expression)
     return false;
   }
 
-  object.canPlaceInWalls = atoi(sub->val);
-  sub = sub->next;
-
-  if ( !sub ) 
-  {
-    cerr << "Error in parseTrapType.\n Parsing: " << *expression << endl;
-    return false;
-  }
-
-  object.canPlaceInEmptyTiles = atoi(sub->val);
+  object.canPlaceOnOpenTiles = atoi(sub->val);
   sub = sub->next;
 
   if ( !sub ) 
@@ -556,6 +574,42 @@ static bool parseTrapType(TrapType& object, sexp_t* expression)
   }
 
   object.freezesForTurns = atoi(sub->val);
+  sub = sub->next;
+
+  if ( !sub ) 
+  {
+    cerr << "Error in parseTrapType.\n Parsing: " << *expression << endl;
+    return false;
+  }
+
+  object.killsOnActivate = atoi(sub->val);
+  sub = sub->next;
+
+  if ( !sub ) 
+  {
+    cerr << "Error in parseTrapType.\n Parsing: " << *expression << endl;
+    return false;
+  }
+
+  object.cooldown = atoi(sub->val);
+  sub = sub->next;
+
+  if ( !sub ) 
+  {
+    cerr << "Error in parseTrapType.\n Parsing: " << *expression << endl;
+    return false;
+  }
+
+  object.explosive = atoi(sub->val);
+  sub = sub->next;
+
+  if ( !sub ) 
+  {
+    cerr << "Error in parseTrapType.\n Parsing: " << *expression << endl;
+    return false;
+  }
+
+  object.unpassable = atoi(sub->val);
   sub = sub->next;
 
   return true;
@@ -808,6 +862,12 @@ static bool parseSexp(Game& game, sexp_t* expression)
           sub = sub->next;
           if ( !sub ) return false;
           gs.maxStack = atoi(sub->val);
+          sub = sub->next;
+          if ( !sub ) return false;
+          gs.roundsToWin = atoi(sub->val);
+          sub = sub->next;
+          if ( !sub ) return false;
+          gs.roundTurnLimit = atoi(sub->val);
           sub = sub->next;
       }
       else if(string(sub->val) == "Player")

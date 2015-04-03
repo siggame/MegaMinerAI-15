@@ -29,6 +29,11 @@ int TrapType::cost()
   return ((_TrapType*)ptr)->cost;
 }
 
+int TrapType::maxInstances()
+{
+  return ((_TrapType*)ptr)->maxInstances;
+}
+
 int TrapType::startsVisible()
 {
   return ((_TrapType*)ptr)->startsVisible;
@@ -39,44 +44,59 @@ int TrapType::hasAction()
   return ((_TrapType*)ptr)->hasAction;
 }
 
-int TrapType::activatable()
+int TrapType::deactivatable()
 {
-  return ((_TrapType*)ptr)->activatable;
+  return ((_TrapType*)ptr)->deactivatable;
 }
 
-int TrapType::maxBodyCount()
+int TrapType::maxActivations()
 {
-  return ((_TrapType*)ptr)->maxBodyCount;
+  return ((_TrapType*)ptr)->maxActivations;
 }
 
-int TrapType::maxInstances()
+int TrapType::activatesOnWalkedThrough()
 {
-  return ((_TrapType*)ptr)->maxInstances;
+  return ((_TrapType*)ptr)->activatesOnWalkedThrough;
 }
 
-int TrapType::killsOnWalkThrough()
+int TrapType::turnsToActivateOnTile()
 {
-  return ((_TrapType*)ptr)->killsOnWalkThrough;
+  return ((_TrapType*)ptr)->turnsToActivateOnTile;
 }
 
-int TrapType::turnsToKillOnTile()
+int TrapType::canPlaceOnWalls()
 {
-  return ((_TrapType*)ptr)->turnsToKillOnTile;
+  return ((_TrapType*)ptr)->canPlaceOnWalls;
 }
 
-int TrapType::canPlaceInWalls()
+int TrapType::canPlaceOnOpenTiles()
 {
-  return ((_TrapType*)ptr)->canPlaceInWalls;
-}
-
-int TrapType::canPlaceInEmptyTiles()
-{
-  return ((_TrapType*)ptr)->canPlaceInEmptyTiles;
+  return ((_TrapType*)ptr)->canPlaceOnOpenTiles;
 }
 
 int TrapType::freezesForTurns()
 {
   return ((_TrapType*)ptr)->freezesForTurns;
+}
+
+int TrapType::killsOnActivate()
+{
+  return ((_TrapType*)ptr)->killsOnActivate;
+}
+
+int TrapType::cooldown()
+{
+  return ((_TrapType*)ptr)->cooldown;
+}
+
+int TrapType::explosive()
+{
+  return ((_TrapType*)ptr)->explosive;
+}
+
+int TrapType::unpassable()
+{
+  return ((_TrapType*)ptr)->unpassable;
 }
 
 
@@ -88,15 +108,19 @@ std::ostream& operator<<(std::ostream& stream,TrapType ob)
   stream << "name: " << ((_TrapType*)ob.ptr)->name  <<'\n';
   stream << "type: " << ((_TrapType*)ob.ptr)->type  <<'\n';
   stream << "cost: " << ((_TrapType*)ob.ptr)->cost  <<'\n';
+  stream << "maxInstances: " << ((_TrapType*)ob.ptr)->maxInstances  <<'\n';
   stream << "startsVisible: " << ((_TrapType*)ob.ptr)->startsVisible  <<'\n';
   stream << "hasAction: " << ((_TrapType*)ob.ptr)->hasAction  <<'\n';
-  stream << "activatable: " << ((_TrapType*)ob.ptr)->activatable  <<'\n';
-  stream << "maxBodyCount: " << ((_TrapType*)ob.ptr)->maxBodyCount  <<'\n';
-  stream << "maxInstances: " << ((_TrapType*)ob.ptr)->maxInstances  <<'\n';
-  stream << "killsOnWalkThrough: " << ((_TrapType*)ob.ptr)->killsOnWalkThrough  <<'\n';
-  stream << "turnsToKillOnTile: " << ((_TrapType*)ob.ptr)->turnsToKillOnTile  <<'\n';
-  stream << "canPlaceInWalls: " << ((_TrapType*)ob.ptr)->canPlaceInWalls  <<'\n';
-  stream << "canPlaceInEmptyTiles: " << ((_TrapType*)ob.ptr)->canPlaceInEmptyTiles  <<'\n';
+  stream << "deactivatable: " << ((_TrapType*)ob.ptr)->deactivatable  <<'\n';
+  stream << "maxActivations: " << ((_TrapType*)ob.ptr)->maxActivations  <<'\n';
+  stream << "activatesOnWalkedThrough: " << ((_TrapType*)ob.ptr)->activatesOnWalkedThrough  <<'\n';
+  stream << "turnsToActivateOnTile: " << ((_TrapType*)ob.ptr)->turnsToActivateOnTile  <<'\n';
+  stream << "canPlaceOnWalls: " << ((_TrapType*)ob.ptr)->canPlaceOnWalls  <<'\n';
+  stream << "canPlaceOnOpenTiles: " << ((_TrapType*)ob.ptr)->canPlaceOnOpenTiles  <<'\n';
   stream << "freezesForTurns: " << ((_TrapType*)ob.ptr)->freezesForTurns  <<'\n';
+  stream << "killsOnActivate: " << ((_TrapType*)ob.ptr)->killsOnActivate  <<'\n';
+  stream << "cooldown: " << ((_TrapType*)ob.ptr)->cooldown  <<'\n';
+  stream << "explosive: " << ((_TrapType*)ob.ptr)->explosive  <<'\n';
+  stream << "unpassable: " << ((_TrapType*)ob.ptr)->unpassable  <<'\n';
   return stream;
 }

@@ -157,6 +157,32 @@ public class Trap: Mappable
     }
   }
 
+  /// <summary>
+  /// How many more times this trap can activate.
+  /// </summary>
+  public int ActivationsRemaining
+  {
+    get
+    {
+      validify();
+      int value = Client.trapGetActivationsRemaining(ptr);
+      return value;
+    }
+  }
+
+  /// <summary>
+  /// How many more turns this trap is inactive due to cooldown.
+  /// </summary>
+  public int TurnsTillActive
+  {
+    get
+    {
+      validify();
+      int value = Client.trapGetTurnsTillActive(ptr);
+      return value;
+    }
+  }
+
   #endregion
 
   #region Properties
