@@ -1,7 +1,14 @@
 # -*- coding: iso-8859-1 -*-
 
-from twisted.internet import epollreactor
-epollreactor.install()
+import os
+if os.name == 'posix':
+  from twisted.internet import epollreactor
+  epollreactor.install()
+elif os.name == 'nt':
+  from twisted.internet import selectreactor
+  selectreactor.install()
+else:
+  raise Exception("Unrecognized OS: {}".format(os.name))
 
 from sexpr.sexpr import sexpr2str, str2sexpr
 
