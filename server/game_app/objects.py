@@ -185,9 +185,9 @@ class Trap(Mappable):
     self.activationsRemaining -= 1
     if self.activationsRemaining == 0:
       self.active = 0
-    elif self.game.trapTypes[self.trapType].cooldown:
+    elif self.game.objects.trapTypes[self.trapType].cooldown:
       self.active = 0
-      self.turnsTillActive = self.game.trapTypes[self.trapType].cooldown
+      self.turnsTillActive = self.game.objects.trapTypes[self.trapType].cooldown
     self.visible = 1
 
   def attack(self, thief):
@@ -207,30 +207,34 @@ class Trap(Mappable):
         thief.specialsLeft -= 1
 
   def nextTurn(self):
+    trapType = self.game.objects.trapTypes[self.trapType]
+
     if self.game.playerID == self.owner:
       if self.turnsTillActive > 0:
         self.turnsTillActive -= 1
         if self.turnsTillActive == 0:
-          self.active = True
+          self.active = 1
 
-      if self.active:
-        trapType = self.game.objects.trapTypes[self.trapType]
-        if trapType.turnsToActivateOnTile:
-          # Find thieves
-          thieves = [unit for unit in self.game.grid[self.x][self.y] if isinstance(unit, Thief)]
-          # Forget thieves who moved off
-          self.standingThieves = {thief: turns for thief, turns in self.standingThieves if thief in thieves}
-          # Increase counter for thieves
-          activated = False
-          for thief in thieves:
-            if thief not in self.standingThieves:
-              self.standingThieves[thief] = 0
-            self.standingThieves[thief] += 1
-            if self.standingThieves[thief] >= trapType.turnsToActivateOnTile:
-              activated = True
-              self.attack(thief)
-          if activated:
-            self.activate()
+      # swinging blade
+      elif self.trapType == 2:
+        self.active = self.active^1
+
+      elif trapType.turnsToActivateOnTile:
+        # Find thieves
+        thieves = [unit for unit in self.game.grid[self.x][self.y] if isinstance(unit, Thief)]
+        # Forget thieves who moved off
+        self.standingThieves = {thief: turns for thief, turns in self.standingThieves.iteritems() if thief in thieves}
+        # Increase counter for thieves
+        activated = False
+        for thief in thieves:
+          if thief not in self.standingThieves:
+            self.standingThieves[thief] = 0
+          self.standingThieves[thief] += 1
+          if self.standingThieves[thief] >= trapType.turnsToActivateOnTile:
+            activated = True
+            self.attack(thief)
+        if activated:
+          self.activate()
 
       return True
 
@@ -319,6 +323,14 @@ class Thief(Mappable):
   
   def nextTurn(self):
     if self.game.playerID == self.owner:
+      if self.thiefType == 3:
+        xchange = [-1, 1, 0,  0]
+        ychange = [ 0, 0, 1, -1]
+        for i in range(4):
+          if 0 <= self.x + xchange[i] < self.game.mapWidth and 0 <= self.y + ychange[i] < self.game.mapHeight:
+            for obj in self.game.grid[self.x + xchange[i]][self.y + ychange[i]]:
+              if isinstance(obj, Trap):
+                obj.visible = 1
       self.hidden = False
       if self.alive:
         if self.frozenTurnsLeft:
@@ -353,30 +365,36 @@ class Thief(Mappable):
     if abs(self.x - x) + abs(self.y - y) != 1:
       return 'Turn {}: Your thief {} can only move one unit away. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
 
-    # Only check for activatesOnWalkedThrough traps when thief moves off of them and not on the thief's first move
-    if self.movementLeft < self.maxMovement:
-      backstabTrap = next((trap for trap in self.game.grid[self.x][self.y] if isinstance(trap, Trap) and trap.active and self.game.objects.trapTypes[trap.trapType].activatesOnWalkedThrough), None)
-      if backstabTrap:
-        backstabTrap.attack(self)
-        backstabTrap.activate()
+    trap = self.game.getTrap(x, y)
+    blocked = False
+    if trap and trap.active:
 
-    blockingTrap = next((trap for trap in self.game.grid[x][y] if isinstance(trap, Trap) and trap.active and self.game.objects.trapTypes[trap.trapType].unpassable), None)
+      # Only check for activatesOnWalkedThrough traps when thief moves off of them and not on the thief's first move
+      if self.movementLeft < self.maxMovement and self.game.objects.trapTypes[trap.trapType].activatesOnWalkedThrough:
+        #backstab trap
+        trap.attack(self)
+        trap.activate()
 
-    if blockingTrap:
-      blockingTrap.activate()
+      blocked = self.game.objects.trapTypes[trap.trapType].unpassable
+      if blocked:
+        #blocking trap
+        self.game.objects.trapTypes[trap.trapType].unpassable
 
-    if self.alive and not blockingTrap:
+
+    if self.alive and not blocked:
       self.game.grid[self.x][self.y].remove(self)
       self.x, self.y = x, y
       self.game.grid[self.x][self.y].append(self)
       self.movementLeft -= 1
       self.game.addAnimation(MoveAnimation(self.id, self.x, self.y, x, y))
 
-      instaTrap = next((trap for trap in self.game.grid[x][y] if isinstance(trap, Trap) and trap.active and self.game.objects.trapTypes[trap.trapType].activatesOnWalkedThrough and self.game.objects.trapTypes[trap.trapType].turnsToActivateOnTile == 1), None)
 
-      if instaTrap:
-        instaTrap.attack(self)
-        instaTrap.activate()
+      if trap and trap.active and \
+         self.game.objects.trapTypes[trap.trapType].activatesOnWalkedThrough and \
+         self.game.objects.trapTypes[trap.trapType].turnsToActivateOnTile == 1:
+        # insta trap
+        trap.attack(self)
+        trap.activate()
 
     return True
 

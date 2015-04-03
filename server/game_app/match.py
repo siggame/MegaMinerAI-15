@@ -142,6 +142,16 @@ class Match(DefaultGameWorld):
     else:
       return None
 
+  def getTrap(self, x, y):
+    if (0 <= x < self.mapWidth) and (0 <= y < self.mapHeight):
+      trap = None
+      for unit in self.grid[x][y][1:]:
+        if isinstance(unit, Trap):
+          trap = unit
+      return trap
+    else:
+      return None
+
   def nextTurn(self):
     self.turnNumber += 1
     self.roundTurnNumber += 1
