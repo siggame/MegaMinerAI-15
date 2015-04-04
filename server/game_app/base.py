@@ -6,7 +6,7 @@ class GameWorld(object):
   """
   def __init__(self):
     self.nextid = 0
-    self.maxid = 2147483647
+    self.maxid = 1000000
     self.turnNumber = 0
     self.players = []
     self.spectators = []
