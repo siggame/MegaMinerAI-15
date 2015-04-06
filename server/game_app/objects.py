@@ -422,13 +422,15 @@ class Thief(Mappable):
       elif self.movementLeft != self.maxMovement:
         return 'Turn {}: Your bomber {} cannot move and throw a bomb on the same turn. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
       elif abs(self.x-x) + abs(self.y-y) != 1:
-        return 'Turn {}: Your bomber {} must throw onto an adjacent tile. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+        return 'Turn {}: Your bomber {} must throw onto an adjacent tile. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+      elif not (0 <= x < self.game.mapWidth and 0 <= y < self.game.mapHeight):
+        return 'Turn {}: Your bomber {} must bomb on the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
 
       #Blow stuff up
       for unit in self.game.grid[x][y]:
         #Blow up walls
         if isinstance(unit, Tile) and unit.type == 2:
-          unit.type = 1          
+          unit.type = 0
         #Blow up traps
         if isinstance(unit, Trap) and unit.trapType != 0:
           self.game.grid[x][y].remove(unit)
@@ -437,7 +439,38 @@ class Thief(Mappable):
           unit.alive = 0
           self.game.grid[x][y].remove(unit)
         
+      self.movementLeft = 0
       self.specialsLeft -= 1
+
+    if self.thiefType == self.game.digger:
+      if self.specialsLeft <= 0:
+        return "Turn {}: Your digger {} has no shovel. ({},{})".format(self.game.turnNumber, self.id, self.x, self.y)
+      elif self.movementLeft != self.maxMovement:
+        return "Turn {}: Your digger {} cannot move and dig on the same turn. ({},{})".format(self.game.turnNumber, self.id, self.x, self.y)
+      elif abs(self.x-x) + abs(self.y-y) != 1:
+        return 'Turn {}: Your digger {} must dig on an adjacent tile. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+      elif self.game.getTile(x, y).type != 2:
+        return 'Turn {}: Your digger {} must dig into a wall. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+      elif not (0 <= x < self.game.mapWidth and 0 <= y < self.game.mapHeight):
+        return 'Turn {}: Your digger {} must dig on the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+
+      #make sure that there is somewhere to end up on the other side of the wall
+      xchange = x - self.x
+      ychange = y - self.y
+      thisTile = self.game.getTile(x + xchange, y + ychange)
+      if thisTile is None or thisTile.type != 0:
+        return 'Turn {}: Your digger {} has nowhere to go on the other side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+
+      self.game.grid[self.x][self.y].remove(self)
+      newX = x + xchange
+      newY = y + ychange
+      self.x = newX
+      self.y = newY
+      self.game.grid[self.x][self.y].append(self)
+
+      self.movementLeft = 0
+      self.specialsLeft -= 1
+
 
   def __setattr__(self, name, value):
       if name in self.game_state_attributes:
