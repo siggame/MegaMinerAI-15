@@ -439,6 +439,7 @@ class Thief(Mappable):
           unit.alive = 0
           self.game.grid[x][y].remove(unit)
         
+      self.game.addAnimation(BombAnimation(self.id, x, y))
       self.movementLeft = 0
       self.specialsLeft -= 1
 
