@@ -183,7 +183,6 @@ class Trap(Mappable):
     return dict(id = self.id, x = self.x, y = self.y, owner = self.owner, trapType = self.trapType, visible = self.visible, active = self.active, bodyCount = self.bodyCount, activationsRemaining = self.activationsRemaining, turnsTillActive = self.turnsTillActive, )
 
   def activate(self):
-    print "ACTIVES: ", self.activationsRemaining
     self.activationsRemaining -= 1
     if self.activationsRemaining == 0:
       self.active = 0
