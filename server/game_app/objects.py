@@ -183,6 +183,7 @@ class Trap(Mappable):
     return dict(id = self.id, x = self.x, y = self.y, owner = self.owner, trapType = self.trapType, visible = self.visible, active = self.active, bodyCount = self.bodyCount, activationsRemaining = self.activationsRemaining, turnsTillActive = self.turnsTillActive, )
 
   def activate(self):
+    print "ACTIVES: ", self.activationsRemaining
     self.activationsRemaining -= 1
     if self.activationsRemaining == 0:
       self.active = 0
@@ -192,7 +193,7 @@ class Trap(Mappable):
     self.visible = 1
 
   def attack(self, thief):
-    if thief.alive:
+    if thief.alive and self.active:
       if thief.thiefType != self.game.ninja or thief.specialsLeft <= 0:
         if self.game.objects.trapTypes[self.trapType].killsOnActivate:
           thief.alive = 0
@@ -348,7 +349,7 @@ class Thief(Mappable):
                 obj.visible = 1
       self.hidden = False
       if self.alive:
-        if self.frozenTurnsLeft:
+        if self.frozenTurnsLeft > 0:
           self.frozenTurnsLeft -= 1
         if self.frozenTurnsLeft == 0:
           self.movementLeft = self.maxMovement

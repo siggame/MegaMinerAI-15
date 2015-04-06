@@ -226,9 +226,9 @@ class Match(DefaultGameWorld):
       player1Closest = 100
       for thief in self.objects.thiefs:
         if thief.owner == 0:
-          player0Closest = min(player0Closest, abs(thief.x-sarcophagi[0].x) + abs(thief.y-sarcophagi[0].y))
+          player0Closest = min(player0Closest, abs(thief.x-sarcophagi[1].x) + abs(thief.y-sarcophagi[1].y))
         else:
-          player1Closest = min(player1Closest, abs(thief.x-sarcophagi[1].x) + abs(thief.y-sarcophagi[1].y))
+          player1Closest = min(player1Closest, abs(thief.x-sarcophagi[0].x) + abs(thief.y-sarcophagi[0].y))
 
       if player0Closest < player1Closest:
         self.declareRoundWinner(self.objects.players[0], "Player 0 was closest to their sarcophagus")
