@@ -419,7 +419,7 @@ class Thief(Mappable):
     if self.thiefType == self.game.bomber:
       if self.specialsLeft <= 0:
         return 'Turn {}: No bombs remaining for your bomber {}. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
-      elif movementLeft != maxMovement:
+      elif self.movementLeft != self.maxMovement:
         return 'Turn {}: Your bomber {} cannot move and throw a bomb on the same turn. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
       elif abs(self.x-x) + abs(self.y-y) != 1:
         return 'Turn {}: Your bomber {} must throw onto an adjacent tile. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
