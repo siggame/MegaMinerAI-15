@@ -395,11 +395,11 @@ class Thief(Mappable):
       blockingTrap.activate()
 
     if self.alive and not blockingTrap:
+      self.game.addAnimation(MoveAnimation(self.id, self.x, self.y, x, y))
       self.game.grid[self.x][self.y].remove(self)
       self.x, self.y = x, y
       self.game.grid[self.x][self.y].append(self)
       self.movementLeft -= 1
-      self.game.addAnimation(MoveAnimation(self.id, self.x, self.y, x, y))
 
       instaTrap = next((trap for trap in self.game.grid[x][y] if isinstance(trap, Trap) and trap.active and
                         self.game.objects.trapTypes[trap.trapType].activatesOnWalkedThrough and
