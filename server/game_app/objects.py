@@ -414,9 +414,9 @@ class Thief(Mappable):
   def act(self, x, y):
     if self.owner != self.game.playerID:
       return 'Turn {}: You cannot use the other player\'s thief {}. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
-    if (self.thiefType != self.game.bomber) and (self.thiefType != self.game.digger):
+    elif (self.thiefType != self.game.bomber) and (self.thiefType != self.game.digger):
       return 'Turn {}: act() is function of the digger and bomber, not the {} {}. ({},{})'.format(self.game.turnNumber, self.thiefType, self.id, self.x, self.y)
-    if self.thiefType == self.game.bomber:
+    elif self.thiefType == self.game.bomber:
       if self.specialsLeft <= 0:
         return 'Turn {}: No bombs remaining for your bomber {}. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
       elif self.movementLeft != self.maxMovement:
@@ -443,7 +443,7 @@ class Thief(Mappable):
       self.movementLeft = 0
       self.specialsLeft -= 1
 
-    if self.thiefType == self.game.digger:
+    elif self.thiefType == self.game.digger:
       if self.specialsLeft <= 0:
         return "Turn {}: Your digger {} has no shovel. ({},{})".format(self.game.turnNumber, self.id, self.x, self.y)
       elif self.movementLeft != self.maxMovement:
