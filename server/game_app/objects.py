@@ -439,7 +439,7 @@ class Thief(Mappable):
           unit.alive = 0
           self.game.grid[x][y].remove(unit)
         
-      self.game.addAnimation(BombAnimation(self.id, x, y))
+      self.game.addAnimation(BombAnimation(self.id, self.game.grid[x][y][0]))
       self.movementLeft = 0
       self.specialsLeft -= 1
 
@@ -461,6 +461,8 @@ class Thief(Mappable):
       thisTile = self.game.getTile(x + xchange, y + ychange)
       if thisTile is None or thisTile.type != 0:
         return 'Turn {}: Your digger {} has nowhere to go on the other side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+
+      self.game.addAnimation(DigAnimation(self.id, self.game.grid[x][y][0], x + xchange, y + ychange))
 
       self.game.grid[self.x][self.y].remove(self)
       newX = x + xchange
@@ -548,83 +550,107 @@ class TrapType(object):
 
 # The following are animations and do not need to have any logic added
 class SpawnAnimation:
-  def __init__(self, actingID, x, y):
-    self.actingID = actingID
+  def __init__(self, sourceID, x, y):
+    self.sourceID = sourceID
     self.x = x
     self.y = y
 
   def toList(self):
-    return ["spawn", self.actingID, self.x, self.y, ]
+    return ["spawn", self.sourceID, self.x, self.y, ]
 
   def toJson(self):
-    return dict(type = "spawn", actingID = self.actingID, x = self.x, y = self.y)
+    return dict(type = "spawn", sourceID = self.sourceID, x = self.x, y = self.y)
+
+class ActivateAnimation:
+  def __init__(self, sourceID):
+    self.sourceID = sourceID
+
+  def toList(self):
+    return ["activate", self.sourceID, ]
+
+  def toJson(self):
+    return dict(type = "activate", sourceID = self.sourceID)
+
+class BombAnimation:
+  def __init__(self, sourceID, targetID):
+    self.sourceID = sourceID
+    self.targetID = targetID
+
+  def toList(self):
+    return ["bomb", self.sourceID, self.targetID, ]
+
+  def toJson(self):
+    return dict(type = "bomb", sourceID = self.sourceID, targetID = self.targetID)
 
 class MoveAnimation:
-  def __init__(self, actingID, fromX, fromY, toX, toY):
-    self.actingID = actingID
+  def __init__(self, sourceID, fromX, fromY, toX, toY):
+    self.sourceID = sourceID
     self.fromX = fromX
     self.fromY = fromY
     self.toX = toX
     self.toY = toY
 
   def toList(self):
-    return ["move", self.actingID, self.fromX, self.fromY, self.toX, self.toY, ]
+    return ["move", self.sourceID, self.fromX, self.fromY, self.toX, self.toY, ]
 
   def toJson(self):
-    return dict(type = "move", actingID = self.actingID, fromX = self.fromX, fromY = self.fromY, toX = self.toX, toY = self.toY)
+    return dict(type = "move", sourceID = self.sourceID, fromX = self.fromX, fromY = self.fromY, toX = self.toX, toY = self.toY)
 
 class KillAnimation:
-  def __init__(self, actingID, targetID):
-    self.actingID = actingID
+  def __init__(self, sourceID, targetID):
+    self.sourceID = sourceID
     self.targetID = targetID
 
   def toList(self):
-    return ["kill", self.actingID, self.targetID, ]
+    return ["kill", self.sourceID, self.targetID, ]
 
   def toJson(self):
-    return dict(type = "kill", actingID = self.actingID, targetID = self.targetID)
+    return dict(type = "kill", sourceID = self.sourceID, targetID = self.targetID)
 
 class PharaohTalkAnimation:
-  def __init__(self, actingID, message):
-    self.actingID = actingID
+  def __init__(self, playerID, message):
+    self.playerID = playerID
     self.message = message
 
   def toList(self):
-    return ["pharaohTalk", self.actingID, self.message, ]
+    return ["pharaohTalk", self.playerID, self.message, ]
 
   def toJson(self):
-    return dict(type = "pharaohTalk", actingID = self.actingID, message = self.message)
+    return dict(type = "pharaohTalk", playerID = self.playerID, message = self.message)
 
 class ThiefTalkAnimation:
-  def __init__(self, actingID, message):
-    self.actingID = actingID
+  def __init__(self, sourceID, message):
+    self.sourceID = sourceID
     self.message = message
 
   def toList(self):
-    return ["thiefTalk", self.actingID, self.message, ]
+    return ["thiefTalk", self.sourceID, self.message, ]
 
   def toJson(self):
-    return dict(type = "thiefTalk", actingID = self.actingID, message = self.message)
+    return dict(type = "thiefTalk", sourceID = self.sourceID, message = self.message)
 
-class ActivateAnimation:
-  def __init__(self, actingID):
-    self.actingID = actingID
-
-  def toList(self):
-    return ["activate", self.actingID, ]
-
-  def toJson(self):
-    return dict(type = "activate", actingID = self.actingID)
-
-class BombAnimation:
-  def __init__(self, actingID, x, y):
-    self.actingID = actingID
+class DigAnimation:
+  def __init__(self, sourceID, targetID, x, y):
+    self.sourceID = sourceID
+    self.targetID = targetID
     self.x = x
     self.y = y
 
   def toList(self):
-    return ["bomb", self.actingID, self.x, self.y, ]
+    return ["dig", self.sourceID, self.targetID, self.x, self.y, ]
 
   def toJson(self):
-    return dict(type = "bomb", actingID = self.actingID, x = self.x, y = self.y)
+    return dict(type = "dig", sourceID = self.sourceID, targetID = self.targetID, x = self.x, y = self.y)
+
+class RollAnimation:
+  def __init__(self, sourceID, x, y):
+    self.sourceID = sourceID
+    self.x = x
+    self.y = y
+
+  def toList(self):
+    return ["roll", self.sourceID, self.x, self.y, ]
+
+  def toJson(self):
+    return dict(type = "roll", sourceID = self.sourceID, x = self.x, y = self.y)
 
