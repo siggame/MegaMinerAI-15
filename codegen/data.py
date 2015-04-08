@@ -160,7 +160,7 @@ Tile = Model('Tile',
 
 move = Animation('move',
   data=[
-    Variable('actingID', int),
+    Variable('sourceID', int),
     Variable('fromX', int),
     Variable('fromY', int),
     Variable('toX', int),
@@ -170,28 +170,44 @@ move = Animation('move',
 
 bomb = Animation('bomb',
   data=[
-    Variable('actingID', int),
+    Variable('sourceID', int),
+    Variable('targetID', int)
+  ],
+  )
+
+dig = Animation('dig',
+  data=[
+    Variable('sourceID', int),
+    Variable('targetID', int),
     Variable('x', int),
     Variable('y', int)
   ],
   )
-
+  
 activate = Animation('activate',
   data=[
-    Variable('actingID', int)
+    Variable('sourceID', int)
   ],
   )
 
 kill = Animation('kill',
   data=[
-    Variable('actingID', int),
+    Variable('sourceID', int),
     Variable('targetID', int)
   ],
   )
 
 spawn = Animation('spawn',
   data=[
-    Variable('actingID', int),
+    Variable('sourceID', int),
+    Variable('x', int),
+    Variable('y', int)
+  ],
+  )
+  
+roll = Animation('roll',
+  data=[
+    Variable('sourceID', int),
     Variable('x', int),
     Variable('y', int)
   ],
@@ -199,14 +215,14 @@ spawn = Animation('spawn',
 
 thiefTalk = Animation('thiefTalk',
   data=[
-    Variable('actingID', int),
+    Variable('sourceID', int),
     Variable('message', str)
   ],
   )
 
 pharaohTalk = Animation('pharaohTalk',
   data=[
-    Variable('actingID', int),
+    Variable('playerID', int),
     Variable('message', str)
   ],
   )
