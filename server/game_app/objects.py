@@ -442,7 +442,7 @@ class Thief(Mappable):
           unit.alive = 0
           self.game.grid[x][y].remove(unit)
         
-      self.game.addAnimation(BombAnimation(self.id, self.game.grid[x][y][0]))
+      self.game.addAnimation(BombAnimation(self.id, self.game.grid[x][y][0].id))
       self.movementLeft = 0
       self.specialsLeft -= 1
 
@@ -465,7 +465,7 @@ class Thief(Mappable):
       if thisTile is None or thisTile.type != 0:
         return 'Turn {}: Your digger {} has nowhere to go on the other side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
 
-      self.game.addAnimation(DigAnimation(self.id, self.game.grid[x][y][0], x + xchange, y + ychange))
+      self.game.addAnimation(DigAnimation(self.id, self.game.grid[x][y][0].id, x + xchange, y + ychange))
 
       self.game.grid[self.x][self.y].remove(self)
       newX = x + xchange
