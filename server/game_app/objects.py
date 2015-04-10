@@ -54,13 +54,16 @@ class Player(object):
 
     # Move sarcophagus
     if trapTypeIndex == self.game.sarcophagus:
-      sarcophagus = next(trap for trap in self.game.objects.traps if trap.trapType == self.game.sarcophagus and trap.owner == self.id and trap.cooldown == 0)
+      sarcophagus = None
+      for trap in self.game.objects.traps:
+        if trap.trapType == self.game.sarcophagus and trap.owner == self.id and trap.turnsTillActive == 0:
+          sarcophagus = trap
       if sarcophagus is None:
         return "Turn {}: There are no sarcophagi left to move".format(self.game.turnNumber)
       self.game.grid[sarcophagus.x][sarcophagus.y].remove(sarcophagus)
       sarcophagus.x, sarcophagus.y = x, y
       self.game.grid[sarcophagus.x][sarcophagus.y].append(sarcophagus)
-      sarcophagus.cooldown = 1
+      sarcophagus.turnsTillActive = 1
     else: # Create new trap
       # ['id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount', 'activationsRemaining', 'turnsTillActive']
       newTrapStats = [x, y, self.id, trapTypeIndex, trapType.startsVisible, 1, 0, trapType.maxActivations, 0]

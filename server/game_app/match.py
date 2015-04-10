@@ -234,16 +234,22 @@ class Match(DefaultGameWorld):
           sarcophagiPlayer1.append(trap)
 
     #check if there are any enemy thieves on the sarcophagus
-    for curSarcophagi in [sarcophagiPlayer0, sarcophagiPlayer1]:
-      for cur in curSarcophagi:
-        for obj in self.grid[cur.x][cur.y]:
-          if isinstance(obj, Thief):
-            self.grid[cur.x][cur.y].remove(cur)
-            self.removeObject(cur)
-            curSarcophagi.remove(cur)
-            if len(curSarcophagi) == 0:
-              self.declareRoundWinner(self.objects.players[obj.owner], "Player {} gathered all the sarcophagi".format(obj.owner))
-              return True
+    done = False
+    while not done:
+      done = True
+      for curSarcophagi in [sarcophagiPlayer0, sarcophagiPlayer1]:
+        for cur in curSarcophagi:
+          for obj in self.grid[cur.x][cur.y]:
+            if isinstance(obj, Thief):
+              self.grid[cur.x][cur.y].remove(cur)
+              self.removeObject(cur)
+              curSarcophagi.remove(cur)
+              if len(curSarcophagi) == 0:
+                self.declareRoundWinner(self.objects.players[obj.owner], "Player {} gathered all the sarcophagi".format(obj.owner))
+                return True
+              #have to re-do loop now because references are lost
+              done = False
+              break
 
     if self.roundTurnNumber >= self.roundTurnLimit:
       #check if either player has more sarcophagi
