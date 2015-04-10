@@ -129,10 +129,26 @@ class Match(DefaultGameWorld):
 
       # Place a sarcophagus, players can still move it later
       # ['id', 'x', 'y', 'owner', 'trapType', 'visible', 'active', 'bodyCount', 'activationsRemaining', 'turnsTillActive']
-      sarcophagus_stats = [self.mapWidth / 4 + 1, self.mapHeight / 2 + 1, 0, self.sarcophagus, 1, 1, 0, 0, 0]
-      self.grid[self.mapWidth / 4 + 1][self.mapHeight / 2 + 1].append( self.addObject(Trap, sarcophagus_stats))
-      sarcophagus_stats = [self.mapWidth / 4 + 1 + self.mapWidth / 2, self.mapHeight / 2 + 1, 1, self.sarcophagus, 1, 1, 0, 0, 0]
-      self.grid[self.mapWidth / 4 + 1 + self.mapWidth / 2][self.mapHeight / 2 + 1].append( self.addObject(Trap, sarcophagus_stats))
+      xChange = [-1, 1,  0, 0]
+      yChange = [ 0, 0, -1, 1]
+      loopCount = 1
+      sarcophagusCount = 0
+      while sarcophagusCount != 3:
+        for i in range(4):
+          leftX = self.mapWidth/4 + loopCount * xChange[i]
+          y = self.mapHeight/2 + loopCount * yChange[i]
+          if self.getTile(leftX, y) is not None and self.getTile(leftX, y).type == 0:
+            rightX = leftX + self.mapWidth / 2
+
+            sarcophagus_stats = [leftX, y, 0, self.sarcophagus, 1, 1, 0, 0, 0]
+            self.grid[leftX][y].append( self.addObject(Trap, sarcophagus_stats))
+
+            sarcophagus_stats = [rightX, y, 1, self.sarcophagus, 1, 1, 0, 0, 0]
+            self.grid[rightX][y].append( self.addObject(Trap, sarcophagus_stats))
+            sarcophagusCount += 1
+            if sarcophagusCount == 3:
+              break
+        loopCount += 1
 
       return True
 
@@ -208,32 +224,55 @@ class Match(DefaultGameWorld):
     return True
 
   def checkRoundWinner(self):
-    sarcophagi = dict()
+    sarcophagiPlayer0 = []
+    sarcophagiPlayer1 = []
     for trap in self.objects.traps:
       if trap.trapType == self.sarcophagus:
-        sarcophagi[trap.owner] = trap
+        if trap.owner == 0:
+          sarcophagiPlayer0.append(trap)
+        elif trap.owner == 0:
+          sarcophagiPlayer1.append(trap)
 
     #check if there are any enemy thieves on the sarcophagus
-    for playerID in [0, 1]:
-      for obj in self.grid[sarcophagi[playerID].x][sarcophagi[playerID].y]:
-        if isinstance(obj, Thief):
-          self.declareRoundWinner(self.objects.players[obj.owner], "Player {} reached the sarcophagus".format(obj.owner))
-          return True
+    for curSarcophagi in [sarcophagiPlayer0, sarcophagiPlayer1]:
+      for cur in curSarcophagi:
+        for obj in self.grid[cur.x][cur.y]:
+          if isinstance(obj, Thief):
+            self.grid[cur.x][cur.y].remove(cur)
+            self.removeObject(cur)
+            curSarcophagi.remove(cur)
+            if len(curSarcophagi) == 0:
+              self.declareRoundWinner(self.objects.players[obj.owner], "Player {} gathered all the sarcophagi".format(obj.owner))
+              return True
 
     if self.roundTurnNumber >= self.roundTurnLimit:
+      #check if either player has more sarcophagi
+      if len(sarcophagiPlayer0) > len(sarcophagiPlayer1):
+        self.declareRoundWinner(self.objects.players[0], "Player 0 has more sarcophagi")
+        return True
+      elif len(sarcophagiPlayer1) > len(sarcophagiPlayer0):
+        self.declareRoundWinner(self.objects.players[1], "Player 1 has more sarcophagi")
+        return True
       #the winner at this point is the player who is closest to their sarcophagus
-      player0Closest = 100
-      player1Closest = 100
+      player0Closest = [300, 300, 300]
+      player1Closest = [300, 300, 300]
       for thief in self.objects.thiefs:
-        if thief.owner == 0:
-          player0Closest = min(player0Closest, abs(thief.x-sarcophagi[1].x) + abs(thief.y-sarcophagi[1].y))
-        else:
-          player1Closest = min(player1Closest, abs(thief.x-sarcophagi[0].x) + abs(thief.y-sarcophagi[0].y))
+        loc = 0
+        for cur in [sarcophagiPlayer0, sarcophagiPlayer1]:
+          for sarcophagus in cur:
+            if thief.owner == 0:
+              player0Closest[loc] = min(player0Closest[loc], abs(thief.x-sarcophagus.x) + abs(thief.y-sarcophagus.y))
+            else:
+              player1Closest[loc] = min(player1Closest[loc], abs(thief.x-sarcophagus.x) + abs(thief.y-sarcophagus.y))
+            loc += 1
 
-      if player0Closest < player1Closest:
-        self.declareRoundWinner(self.objects.players[0], "Player 0 was closest to their sarcophagus")
-      elif player1Closest < player0Closest:
-        self.declareRoundWinner(self.objects.players[1], "Player 1 was closest to their sarcophagus")
+      player0Total = sum(player0Closest)
+      player1Total = sum(player1Closest)
+
+      if player0Total < player1Total:
+        self.declareRoundWinner(self.objects.players[0], "Player 0 had less total distance to the sarcophagi")
+      elif player1Total < player0Total:
+        self.declareRoundWinner(self.objects.players[1], "Player 1 had less total distance to the sarcophagi")
       else:
         #TODO: Add more tiebreakers
         self.declareRoundWinner(self.objects.players[0], "Because I said so, this should be removed")
