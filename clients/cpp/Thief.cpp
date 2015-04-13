@@ -75,9 +75,9 @@ bool Thief::move(int x, int y)
   return thiefMove( (_Thief*)ptr, x, y);
 }
 
-bool Thief::act(int x, int y)
+bool Thief::useSpecial(int x, int y)
 {
-  return thiefAct( (_Thief*)ptr, x, y);
+  return thiefUseSpecial( (_Thief*)ptr, x, y);
 }
 
 

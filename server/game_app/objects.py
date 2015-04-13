@@ -276,7 +276,7 @@ class Trap(Mappable):
       if not (0 <= x - (self.game.mapWidth/2) * (self.owner) < self.game.mapWidth/2) or not (0 <= y < self.game.mapHeight):
         return 'Turn {}: Cannot move mummy {} outside of grid ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       # Check if desired space is not a wall
-      if self.game.grid[x][y].type != self.game.empty:
+      if self.game.grid[x][y][0].type != self.game.empty:
         return 'Turn {}: Cannot move mummy {} into a wall or spawn. ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       # Check if the mummy still has moves left
       if self.movementLeft <= 0:
@@ -412,7 +412,7 @@ class Thief(Mappable):
 
     return True
 
-  def act(self, x, y):
+  def useSpecial(self, x, y):
     if self.owner != self.game.playerID:
       return 'Turn {}: You cannot use the other player\'s thief {}. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
     elif (self.thiefType != self.game.bomber) and (self.thiefType != self.game.digger):

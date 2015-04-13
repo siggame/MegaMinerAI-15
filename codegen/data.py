@@ -73,8 +73,8 @@ Thief = Model('Thief',
     Function('move', [Variable('x', int), Variable('y', int)],
     doc='Commands a thief to move to a new location.'),
 
-    Function('act', [Variable('x', int), Variable('y', int)],
-    doc='Commands a thief to act on a location.'),
+    Function('useSpecial', [Variable('x', int), Variable('y', int)],
+    doc='Commands a thief to use a special on a location.'),
   ],
 )
 

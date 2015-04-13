@@ -313,8 +313,8 @@ class Match(DefaultGameWorld):
     return object.move(x, y, )
 
   @derefArgs(Thief, None, None)
-  def act(self, object, x, y):
-    return object.act(x, y, )
+  def useSpecial(self, object, x, y):
+    return object.useSpecial(x, y, )
 
 
   def sendIdent(self, players):

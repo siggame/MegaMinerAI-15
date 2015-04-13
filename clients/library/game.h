@@ -94,8 +94,8 @@ extern "C"
   DLLEXPORT int thiefThiefTalk(_Thief* object, char* message);
   ///Commands a thief to move to a new location.
   DLLEXPORT int thiefMove(_Thief* object, int x, int y);
-  ///Commands a thief to act on a location.
-  DLLEXPORT int thiefAct(_Thief* object, int x, int y);
+  ///Commands a thief to use a special on a location.
+  DLLEXPORT int thiefUseSpecial(_Thief* object, int x, int y);
 
 //derived properties
 
