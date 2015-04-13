@@ -10,6 +10,12 @@ public class ThiefType
   protected int ID;
   protected int iteration;
 
+  static readonly int BOMBER = 0;
+  static readonly int DIGGER = 1;
+  static readonly int NINJA = 2;
+  static readonly int GUIDE = 3;
+  static readonly int SLAVE = 4;
+
   public ThiefType()
   {
   }

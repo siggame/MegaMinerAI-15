@@ -10,6 +10,19 @@ public class TrapType
   protected int ID;
   protected int iteration;
 
+  static readonly int SARCOPHAGUS = 0;
+  static readonly int SNAKE_PIT = 1;
+  static readonly int SWINGING_BLADE = 2;
+  static readonly int BOULDER = 3;
+  static readonly int SPIDER_WEB = 4;
+  static readonly int QUICKSAND = 5;
+  static readonly int OIL_VASES = 6;
+  static readonly int ARROW_WALL = 7;
+  static readonly int HEAD_WIRE = 8;
+  static readonly int MERCURY_PIT = 9;
+  static readonly int MUMMY = 10;
+  static readonly int FAKE_ROTATING_WALL = 11;
+
   public TrapType()
   {
   }

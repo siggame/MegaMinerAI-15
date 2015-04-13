@@ -490,6 +490,13 @@ class Thief(Mappable):
 
 ##Represents a type of thief.
 class ThiefType(GameObject):
+  #Types as ints
+  BOMBER = 0
+  DIGGER = 1
+  NINJA = 2
+  GUIDE = 3
+  SLAVE = 4
+  
   def __init__(self, ptr):
     from BaseAI import BaseAI
     self._ptr = ptr
@@ -581,6 +588,20 @@ class ThiefType(GameObject):
 
 ##Represents a type of trap.
 class TrapType(GameObject):
+  #Types as ints
+  SARCOPHAGUS = 0
+  SNAKE_PIT = 1
+  SWINGING_BLADE = 2
+  BOULDER = 3
+  SPIDER_WEB = 4
+  QUICKSAND = 5
+  OIL_VASES = 6
+  ARROW_WALL = 7
+  HEAD_WIRE = 8
+  MERCURY_PIT = 9
+  MUMMY = 10
+  FAKE_ROTATING_WALL = 11
+
   def __init__(self, ptr):
     from BaseAI import BaseAI
     self._ptr = ptr
