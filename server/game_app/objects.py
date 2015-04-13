@@ -17,10 +17,11 @@ class Player(object):
     return dict(id = self.id, playerName = self.playerName, time = self.time, scarabs = self.scarabs, roundsWon = self.roundsWon, )
   
   def nextTurn(self):
-    if self.game.roundTurnNumber in [0, 1]:
-      self.scarabs = self.game.scarabsForTraps
-    if self.game.roundTurnNumber in [2, 3]:
-      self.scarabs = self.game.scarabsForThieves
+    if self.game.playerID == self.id:
+      if self.game.roundTurnNumber in [0, 1]:
+        self.scarabs = self.game.scarabsForTraps
+      if self.game.roundTurnNumber in [2, 3]:
+        self.scarabs = self.game.scarabsForThieves
 
   def placeTrap(self, x, y, trapTypeIndex):
     if self.game.roundTurnNumber > 1:
