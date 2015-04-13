@@ -426,6 +426,8 @@ class Thief(Mappable):
         return 'Turn {}: Your bomber {} must throw onto an adjacent tile. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       elif not (0 <= x < self.game.mapWidth and 0 <= y < self.game.mapHeight):
         return 'Turn {}: Your bomber {} must bomb on the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+      elif elif (x  < self.game.mapWidth/2 and self.x >= self.game.mapWidth/2) or (x  >= self.game.mapWidth/2 and self.x < self.game.mapWidth/2):
+        return 'Turn {}: Your bomber {} must bomb on your side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
 
       #Blow stuff up
       for unit in self.game.grid[x][y]:
@@ -461,8 +463,9 @@ class Thief(Mappable):
       ychange = y - self.y
       thisTile = self.game.getTile(x + xchange, y + ychange)
       if thisTile is None or thisTile.type != 0:
-        return 'Turn {}: Your digger {} has nowhere to go on the other side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-
+        return 'Turn {}: Your digger {} has nowhere to go on the other side of the wall. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+      elif (x + xchange < self.game.mapWidth/2 and self.x >= self.game.mapWidth/2) or (x + xchange >= self.game.mapWidth/2 and self.x < self.game.mapWidth/2):
+        return 'Turn {}: Your digger {} cannot dig onto the other side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       self.game.addAnimation(DigAnimation(self.id, self.game.grid[x][y][0].id, x + xchange, y + ychange))
 
       self.game.grid[self.x][self.y].remove(self)
