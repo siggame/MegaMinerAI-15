@@ -426,7 +426,7 @@ class Thief(Mappable):
         return 'Turn {}: Your bomber {} must throw onto an adjacent tile. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       elif not (0 <= x < self.game.mapWidth and 0 <= y < self.game.mapHeight):
         return 'Turn {}: Your bomber {} must bomb on the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-      elif elif (x  < self.game.mapWidth/2 and self.x >= self.game.mapWidth/2) or (x  >= self.game.mapWidth/2 and self.x < self.game.mapWidth/2):
+      elif (x < self.game.mapWidth/2 and self.x >= self.game.mapWidth/2) or (x >= self.game.mapWidth/2 and self.x < self.game.mapWidth/2):
         return 'Turn {}: Your bomber {} must bomb on your side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
 
       #Blow stuff up
