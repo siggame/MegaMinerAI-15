@@ -411,7 +411,7 @@ class Thief(Mappable):
 
     return True
 
-  def act(self, x, y):
+  def useSpecial(self, x, y):
     if self.owner != self.game.playerID:
       return 'Turn {}: You cannot use the other player\'s thief {}. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
     if (self.thiefType != self.game.bomber) and (self.thiefType != self.game.digger):

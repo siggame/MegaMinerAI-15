@@ -378,10 +378,10 @@ class Thief(Mappable):
     self.validify()
     return library.thiefMove(self._ptr, x, y)
 
-  ##Commands a thief to act on a location.
-  def act(self, x, y):
+  ##Commands a thief to use a special on a location.
+  def useSpecial(self, x, y):
     self.validify()
-    return library.thiefAct(self._ptr, x, y)
+    return library.thiefUseSpecial(self._ptr, x, y)
 
   #\cond
   def getId(self):
