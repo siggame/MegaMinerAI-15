@@ -38,7 +38,7 @@ public class Client {
   [DllImport("client")]
   public static extern int thiefMove(IntPtr self, int x, int y);
   [DllImport("client")]
-  public static extern int thiefAct(IntPtr self, int x, int y);
+  public static extern int thiefUseSpecial(IntPtr self, int x, int y);
 #endregion
 
 #region Accessors
