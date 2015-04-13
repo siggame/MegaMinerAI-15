@@ -10,6 +10,19 @@
 ///Represents a type of trap.
 class TrapType {
   public:
+  static const int SARCOPHAGUS = 0;
+  static const int SNAKE_PIT = 1;
+  static const int SWINGING_BLADE = 2;
+  static const int BOULDER = 3;
+  static const int SPIDER_WEB = 4;
+  static const int QUICKSAND = 5;
+  static const int OIL_VASES = 6;
+  static const int ARROW_WALL = 7;
+  static const int HEAD_WIRE = 8;
+  static const int MERCURY_PIT = 9;
+  static const int MUMMY = 10;
+  static const int FAKE_ROTATING_WALL = 11;
+  
   void* ptr;
   TrapType(_TrapType* ptr = NULL);
 
