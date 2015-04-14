@@ -224,65 +224,58 @@ class Match(DefaultGameWorld):
     return True
 
   def checkRoundWinner(self):
-    sarcophagiPlayer0 = []
-    sarcophagiPlayer1 = []
+    sarcophagi_by_team = [list(), list()]
     for trap in self.objects.traps:
       if trap.trapType == self.sarcophagus:
-        if trap.owner == 0:
-          sarcophagiPlayer0.append(trap)
-        elif trap.owner == 0:
-          sarcophagiPlayer1.append(trap)
+        sarcophagi_by_team[trap.owner].append(trap)
 
     #check if there are any enemy thieves on the sarcophagus
     done = False
     while not done:
       done = True
-      for curSarcophagi in [sarcophagiPlayer0, sarcophagiPlayer1]:
-        for cur in curSarcophagi:
-          for obj in self.grid[cur.x][cur.y]:
+      for sarcophagi in sarcophagi_by_team:
+        for sarcophagus in sarcophagi:
+          for obj in self.grid[sarcophagus.x][sarcophagus.y]:
             if isinstance(obj, Thief):
-              self.grid[cur.x][cur.y].remove(cur)
-              self.removeObject(cur)
-              curSarcophagi.remove(cur)
-              if len(curSarcophagi) == 0:
+              self.grid[sarcophagus.x][sarcophagus.y].remove(sarcophagus)
+              self.removeObject(sarcophagus)
+              sarcophagi.remove(sarcophagus)
+              if len(sarcophagi) == 0:
                 self.declareRoundWinner(self.objects.players[obj.owner], "Player {} gathered all the sarcophagi".format(obj.owner))
                 return True
-              #have to re-do loop now because references are lost
+              # Have to re-do loop now because references are lost
               done = False
               break
 
     if self.roundTurnNumber >= self.roundTurnLimit:
-      #check if either player has more sarcophagi
-      if len(sarcophagiPlayer0) > len(sarcophagiPlayer1):
-        self.declareRoundWinner(self.objects.players[0], "Player 0 has more sarcophagi")
-        return True
-      elif len(sarcophagiPlayer1) > len(sarcophagiPlayer0):
-        self.declareRoundWinner(self.objects.players[1], "Player 1 has more sarcophagi")
-        return True
-      #the winner at this point is the player who is closest to their sarcophagus
-      player0Closest = [300, 300, 300]
-      player1Closest = [300, 300, 300]
+      # Check if either player has more sarcophagi
+      for side, sarcophagi in enumerate(sarcophagi_by_team):
+        if len(sarcophagi) > len(sarcophagi_by_team[side ^ 1]):
+          self.declareRoundWinner(self.objects.players[side], "Player {} has more sarcophagi".format(side))
+          return True
+
+      # The winner at this point is the player who has smallest total distance to their opponent's sarcophagi
+      # Total meaning the sum of the distance from each sarcophagi to the closest thief
+      closest_by_team = [[300] * len(sarcophagi_by_team[team ^ 1]) for team in range(2)]
+
       for thief in self.objects.thiefs:
-        loc = 0
-        for cur in [sarcophagiPlayer0, sarcophagiPlayer1]:
-          for sarcophagus in cur:
-            if thief.owner == 0:
-              player0Closest[loc] = min(player0Closest[loc], abs(thief.x-sarcophagus.x) + abs(thief.y-sarcophagus.y))
-            else:
-              player1Closest[loc] = min(player1Closest[loc], abs(thief.x-sarcophagus.x) + abs(thief.y-sarcophagus.y))
-            loc += 1
+        sarcophagi = sarcophagi_by_team[thief.owner ^ 1]
+        for sarcophagus_index, sarcophagus in enumerate(sarcophagi):
+          closest_by_team[thief.owner][sarcophagus_index] = min(closest_by_team[thief.owner][sarcophagus_index],
+                                                                abs(thief.x - sarcophagus.x) + abs(thief.y - sarcophagus.y))
 
-      player0Total = sum(player0Closest)
-      player1Total = sum(player1Closest)
+      total_distance_by_team = [sum(closest_by_sarcophagus) for closest_by_sarcophagus in closest_by_team]
 
-      if player0Total < player1Total:
-        self.declareRoundWinner(self.objects.players[0], "Player 0 had less total distance to the sarcophagi")
-      elif player1Total < player0Total:
-        self.declareRoundWinner(self.objects.players[1], "Player 1 had less total distance to the sarcophagi")
+      for side, total_distance in enumerate(total_distance_by_team):
+        if total_distance < total_distance_by_team[side ^ 1]:
+          self.declareRoundWinner(self.objects.players[side], "Player {} had less total distance to the sarcophagi".format(side))
+          break
       else:
         #TODO: Add more tiebreakers
         self.declareRoundWinner(self.objects.players[0], "Because I said so, this should be removed")
       return True
+
+    # The round has not ended yet
     return False
 
   def checkWinner(self):
