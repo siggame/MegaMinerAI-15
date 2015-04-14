@@ -51,12 +51,12 @@ public class Thief: Mappable
     return (Client.thiefMove(ptr, x, y) == 0) ? false : true;
   }
   /// <summary>
-  /// Commands a thief to act on a location.
+  /// Commands a thief to use a special on a location.
   /// </summary>
-  public bool act(int x, int y)
+  public bool useSpecial(int x, int y)
   {
     validify();
-    return (Client.thiefAct(ptr, x, y) == 0) ? false : true;
+    return (Client.thiefUseSpecial(ptr, x, y) == 0) ? false : true;
   }
   #endregion
 

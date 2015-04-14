@@ -17,10 +17,11 @@ class Player(object):
     return dict(id = self.id, playerName = self.playerName, time = self.time, scarabs = self.scarabs, roundsWon = self.roundsWon, )
   
   def nextTurn(self):
-    if self.game.roundTurnNumber in [0, 1]:
-      self.scarabs = self.game.scarabsForTraps
-    if self.game.roundTurnNumber in [2, 3]:
-      self.scarabs = self.game.scarabsForThieves
+    if self.game.playerID == self.id:
+      if self.game.roundTurnNumber in [0, 1]:
+        self.scarabs = self.game.scarabsForTraps
+      if self.game.roundTurnNumber in [2, 3]:
+        self.scarabs = self.game.scarabsForThieves
 
   def placeTrap(self, x, y, trapTypeIndex):
     if self.game.roundTurnNumber > 1:
@@ -281,7 +282,7 @@ class Trap(Mappable):
       if not (0 <= x - (self.game.mapWidth/2) * (self.owner) < self.game.mapWidth/2) or not (0 <= y < self.game.mapHeight):
         return 'Turn {}: Cannot move mummy {} outside of grid ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       # Check if desired space is not a wall
-      if self.game.grid[x][y].type != self.game.empty:
+      if self.game.grid[x][y][0].type != self.game.empty:
         return 'Turn {}: Cannot move mummy {} into a wall or spawn. ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       # Check if the mummy still has moves left
       if self.movementLeft <= 0:
@@ -417,7 +418,7 @@ class Thief(Mappable):
 
     return True
 
-  def act(self, x, y):
+  def useSpecial(self, x, y):
     if self.owner != self.game.playerID:
       return 'Turn {}: You cannot use the other player\'s thief {}. ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y)
     elif (self.thiefType != self.game.bomber) and (self.thiefType != self.game.digger):
@@ -431,6 +432,8 @@ class Thief(Mappable):
         return 'Turn {}: Your bomber {} must throw onto an adjacent tile. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       elif not (0 <= x < self.game.mapWidth and 0 <= y < self.game.mapHeight):
         return 'Turn {}: Your bomber {} must bomb on the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+      elif (x < self.game.mapWidth/2 and self.x >= self.game.mapWidth/2) or (x >= self.game.mapWidth/2 and self.x < self.game.mapWidth/2):
+        return 'Turn {}: Your bomber {} must bomb on your side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
 
       #Blow stuff up
       for unit in self.game.grid[x][y]:
@@ -466,8 +469,9 @@ class Thief(Mappable):
       ychange = y - self.y
       thisTile = self.game.getTile(x + xchange, y + ychange)
       if thisTile is None or thisTile.type != 0:
-        return 'Turn {}: Your digger {} has nowhere to go on the other side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-
+        return 'Turn {}: Your digger {} has nowhere to go on the other side of the wall. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+      elif (x + xchange < self.game.mapWidth/2 and self.x >= self.game.mapWidth/2) or (x + xchange >= self.game.mapWidth/2 and self.x < self.game.mapWidth/2):
+        return 'Turn {}: Your digger {} cannot dig onto the other side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       self.game.addAnimation(DigAnimation(self.id, self.game.grid[x][y][0].id, x + xchange, y + ychange))
 
       self.game.grid[self.x][self.y].remove(self)

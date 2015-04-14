@@ -36,11 +36,11 @@ class Thief extends Mappable
     validify();
     return (Client.INSTANCE.thiefMove(ptr, x, y) == 0) ? false : true;
   }
-  ///Commands a thief to act on a location.
-  boolean act(int x, int y)
+  ///Commands a thief to use a special on a location.
+  boolean useSpecial(int x, int y)
   {
     validify();
-    return (Client.INSTANCE.thiefAct(ptr, x, y) == 0) ? false : true;
+    return (Client.INSTANCE.thiefUseSpecial(ptr, x, y) == 0) ? false : true;
   }
 
     //getters
