@@ -1,4 +1,4 @@
-import Mappable, structures, std.conv;
+import Mappable, structures, std.conv, game;
 
 class Trap : Mappable {
   private _Trap* trap_ptr = null;
@@ -6,6 +6,7 @@ class Trap : Mappable {
   public:
   
   this(_Trap* pointer) {
+	super(cast(_Mappable*)pointer);
     trap_ptr = pointer;
   }
   
@@ -50,11 +51,11 @@ class Trap : Mappable {
   }
   
   bool act(int x, int y) {
-    return trapAct(trap_ptr, x, y);
+    return trapAct(trap_ptr, x, y) == 1;
   }
   
   bool toggle() {
-    return trapToggle(trap_ptr);
+    return trapToggle(trap_ptr) == 1;
   }
   
   override string toString() {

@@ -6,11 +6,11 @@ public class AI : BaseAI {
       super(conn);
     }
   
-    override string getUsername() const {
+    override const string getUsername() {
       return "Shell AI";
     }
     
-    override string getPassword() const {
+    override const string getPassword() {
       return "password";
     }
     

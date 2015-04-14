@@ -4,6 +4,10 @@ struct Connection
 {
   int socket;
   
+  //#ifdef ENABLE_THREADS
+  //pthread_mutex_t mutex;
+  //#endif
+  
   int mapWidth;
   int mapHeight;
   int turnNumber;

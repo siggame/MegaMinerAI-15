@@ -1,4 +1,4 @@
-import structures, std.conv, std.string;
+import structures, std.conv, std.string, std.utf, game;
 
 class Player {
   private _Player* ptr = null;
@@ -30,20 +30,20 @@ class Player {
   }
   
   bool placeTrap(int x, int y, int trapType) {
-    return playerPlaceTrap(ptr, x, y, trapType);
+    return playerPlaceTrap(ptr, x, y, trapType) == 1;
   }
   
   bool purchaseThief(int x, int y, int thiefType) {
-    return playerPurchaseThief(ptr, x, y, thiefType);
+    return playerPurchaseThief(ptr, x, y, thiefType) == 1;
   }
   
   bool pharaohTalk(string message) {
-    return playerPharaohTalk(ptr, message.toStringz());
+    return playerPharaohTalk(ptr, toUTFz!(char*)(message)) == 1;
   }
   
   override string toString() {
     return "id: " ~ to!string(ptr.id) ~ "\n" ~
-           "playerName: " ~ to!string(ptr.name) ~ "\n" ~
+           "playerName: " ~ to!string(ptr.playerName) ~ "\n" ~
            "time: " ~ to!string(ptr.time) ~ "\n" ~
            "scarabs: " ~ to!string(ptr.scarabs) ~ "\n" ~
            "roundsWon: " ~ to!string(ptr.roundsWon) ~ "\n";

@@ -1,11 +1,11 @@
 import Player, Mappable, Tile, Trap, Thief, ThiefType, TrapType, structures, game;
-import std.array;
+import std.array, std.stdio;
 
 class BaseAI {
   protected:
     Connection* c;
     Player[] players;
-    Mappable[] mappable;
+    Mappable[] mappables;
     Tile[] tiles;
     Trap[] traps;
     Thief[] thieves;
@@ -18,59 +18,59 @@ class BaseAI {
     }
   
     int getMapWidth() {
-      getMapWidth(c);
+      return game.getMapWidth(c);
     }
     
     int getMapHeight() {
-      getMapHeight(c);
+      return game.getMapHeight(c);
     }
     
     int getTurnNumber() {
-      getTurnNumber(c);
+      return game.getTurnNumber(c);
     }
     
     int getRoundTurnNumber() {
-      getRoundTurnNumber(c);
+      return game.getRoundTurnNumber(c);
     }
     
     int getMaxTheives() {
-      getMaxTheives(c);
+      return game.getMaxThieves(c);
     }
     
     int getMaxTraps() {
-      getMaxTraps(c);
+      return game.getMaxTraps(c);
     }
     
     int getPlayerID() {
-      getPlayerID(c);
+      return game.getPlayerID(c);
     }
     
     int getGameNumber() {
-      getGameNumber(c);
+      return game.getGameNumber(c);
     }
     
     int getRoundNumber() {
-      getRoundNumber(c);
+      return game.getRoundNumber(c);
     }
     
     int getScarabsForTraps() {
-      getScarabsForTraps(c);
+      return game.getScarabsForTraps(c);
     }
     
-    int getScarabsForTheieves() {
-      getScarabsForTheieves(c);
+    int getScarabsForThieves() {
+      return game.getScarabsForThieves(c);
     }
     
     int getMaxStack() {
-      getMaxStack(c);
+      return game.getMaxStack(c);
     }
     
     int getRoundToWin() {
-      getRoundToWin(c);
+      return game.getRoundsToWin(c);
     }
     
     int getRoundTurnLimit() {
-      getRoundTurnLimit(c);
+      return game.getRoundTurnLimit(c);
     }
     
     abstract const string getUsername();
@@ -125,6 +125,7 @@ class BaseAI {
       
       count = getTrapTypeCount(c);
       trapTypes.clear();
+      trapTypes.length = count;
       foreach (i; 0..count) {
         trapTypes[i] = new TrapType(getTrapType(c, i));
       }

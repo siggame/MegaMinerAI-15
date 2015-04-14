@@ -1,9 +1,10 @@
-import Mappable, structures, std.conv, std.string;
+import Mappable, structures, std.conv, std.string, std.utf, game;
 
 class Thief : Mappable {
   private _Thief* thief_ptr = null;
   
-  public this(_Thief* thief_ptr) { 
+  public this(_Thief* pointer) {
+	super(cast(_Mappable*)pointer); 
     thief_ptr = pointer;
   }
   
@@ -52,15 +53,15 @@ class Thief : Mappable {
   }
   
   bool thiefTalk(string message) {
-    return thiefThiefTalk(thief_ptr, message.toStringz());
+    return thiefThiefTalk(thief_ptr, toUTFz!(char*)(message)) == 1;
   }
   
   bool move(int x, int y) {
-    return thiefMove(thief_ptr, x, y);
+    return thiefMove(thief_ptr, x, y) == 1;
   }
   
   bool useSpecial(int x, int y) {
-    return thiefUseSpecial(thief_ptr, x, y);
+    return thiefUseSpecial(thief_ptr, x, y) == 1;
   }
   
   override string toString() {
