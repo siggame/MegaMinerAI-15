@@ -1,5 +1,3 @@
-import structures;
-
 extern (C++):
 
 struct Connection

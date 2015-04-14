@@ -1,4 +1,4 @@
-extern (C++):
+extern (C):
 
 int open_server_connection(const char*, const char*);
 int send_string(int, const char*);

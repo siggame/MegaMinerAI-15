@@ -1,6 +1,6 @@
 import structures;
 
-extern (C++):
+extern (C):
 
 //server stuff
 Connection* createConnection();
