@@ -6,7 +6,7 @@ submit: client
 	@echo "$(shell cd ..;sh submit.sh c)"
 
 client: $(DFILES) ../library/client.a ../library/sexp/libclient_sexp.a
-	gdc $(DFILES) -lstdc++ ../library/client.a ../library/sexp/libclient_sexp.a -o run
+	gdc $(DFILES) -lstdc++ ../library/client.a ../library/sexp/libclient_sexp.a -o client
 
 ../library/client.a:
 	$(MAKE) -C $(dir $@) $(notdir $@)
