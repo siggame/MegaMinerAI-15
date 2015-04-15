@@ -10,12 +10,6 @@
 ///Represents a type of thief.
 class ThiefType {
   public:
-  static const int BOMBER = 0;
-  static const int DIGGER = 1;
-  static const int NINJA = 2;
-  static const int GUIDE = 3;
-  static const int SLAVE = 4;
-  
   void* ptr;
   ThiefType(_ThiefType* ptr = NULL);
 

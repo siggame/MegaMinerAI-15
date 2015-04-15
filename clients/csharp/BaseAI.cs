@@ -222,16 +222,6 @@ public abstract class BaseAI
   }
 
   /// <summary>
-  /// The maximum number of thieves per tile.
-  /// </summary>
-  /// <returns>Returns the maximum number of thieves per tile.</returns>
-  public int maxStack()
-  {
-    int value = Client.getMaxStack(connection);
-    return value;
-  }
-
-  /// <summary>
   /// The number of won rounds required to win.
   /// </summary>
   /// <returns>Returns the number of won rounds required to win.</returns>
@@ -248,6 +238,16 @@ public abstract class BaseAI
   public int roundTurnLimit()
   {
     int value = Client.getRoundTurnLimit(connection);
+    return value;
+  }
+
+  /// <summary>
+  /// The number of sarcophagi each player will start with each round.
+  /// </summary>
+  /// <returns>Returns the number of sarcophagi each player will start with each round.</returns>
+  public int numberOfSarcophagi()
+  {
+    int value = Client.getNumberOfSarcophagi(connection);
     return value;
   }
 }

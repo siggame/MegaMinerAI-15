@@ -15,6 +15,7 @@ std::ostream& operator<<(std::ostream& stream, Player ob)
   stream << "time: " << ob.time  <<'\n';
   stream << "scarabs: " << ob.scarabs  <<'\n';
   stream << "roundsWon: " << ob.roundsWon  <<'\n';
+  stream << "sarcophagiCaptured: " << ob.sarcophagiCaptured  <<'\n';
   return stream;
 }
 
@@ -209,9 +210,9 @@ std::ostream& operator<<(std::ostream& stream, GameState ob)
   stream << "roundNumber: " << ob.roundNumber  <<'\n';
   stream << "scarabsForTraps: " << ob.scarabsForTraps  <<'\n';
   stream << "scarabsForThieves: " << ob.scarabsForThieves  <<'\n';
-  stream << "maxStack: " << ob.maxStack  <<'\n';
   stream << "roundsToWin: " << ob.roundsToWin  <<'\n';
   stream << "roundTurnLimit: " << ob.roundTurnLimit  <<'\n';
+  stream << "numberOfSarcophagi: " << ob.numberOfSarcophagi  <<'\n';
 
   stream << "\n\nPlayers:\n";
   for(std::map<int,Player>::iterator i = ob.players.begin(); i != ob.players.end(); i++)

@@ -1,20 +1,21 @@
 class Player(object):
-  game_state_attributes = ['id', 'playerName', 'time', 'scarabs', 'roundsWon']
-  def __init__(self, game, id, playerName, time, scarabs, roundsWon):
+  game_state_attributes = ['id', 'playerName', 'time', 'scarabs', 'roundsWon', 'sarcophagiCaptured']
+  def __init__(self, game, id, playerName, time, scarabs, roundsWon, sarcophagiCaptured):
     self.game = game
     self.id = id
     self.playerName = playerName
     self.time = time
     self.scarabs = scarabs
     self.roundsWon = roundsWon
+    self.sarcophagiCaptured = sarcophagiCaptured
     self.updatedAt = game.turnNumber
 
   def toList(self):
-    return [self.id, self.playerName, self.time, self.scarabs, self.roundsWon, ]
+    return [self.id, self.playerName, self.time, self.scarabs, self.roundsWon, self.sarcophagiCaptured, ]
   
   # This will not work if the object has variables other than primitives
   def toJson(self):
-    return dict(id = self.id, playerName = self.playerName, time = self.time, scarabs = self.scarabs, roundsWon = self.roundsWon, )
+    return dict(id = self.id, playerName = self.playerName, time = self.time, scarabs = self.scarabs, roundsWon = self.roundsWon, sarcophagiCaptured = self.sarcophagiCaptured, )
   
   def nextTurn(self):
     if self.game.playerID == self.id:

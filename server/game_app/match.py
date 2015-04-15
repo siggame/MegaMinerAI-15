@@ -43,9 +43,9 @@ class Match(DefaultGameWorld):
     self.roundNumber = 0
     self.scarabsForTraps = self.scarabsForTraps
     self.scarabsForThieves = self.scarabsForThieves
-    self.maxStack = self.maxStack
     self.roundsToWin = self.roundsToWin
     self.roundTurnLimit = self.roundTurnLimit
+    self.numberOfSarcophagi = self.numberOfSarcophagi
 
   #this is here to be wrapped
   def __del__(self):
@@ -381,7 +381,7 @@ class Match(DefaultGameWorld):
   def status(self):
     msg = ["status"]
 
-    msg.append(["game", self.mapWidth, self.mapHeight, self.turnNumber, self.roundTurnNumber, self.maxThieves, self.maxTraps, self.playerID, self.gameNumber, self.roundNumber, self.scarabsForTraps, self.scarabsForThieves, self.maxStack, self.roundsToWin, self.roundTurnLimit])
+    msg.append(["game", self.mapWidth, self.mapHeight, self.turnNumber, self.roundTurnNumber, self.maxThieves, self.maxTraps, self.playerID, self.gameNumber, self.roundNumber, self.scarabsForTraps, self.scarabsForThieves, self.roundsToWin, self.roundTurnLimit, self.numberOfSarcophagi])
 
     typeLists = []
     typeLists.append(["Player"] + [i.toList() for i in self.objects.players])

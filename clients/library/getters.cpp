@@ -20,6 +20,10 @@ DLLEXPORT int playerGetRoundsWon(_Player* ptr)
 {
   return ptr->roundsWon;
 }
+DLLEXPORT int playerGetSarcophagiCaptured(_Player* ptr)
+{
+  return ptr->sarcophagiCaptured;
+}
 DLLEXPORT int mappableGetId(_Mappable* ptr)
 {
   return ptr->id;

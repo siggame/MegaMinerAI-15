@@ -25,6 +25,7 @@ struct _Player
   float time;
   int scarabs;
   int roundsWon;
+  int sarcophagiCaptured;
 };
 struct _Mappable
 {

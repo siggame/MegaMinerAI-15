@@ -101,14 +101,14 @@ library.getScarabsForTraps.argtypes = [c_void_p]
 library.getScarabsForThieves.restype = c_int
 library.getScarabsForThieves.argtypes = [c_void_p]
 
-library.getMaxStack.restype = c_int
-library.getMaxStack.argtypes = [c_void_p]
-
 library.getRoundsToWin.restype = c_int
 library.getRoundsToWin.argtypes = [c_void_p]
 
 library.getRoundTurnLimit.restype = c_int
 library.getRoundTurnLimit.argtypes = [c_void_p]
+
+library.getNumberOfSarcophagi.restype = c_int
+library.getNumberOfSarcophagi.argtypes = [c_void_p]
 
 library.getPlayer.restype = c_void_p
 library.getPlayer.argtypes = [c_void_p, c_int]
@@ -169,6 +169,9 @@ library.playerGetScarabs.argtypes = [c_void_p]
 
 library.playerGetRoundsWon.restype = c_int
 library.playerGetRoundsWon.argtypes = [c_void_p]
+
+library.playerGetSarcophagiCaptured.restype = c_int
+library.playerGetSarcophagiCaptured.argtypes = [c_void_p]
 
 library.mappableGetId.restype = c_int
 library.mappableGetId.argtypes = [c_void_p]

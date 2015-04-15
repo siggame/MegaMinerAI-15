@@ -111,11 +111,6 @@ class BaseAI:
   #\endcond
   scarabsForThieves = property(getScarabsForThieves)
   #\cond
-  def getMaxStack(self):
-    return library.getMaxStack(self.connection)
-  #\endcond
-  maxStack = property(getMaxStack)
-  #\cond
   def getRoundsToWin(self):
     return library.getRoundsToWin(self.connection)
   #\endcond
@@ -125,5 +120,10 @@ class BaseAI:
     return library.getRoundTurnLimit(self.connection)
   #\endcond
   roundTurnLimit = property(getRoundTurnLimit)
+  #\cond
+  def getNumberOfSarcophagi(self):
+    return library.getNumberOfSarcophagi(self.connection)
+  #\endcond
+  numberOfSarcophagi = property(getNumberOfSarcophagi)
   def __init__(self, connection):
     self.connection = connection
