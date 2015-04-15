@@ -6,6 +6,7 @@
 #include <utility>
 #include <time.h>
 #include <list>
+#include <iostream>
 
 namespace visualizer
 {
@@ -110,10 +111,11 @@ namespace visualizer
     }
     // END: Initial Setup
 
-    // Setup the renderer as a 4 x 4 map by default
-    // TODO: Change board size to something useful
-    renderer->setCamera( 0, 0, 4, 4 );
-    renderer->setGridDimensions( 4, 4 );
+    int width = getWidth();
+    int height = getHeight();
+
+    renderer->setCamera( 0, 0, width, height );
+    renderer->setGridDimensions( width, height );
  
     start();
   } // Pharaoh::loadGamelog()
@@ -121,25 +123,59 @@ namespace visualizer
   // The "main" function
   void Pharaoh::run()
   {
-    
-    // Build the Debug Table's Headers
-    QStringList header;
-    header << "one" << "two" << "three";
-    gui->setDebugHeader( header );
     timeManager->setNumTurns( 0 );
-
     animationEngine->registerGame(0, 0);
+
+    Frame * turn = new Frame;
+    Frame * nextTurn = new Frame;
+
+    int mapWidth = getWidth();
+    int mapHeight = getHeight();
+
+    parser::Tile lastTileAt [mapWidth][mapHeight];
 
     // Look through each turn in the gamelog
     for(int state = 0; state < (int)m_game->states.size() && !m_suicide; state++)
     {
-      Frame turn;  // The frame that will be drawn
-      SmartPointer<Something> something = new Something();
-      something->addKeyFrame( new DrawSomething( something ) );
-      turn.addAnimatable( something );
-      animationEngine->buildAnimations(turn);
-      addFrame(turn);
-      
+      Color whiteColor = Color(1, 1, 1, 1);
+
+      // Parse Tiles \\
+      //for(auto iter : m_game->states[state].tiles)
+      for(std::map<int,parser::Tile>::iterator iter = m_game->states[state].tiles.begin(); iter != m_game->states[state].tiles.end(); iter++)
+      {
+        const parser::Tile& tile = iter->second;
+        const int ptileId = iter->first;
+        lastTileAt[tile.x][tile.y] = tile;
+      }
+
+      for(int x = 0; x < mapWidth; x++)
+      {
+        for(int y = 0; y < mapHeight; y++)
+        {
+          const parser::Tile& tile = lastTileAt[x][y];
+          string tileTextureKey = "tile_open";
+
+          if(tile.type == 1)
+          {
+            tileTextureKey = "tile_spawn";
+          }
+          else if(tile.type == 2)
+          {
+            tileTextureKey = "tile_wall";
+          }
+
+          SmartPointer<Animatable> anim;
+          SmartPointer<DrawSpriteData> spriteData = new DrawSpriteData(tile.x, tile.y, 1, 1, tileTextureKey, false);
+          spriteData->addKeyFrame( new DrawSprite( spriteData, whiteColor, whiteColor ) );
+          anim = spriteData;
+
+          turn->addAnimatable( anim );
+        }
+      }
+
+      animationEngine->buildAnimations(*turn);
+      addFrame(*turn);
+
       // Register the game and begin playing delayed due to multithreading
       if(state > 5)
       {
@@ -152,6 +188,10 @@ namespace visualizer
           timeManager->play();
         }
       }
+
+      delete turn;
+      turn = nextTurn;
+      nextTurn = new Frame;
     }
     
     if(!m_suicide)
