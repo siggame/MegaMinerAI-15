@@ -326,7 +326,7 @@ static bool parseThief(Thief& object, sexp_t* expression)
     return false;
   }
 
-  object.ninjaReflexesLeft = atoi(sub->val);
+  object.specialsLeft = atoi(sub->val);
   sub = sub->next;
 
   if ( !sub ) 
@@ -335,7 +335,7 @@ static bool parseThief(Thief& object, sexp_t* expression)
     return false;
   }
 
-  object.maxNinjaReflexes = atoi(sub->val);
+  object.maxSpecials = atoi(sub->val);
   sub = sub->next;
 
   if ( !sub ) 
@@ -427,7 +427,7 @@ static bool parseThiefType(ThiefType& object, sexp_t* expression)
     return false;
   }
 
-  object.maxNinjaReflexes = atoi(sub->val);
+  object.maxSpecials = atoi(sub->val);
   sub = sub->next;
 
   if ( !sub ) 
@@ -627,7 +627,7 @@ static bool parseSpawn(spawn& object, sexp_t* expression)
     cerr << "Error in parsespawn.\n Parsing: " << *expression << endl;
     return false;
   }
-  object.actingID = atoi(sub->val);
+  object.sourceID = atoi(sub->val);
   sub = sub->next;
   if( !sub ) 
   {
@@ -646,6 +646,45 @@ static bool parseSpawn(spawn& object, sexp_t* expression)
   return true;
 
 }
+static bool parseActivate(activate& object, sexp_t* expression)
+{
+  sexp_t* sub;
+  if ( !expression ) return false;
+  object.type = ACTIVATE;
+  sub = expression->list->next;
+  if( !sub ) 
+  {
+    cerr << "Error in parseactivate.\n Parsing: " << *expression << endl;
+    return false;
+  }
+  object.sourceID = atoi(sub->val);
+  sub = sub->next;
+  return true;
+
+}
+static bool parseBomb(bomb& object, sexp_t* expression)
+{
+  sexp_t* sub;
+  if ( !expression ) return false;
+  object.type = BOMB;
+  sub = expression->list->next;
+  if( !sub ) 
+  {
+    cerr << "Error in parsebomb.\n Parsing: " << *expression << endl;
+    return false;
+  }
+  object.sourceID = atoi(sub->val);
+  sub = sub->next;
+  if( !sub ) 
+  {
+    cerr << "Error in parsebomb.\n Parsing: " << *expression << endl;
+    return false;
+  }
+  object.targetID = atoi(sub->val);
+  sub = sub->next;
+  return true;
+
+}
 static bool parseMove(move& object, sexp_t* expression)
 {
   sexp_t* sub;
@@ -657,7 +696,7 @@ static bool parseMove(move& object, sexp_t* expression)
     cerr << "Error in parsemove.\n Parsing: " << *expression << endl;
     return false;
   }
-  object.actingID = atoi(sub->val);
+  object.sourceID = atoi(sub->val);
   sub = sub->next;
   if( !sub ) 
   {
@@ -701,7 +740,7 @@ static bool parseKill(kill& object, sexp_t* expression)
     cerr << "Error in parsekill.\n Parsing: " << *expression << endl;
     return false;
   }
-  object.actingID = atoi(sub->val);
+  object.sourceID = atoi(sub->val);
   sub = sub->next;
   if( !sub ) 
   {
@@ -724,7 +763,7 @@ static bool parsePharaohTalk(pharaohTalk& object, sexp_t* expression)
     cerr << "Error in parsepharaohTalk.\n Parsing: " << *expression << endl;
     return false;
   }
-  object.actingID = atoi(sub->val);
+  object.playerID = atoi(sub->val);
   sub = sub->next;
   if( !sub ) 
   {
@@ -749,7 +788,7 @@ static bool parseThiefTalk(thiefTalk& object, sexp_t* expression)
     cerr << "Error in parsethiefTalk.\n Parsing: " << *expression << endl;
     return false;
   }
-  object.actingID = atoi(sub->val);
+  object.sourceID = atoi(sub->val);
   sub = sub->next;
   if( !sub ) 
   {
@@ -763,45 +802,66 @@ static bool parseThiefTalk(thiefTalk& object, sexp_t* expression)
   return true;
 
 }
-static bool parseActivate(activate& object, sexp_t* expression)
+static bool parseDig(dig& object, sexp_t* expression)
 {
   sexp_t* sub;
   if ( !expression ) return false;
-  object.type = ACTIVATE;
+  object.type = DIG;
   sub = expression->list->next;
   if( !sub ) 
   {
-    cerr << "Error in parseactivate.\n Parsing: " << *expression << endl;
+    cerr << "Error in parsedig.\n Parsing: " << *expression << endl;
     return false;
   }
-  object.actingID = atoi(sub->val);
-  sub = sub->next;
-  return true;
-
-}
-static bool parseBomb(bomb& object, sexp_t* expression)
-{
-  sexp_t* sub;
-  if ( !expression ) return false;
-  object.type = BOMB;
-  sub = expression->list->next;
-  if( !sub ) 
-  {
-    cerr << "Error in parsebomb.\n Parsing: " << *expression << endl;
-    return false;
-  }
-  object.actingID = atoi(sub->val);
+  object.sourceID = atoi(sub->val);
   sub = sub->next;
   if( !sub ) 
   {
-    cerr << "Error in parsebomb.\n Parsing: " << *expression << endl;
+    cerr << "Error in parsedig.\n Parsing: " << *expression << endl;
+    return false;
+  }
+  object.targetID = atoi(sub->val);
+  sub = sub->next;
+  if( !sub ) 
+  {
+    cerr << "Error in parsedig.\n Parsing: " << *expression << endl;
     return false;
   }
   object.x = atoi(sub->val);
   sub = sub->next;
   if( !sub ) 
   {
-    cerr << "Error in parsebomb.\n Parsing: " << *expression << endl;
+    cerr << "Error in parsedig.\n Parsing: " << *expression << endl;
+    return false;
+  }
+  object.y = atoi(sub->val);
+  sub = sub->next;
+  return true;
+
+}
+static bool parseRoll(roll& object, sexp_t* expression)
+{
+  sexp_t* sub;
+  if ( !expression ) return false;
+  object.type = ROLL;
+  sub = expression->list->next;
+  if( !sub ) 
+  {
+    cerr << "Error in parseroll.\n Parsing: " << *expression << endl;
+    return false;
+  }
+  object.sourceID = atoi(sub->val);
+  sub = sub->next;
+  if( !sub ) 
+  {
+    cerr << "Error in parseroll.\n Parsing: " << *expression << endl;
+    return false;
+  }
+  object.x = atoi(sub->val);
+  sub = sub->next;
+  if( !sub ) 
+  {
+    cerr << "Error in parseroll.\n Parsing: " << *expression << endl;
     return false;
   }
   object.y = atoi(sub->val);
@@ -980,6 +1040,22 @@ static bool parseSexp(Game& game, sexp_t* expression)
 
         animations[ ((AnimOwner*)&*animation)->owner ].push_back( animation );
       }
+      if(string(ToLower( sub->val ) ) == "activate")
+      {
+        SmartPointer<activate> animation = new activate;
+        if ( !parseActivate(*animation, expression) )
+          return false;
+
+        animations[ ((AnimOwner*)&*animation)->owner ].push_back( animation );
+      }
+      if(string(ToLower( sub->val ) ) == "bomb")
+      {
+        SmartPointer<bomb> animation = new bomb;
+        if ( !parseBomb(*animation, expression) )
+          return false;
+
+        animations[ ((AnimOwner*)&*animation)->owner ].push_back( animation );
+      }
       if(string(ToLower( sub->val ) ) == "move")
       {
         SmartPointer<move> animation = new move;
@@ -1012,18 +1088,18 @@ static bool parseSexp(Game& game, sexp_t* expression)
 
         animations[ ((AnimOwner*)&*animation)->owner ].push_back( animation );
       }
-      if(string(ToLower( sub->val ) ) == "activate")
+      if(string(ToLower( sub->val ) ) == "dig")
       {
-        SmartPointer<activate> animation = new activate;
-        if ( !parseActivate(*animation, expression) )
+        SmartPointer<dig> animation = new dig;
+        if ( !parseDig(*animation, expression) )
           return false;
 
         animations[ ((AnimOwner*)&*animation)->owner ].push_back( animation );
       }
-      if(string(ToLower( sub->val ) ) == "bomb")
+      if(string(ToLower( sub->val ) ) == "roll")
       {
-        SmartPointer<bomb> animation = new bomb;
-        if ( !parseBomb(*animation, expression) )
+        SmartPointer<roll> animation = new roll;
+        if ( !parseRoll(*animation, expression) )
           return false;
 
         animations[ ((AnimOwner*)&*animation)->owner ].push_back( animation );

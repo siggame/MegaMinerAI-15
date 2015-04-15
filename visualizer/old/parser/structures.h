@@ -15,12 +15,14 @@ namespace parser
 {
 
 const int SPAWN = 0;
-const int MOVE = 1;
-const int KILL = 2;
-const int PHARAOHTALK = 3;
-const int THIEFTALK = 4;
-const int ACTIVATE = 5;
-const int BOMB = 6;
+const int ACTIVATE = 1;
+const int BOMB = 2;
+const int MOVE = 3;
+const int KILL = 4;
+const int PHARAOHTALK = 5;
+const int THIEFTALK = 6;
+const int DIG = 7;
+const int ROLL = 8;
 
 struct Player
 {
@@ -67,8 +69,8 @@ struct Thief: public Mappable
   int owner;
   int thiefType;
   int alive;
-  int ninjaReflexesLeft;
-  int maxNinjaReflexes;
+  int specialsLeft;
+  int maxSpecials;
   int movementLeft;
   int maxMovement;
   int frozenTurnsLeft;
@@ -83,7 +85,7 @@ struct ThiefType
   int type;
   int cost;
   int maxMovement;
-  int maxNinjaReflexes;
+  int maxSpecials;
   int maxInstances;
 
   friend std::ostream& operator<<(std::ostream& stream, ThiefType obj);
@@ -121,16 +123,31 @@ struct Animation
 
 struct spawn : public Animation
 {
-  int actingID;
+  int sourceID;
   int x;
   int y;
 
   friend std::ostream& operator<<(std::ostream& stream, spawn obj);
 };
 
+struct activate : public Animation
+{
+  int sourceID;
+
+  friend std::ostream& operator<<(std::ostream& stream, activate obj);
+};
+
+struct bomb : public Animation
+{
+  int sourceID;
+  int targetID;
+
+  friend std::ostream& operator<<(std::ostream& stream, bomb obj);
+};
+
 struct move : public Animation
 {
-  int actingID;
+  int sourceID;
   int fromX;
   int fromY;
   int toX;
@@ -141,7 +158,7 @@ struct move : public Animation
 
 struct kill : public Animation
 {
-  int actingID;
+  int sourceID;
   int targetID;
 
   friend std::ostream& operator<<(std::ostream& stream, kill obj);
@@ -149,7 +166,7 @@ struct kill : public Animation
 
 struct pharaohTalk : public Animation
 {
-  int actingID;
+  int playerID;
   char* message;
 
   friend std::ostream& operator<<(std::ostream& stream, pharaohTalk obj);
@@ -157,26 +174,29 @@ struct pharaohTalk : public Animation
 
 struct thiefTalk : public Animation
 {
-  int actingID;
+  int sourceID;
   char* message;
 
   friend std::ostream& operator<<(std::ostream& stream, thiefTalk obj);
 };
 
-struct activate : public Animation
+struct dig : public Animation
 {
-  int actingID;
-
-  friend std::ostream& operator<<(std::ostream& stream, activate obj);
-};
-
-struct bomb : public Animation
-{
-  int actingID;
+  int sourceID;
+  int targetID;
   int x;
   int y;
 
-  friend std::ostream& operator<<(std::ostream& stream, bomb obj);
+  friend std::ostream& operator<<(std::ostream& stream, dig obj);
+};
+
+struct roll : public Animation
+{
+  int sourceID;
+  int x;
+  int y;
+
+  friend std::ostream& operator<<(std::ostream& stream, roll obj);
 };
 
 

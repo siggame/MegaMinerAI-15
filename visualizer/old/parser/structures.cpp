@@ -62,8 +62,8 @@ std::ostream& operator<<(std::ostream& stream, Thief ob)
   stream << "owner: " << ob.owner  <<'\n';
   stream << "thiefType: " << ob.thiefType  <<'\n';
   stream << "alive: " << ob.alive  <<'\n';
-  stream << "ninjaReflexesLeft: " << ob.ninjaReflexesLeft  <<'\n';
-  stream << "maxNinjaReflexes: " << ob.maxNinjaReflexes  <<'\n';
+  stream << "specialsLeft: " << ob.specialsLeft  <<'\n';
+  stream << "maxSpecials: " << ob.maxSpecials  <<'\n';
   stream << "movementLeft: " << ob.movementLeft  <<'\n';
   stream << "maxMovement: " << ob.maxMovement  <<'\n';
   stream << "frozenTurnsLeft: " << ob.frozenTurnsLeft  <<'\n';
@@ -78,7 +78,7 @@ std::ostream& operator<<(std::ostream& stream, ThiefType ob)
   stream << "type: " << ob.type  <<'\n';
   stream << "cost: " << ob.cost  <<'\n';
   stream << "maxMovement: " << ob.maxMovement  <<'\n';
-  stream << "maxNinjaReflexes: " << ob.maxNinjaReflexes  <<'\n';
+  stream << "maxSpecials: " << ob.maxSpecials  <<'\n';
   stream << "maxInstances: " << ob.maxInstances  <<'\n';
   return stream;
 }
@@ -112,9 +112,26 @@ std::ostream& operator<<(std::ostream& stream, TrapType ob)
 std::ostream& operator<<(std::ostream& stream, spawn ob)
 {
   stream << "spawn" << "\n";
-  stream << "actingID: " << ob.actingID  <<'\n';
+  stream << "sourceID: " << ob.sourceID  <<'\n';
   stream << "x: " << ob.x  <<'\n';
   stream << "y: " << ob.y  <<'\n';
+  return stream;
+}
+
+
+std::ostream& operator<<(std::ostream& stream, activate ob)
+{
+  stream << "activate" << "\n";
+  stream << "sourceID: " << ob.sourceID  <<'\n';
+  return stream;
+}
+
+
+std::ostream& operator<<(std::ostream& stream, bomb ob)
+{
+  stream << "bomb" << "\n";
+  stream << "sourceID: " << ob.sourceID  <<'\n';
+  stream << "targetID: " << ob.targetID  <<'\n';
   return stream;
 }
 
@@ -122,7 +139,7 @@ std::ostream& operator<<(std::ostream& stream, spawn ob)
 std::ostream& operator<<(std::ostream& stream, move ob)
 {
   stream << "move" << "\n";
-  stream << "actingID: " << ob.actingID  <<'\n';
+  stream << "sourceID: " << ob.sourceID  <<'\n';
   stream << "fromX: " << ob.fromX  <<'\n';
   stream << "fromY: " << ob.fromY  <<'\n';
   stream << "toX: " << ob.toX  <<'\n';
@@ -134,7 +151,7 @@ std::ostream& operator<<(std::ostream& stream, move ob)
 std::ostream& operator<<(std::ostream& stream, kill ob)
 {
   stream << "kill" << "\n";
-  stream << "actingID: " << ob.actingID  <<'\n';
+  stream << "sourceID: " << ob.sourceID  <<'\n';
   stream << "targetID: " << ob.targetID  <<'\n';
   return stream;
 }
@@ -143,7 +160,7 @@ std::ostream& operator<<(std::ostream& stream, kill ob)
 std::ostream& operator<<(std::ostream& stream, pharaohTalk ob)
 {
   stream << "pharaohTalk" << "\n";
-  stream << "actingID: " << ob.actingID  <<'\n';
+  stream << "playerID: " << ob.playerID  <<'\n';
   stream << "message: " << ob.message  <<'\n';
   return stream;
 }
@@ -152,24 +169,27 @@ std::ostream& operator<<(std::ostream& stream, pharaohTalk ob)
 std::ostream& operator<<(std::ostream& stream, thiefTalk ob)
 {
   stream << "thiefTalk" << "\n";
-  stream << "actingID: " << ob.actingID  <<'\n';
+  stream << "sourceID: " << ob.sourceID  <<'\n';
   stream << "message: " << ob.message  <<'\n';
   return stream;
 }
 
 
-std::ostream& operator<<(std::ostream& stream, activate ob)
+std::ostream& operator<<(std::ostream& stream, dig ob)
 {
-  stream << "activate" << "\n";
-  stream << "actingID: " << ob.actingID  <<'\n';
+  stream << "dig" << "\n";
+  stream << "sourceID: " << ob.sourceID  <<'\n';
+  stream << "targetID: " << ob.targetID  <<'\n';
+  stream << "x: " << ob.x  <<'\n';
+  stream << "y: " << ob.y  <<'\n';
   return stream;
 }
 
 
-std::ostream& operator<<(std::ostream& stream, bomb ob)
+std::ostream& operator<<(std::ostream& stream, roll ob)
 {
-  stream << "bomb" << "\n";
-  stream << "actingID: " << ob.actingID  <<'\n';
+  stream << "roll" << "\n";
+  stream << "sourceID: " << ob.sourceID  <<'\n';
   stream << "x: " << ob.x  <<'\n';
   stream << "y: " << ob.y  <<'\n';
   return stream;
@@ -226,6 +246,10 @@ std::ostream& operator<<(std::ostream& stream, GameState ob)
   {
 //    if((*(*i)).type == SPAWN)
 //      stream << *((spawn*)*i) << "\n";
+//    if((*(*i)).type == ACTIVATE)
+//      stream << *((activate*)*i) << "\n";
+//    if((*(*i)).type == BOMB)
+//      stream << *((bomb*)*i) << "\n";
 //    if((*(*i)).type == MOVE)
 //      stream << *((move*)*i) << "\n";
 //    if((*(*i)).type == KILL)
@@ -234,10 +258,10 @@ std::ostream& operator<<(std::ostream& stream, GameState ob)
 //      stream << *((pharaohTalk*)*i) << "\n";
 //    if((*(*i)).type == THIEFTALK)
 //      stream << *((thiefTalk*)*i) << "\n";
-//    if((*(*i)).type == ACTIVATE)
-//      stream << *((activate*)*i) << "\n";
-//    if((*(*i)).type == BOMB)
-//      stream << *((bomb*)*i) << "\n";
+//    if((*(*i)).type == DIG)
+//      stream << *((dig*)*i) << "\n";
+//    if((*(*i)).type == ROLL)
+//      stream << *((roll*)*i) << "\n";
   }
   
 

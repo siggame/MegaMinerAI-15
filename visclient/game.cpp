@@ -333,10 +333,10 @@ DLLEXPORT int thiefMove(_Thief* object, int x, int y)
   return 1;
 }
 
-DLLEXPORT int thiefAct(_Thief* object, int x, int y)
+DLLEXPORT int thiefUseSpecial(_Thief* object, int x, int y)
 {
   stringstream expr;
-  expr << "(game-act " << object->id
+  expr << "(game-use-special " << object->id
        << " " << x
        << " " << y
        << ")";
@@ -451,9 +451,9 @@ void parseThief(Connection* c, _Thief* object, sexp_t* expression)
   sub = sub->next;
   object->alive = atoi(sub->val);
   sub = sub->next;
-  object->ninjaReflexesLeft = atoi(sub->val);
+  object->specialsLeft = atoi(sub->val);
   sub = sub->next;
-  object->maxNinjaReflexes = atoi(sub->val);
+  object->maxSpecials = atoi(sub->val);
   sub = sub->next;
   object->movementLeft = atoi(sub->val);
   sub = sub->next;
@@ -482,7 +482,7 @@ void parseThiefType(Connection* c, _ThiefType* object, sexp_t* expression)
   sub = sub->next;
   object->maxMovement = atoi(sub->val);
   sub = sub->next;
-  object->maxNinjaReflexes = atoi(sub->val);
+  object->maxSpecials = atoi(sub->val);
   sub = sub->next;
   object->maxInstances = atoi(sub->val);
   sub = sub->next;

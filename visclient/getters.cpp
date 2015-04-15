@@ -115,13 +115,13 @@ DLLEXPORT int thiefGetAlive(_Thief* ptr)
 {
   return ptr->alive;
 }
-DLLEXPORT int thiefGetNinjaReflexesLeft(_Thief* ptr)
+DLLEXPORT int thiefGetSpecialsLeft(_Thief* ptr)
 {
-  return ptr->ninjaReflexesLeft;
+  return ptr->specialsLeft;
 }
-DLLEXPORT int thiefGetMaxNinjaReflexes(_Thief* ptr)
+DLLEXPORT int thiefGetMaxSpecials(_Thief* ptr)
 {
-  return ptr->maxNinjaReflexes;
+  return ptr->maxSpecials;
 }
 DLLEXPORT int thiefGetMovementLeft(_Thief* ptr)
 {
@@ -155,9 +155,9 @@ DLLEXPORT int thiefTypeGetMaxMovement(_ThiefType* ptr)
 {
   return ptr->maxMovement;
 }
-DLLEXPORT int thiefTypeGetMaxNinjaReflexes(_ThiefType* ptr)
+DLLEXPORT int thiefTypeGetMaxSpecials(_ThiefType* ptr)
 {
-  return ptr->maxNinjaReflexes;
+  return ptr->maxSpecials;
 }
 DLLEXPORT int thiefTypeGetMaxInstances(_ThiefType* ptr)
 {

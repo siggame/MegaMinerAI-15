@@ -64,8 +64,8 @@ struct _Thief
   int owner;
   int thiefType;
   int alive;
-  int ninjaReflexesLeft;
-  int maxNinjaReflexes;
+  int specialsLeft;
+  int maxSpecials;
   int movementLeft;
   int maxMovement;
   int frozenTurnsLeft;
@@ -78,7 +78,7 @@ struct _ThiefType
   int type;
   int cost;
   int maxMovement;
-  int maxNinjaReflexes;
+  int maxSpecials;
   int maxInstances;
 };
 struct _TrapType

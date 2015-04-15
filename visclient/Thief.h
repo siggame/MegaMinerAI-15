@@ -30,10 +30,10 @@ class Thief : public Mappable {
   int thiefType();
   ///Whether the thief is alive or not.
   int alive();
-  ///How many more deaths this thief can escape.
-  int ninjaReflexesLeft();
-  ///The maximum number of times this thief can escape death.
-  int maxNinjaReflexes();
+  ///How many more times this thief can use its special ability.
+  int specialsLeft();
+  ///The maximum number of times this thief can use its special ability.
+  int maxSpecials();
   ///The remaining number of times this thief can move.
   int movementLeft();
   ///The maximum number of times this thief can move.
@@ -46,8 +46,8 @@ class Thief : public Mappable {
   int thiefTalk(char* message);
   ///Commands a thief to move to a new location.
   int move(int x, int y);
-  ///Commands a thief to act on a location.
-  int act(int x, int y);
+  ///Commands a thief to use a special on a location.
+  int useSpecial(int x, int y);
 
   // Properties
 
