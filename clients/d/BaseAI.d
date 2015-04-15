@@ -1,85 +1,87 @@
 import Player, Mappable, Tile, Trap, Thief, ThiefType, TrapType, structures, game;
 import std.array, std.stdio;
 
+static int iteration = 0;
+
 class BaseAI {
-  protected:
-    Connection* c;
-    Player[] players;
-    Mappable[] mappables;
-    Tile[] tiles;
-    Trap[] traps;
-    Thief[] thieves;
-    ThiefType[] thiefTypes;
-    TrapType[] trapTypes;
-  
   public:
+    Connection* c;
+    static Player[] players;
+    static Mappable[] mappables;
+    static Tile[] tiles;
+    static Trap[] traps;
+    static Thief[] thieves;
+    static ThiefType[] thiefTypes;
+    static TrapType[] trapTypes;
+
     this(Connection* connection) {
       c = connection;
     }
   
-    int getMapWidth() {
+    int mapWidth() {
       return game.getMapWidth(c);
     }
     
-    int getMapHeight() {
+    int mapHeight() {
       return game.getMapHeight(c);
     }
     
-    int getTurnNumber() {
+    int turnNumber() {
       return game.getTurnNumber(c);
     }
     
-    int getRoundTurnNumber() {
+    int roundTurnNumber() {
       return game.getRoundTurnNumber(c);
     }
     
-    int getMaxTheives() {
+    int maxThieves() {
       return game.getMaxThieves(c);
     }
     
-    int getMaxTraps() {
+    int maxTraps() {
       return game.getMaxTraps(c);
     }
     
-    int getPlayerID() {
+    int playerID() {
       return game.getPlayerID(c);
     }
     
-    int getGameNumber() {
+    int gameNumber() {
       return game.getGameNumber(c);
     }
     
-    int getRoundNumber() {
+    int roundNumber() {
       return game.getRoundNumber(c);
     }
     
-    int getScarabsForTraps() {
+    int scarabsForTraps() {
       return game.getScarabsForTraps(c);
     }
     
-    int getScarabsForThieves() {
+    int scarabsForThieves() {
       return game.getScarabsForThieves(c);
     }
     
-    int getMaxStack() {
+    int maxStack() {
       return game.getMaxStack(c);
     }
     
-    int getRoundToWin() {
+    int roundsToWin() {
       return game.getRoundsToWin(c);
     }
     
-    int getRoundTurnLimit() {
+    int roundTurnLimit() {
       return game.getRoundTurnLimit(c);
     }
     
-    abstract const string getUsername();
-    abstract const string getPassword();
+    abstract const string username();
+    abstract const string password();
     abstract void init();
     abstract bool run();
     
     bool startTurn() {
       static bool initialized = false;
+      iteration++;
       int count = 0;
       count = getPlayerCount(c);
       players.clear();

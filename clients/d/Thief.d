@@ -1,70 +1,95 @@
-import Mappable, structures, std.conv, std.string, std.utf, game;
+import Mappable, structures, game, ExistentialError;
+import std.conv, std.string, std.utf;
 
 class Thief : Mappable {
-  private _Thief* thief_ptr = null;
-  
   public this(_Thief* pointer) {
-	super(cast(_Mappable*)pointer); 
-    thief_ptr = pointer;
+    super(cast(_Mappable*)pointer); 
+  }
+  
+  override bool validify() {
+    if (iteration == BaseAI.iteration) return true;
+    foreach (thief; BaseAI.BaseAI.thieves) {
+      if(thief.id == id) {
+        ptr = thief.ptr;
+        iteration = BaseAI.iteration;
+        return true;
+      }
+    }
+    throw new ExistentialError();
   }
   
   override int getID() {
-    return thief_ptr.id;
+    validify();
+    return (cast(_Thief*)ptr).id;
   }
   
   override int getX() {
-    return thief_ptr.x;
+    validify();
+    return (cast(_Thief*)ptr).x;
   }
   
   override int getY() {
-    return thief_ptr.y;
+    validify();
+    return (cast(_Thief*)ptr).y;
   }
   
   int getOwner() {
-    return thief_ptr.owner;
+    validify();
+    return (cast(_Thief*)ptr).owner;
   }
   
   int getThiefType() {
-    return thief_ptr.thiefType;
+    validify();
+    return (cast(_Thief*)ptr).thiefType;
   }
   
   bool isAlive() {
-    return thief_ptr.alive == 1;
+    return (cast(_Thief*)ptr).alive == 1;
   }
   
   int getSpecialsLeft() {
-    return thief_ptr.specialsLeft;
+    validify();
+    return (cast(_Thief*)ptr).specialsLeft;
   }
   
   int getMaxSpecials() {
-    return thief_ptr.maxSpecials;
+    validify();
+    return (cast(_Thief*)ptr).maxSpecials;
   }
   
   int getMovementLeft() {
-    return thief_ptr.movementLeft;
+    validify();
+    return (cast(_Thief*)ptr).movementLeft;
   }
   
   int getMaxMovement() {
-    return thief_ptr.maxMovement;
+    validify();
+    return (cast(_Thief*)ptr).maxMovement;
   }
   
   int getFrozenTurnsLeft() {
-    return thief_ptr.frozenTurnsLeft;
+    validify();
+    return (cast(_Thief*)ptr).frozenTurnsLeft;
   }
   
   bool thiefTalk(string message) {
-    return thiefThiefTalk(thief_ptr, toUTFz!(char*)(message)) == 1;
+    validify();
+    return thiefThiefTalk((cast(_Thief*)ptr), toUTFz!(char*)(message)) == 1;
   }
   
   bool move(int x, int y) {
-    return thiefMove(thief_ptr, x, y) == 1;
+    validify();
+    return thiefMove((cast(_Thief*)ptr), x, y) == 1;
   }
   
   bool useSpecial(int x, int y) {
-    return thiefUseSpecial(thief_ptr, x, y) == 1;
+    validify();
+    return thiefUseSpecial((cast(_Thief*)ptr), x, y) == 1;
   }
   
   override string toString() {
+    validify();
+    _Thief* thief_ptr = cast(_Thief*)ptr;
     return "id: " ~ to!string(thief_ptr.id) ~ "\n" ~
            "x: " ~ to!string(thief_ptr.x) ~ "\n" ~
            "y: " ~ to!string(thief_ptr.y) ~ "\n" ~

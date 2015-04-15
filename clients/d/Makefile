@@ -1,31 +1,18 @@
-sources = $(wildcard *.cpp)
-headers = $(wildcard *.h)
-objects = $(sources:%.cpp=%.o)
-dependency = Makefile.dependencies
-CFLAGS += -g -I../library
-CXXFLAGS += -g -I../library
+DFILES=$(shell ls *.d 2> /dev/null)
 
-all: client
+all: ../library/client.a ../library/sexp/libclient_sexp.a client
 
 submit: client
-	@echo "$(shell cd ..;sh submit.sh cpp)"
+	@echo "$(shell cd ..;sh submit.sh c)"
 
-.PHONY: clean all subdirs
-
-clean:
-	rm -f $(objects) client $(dependency)
-	make -C ../library clean
-
-client: $(objects) ../library/client.a ../library/sexp/sexp.a
-	$(CXX) $(LDFLAGS) $(LOADLIBES) $(LDLIBS) $^ -g -o client
+client: $(DFILES) ../library/client.a ../library/sexp/libclient_sexp.a
+	gdc $(DFILES) -lstdc++ ../library/client.a ../library/sexp/libclient_sexp.a -o run
 
 ../library/client.a:
 	$(MAKE) -C $(dir $@) $(notdir $@)
 
-../library/sexp/sexp.a:
+../library/sexp/libclient_sexp.a:
 	$(MAKE) -C $(dir $@) $(notdir $@)
 
-$(dependency): $(sources) $(headers)
-	$(CXX) -MM $(sources) $(CXXFLAGS) > $@
-
--include $(dependency)
+clean:
+	make -C library clean

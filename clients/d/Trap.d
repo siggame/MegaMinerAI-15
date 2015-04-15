@@ -1,73 +1,95 @@
-import Mappable, structures, std.conv, game;
+import Mappable, structures, std.conv, game, ExistentialError;
 
 class Trap : Mappable {
-  private _Trap* trap_ptr = null;
-  
   public:
-  
-  this(_Trap* pointer) {
-	super(cast(_Mappable*)pointer);
-    trap_ptr = pointer;
-  }
-  
-  override int getID() {
-    return trap_ptr.id;
-  }
-  
-  override int getX() {
-    return trap_ptr.x;
-  }
-  
-  override int getY() {
-    return trap_ptr.y;
-  }
-  
-  int getOwner() {
-    return trap_ptr.owner;
-  }
-  
-  int getTrapType() {
-    return trap_ptr.trapType;
-  }
-  
-  bool isVisible() {
-    return trap_ptr.visible == 1;
-  }
-  
-  bool isActive() {
-    return trap_ptr.active == 1;
-  } 
-  
-  int getBodyCount() {
-    return trap_ptr.bodyCount;
-  }
-  
-  int getActivationsRemaining() {
-    return trap_ptr.activationsRemaining;
-  }
-  
-  int getTurnsTillActive() {
-    return trap_ptr.turnsTillActive;
-  }
-  
-  bool act(int x, int y) {
-    return trapAct(trap_ptr, x, y) == 1;
-  }
-  
-  bool toggle() {
-    return trapToggle(trap_ptr) == 1;
-  }
-  
-  override string toString() {
-    return "id: " ~ to!string(trap_ptr.id) ~ "\n" ~
-           "x: " ~ to!string(trap_ptr.x) ~ "\n" ~
-           "y: " ~ to!string(trap_ptr.y) ~ "\n" ~
-           "owner: " ~ to!string(trap_ptr.owner) ~ "\n" ~
-           "trapType: " ~ to!string(trap_ptr.trapType) ~ "\n" ~
-           "visible: " ~ to!string(trap_ptr.visible == 1) ~ "\n" ~
-           "active: " ~ to!string(trap_ptr.active == 1) ~ "\n" ~
-           "bodyCount: " ~ to!string(trap_ptr.bodyCount) ~ "\n" ~
-           "activationsRemaining: " ~ to!string(trap_ptr.activationsRemaining) ~ "\n" ~
-           "turnsTillActive: " ~ to!string(trap_ptr.turnsTillActive) ~ "\n";
-  }
+    this(_Trap* pointer) {
+      super(cast(_Mappable*)pointer);
+    }
+    
+    override bool validify() {
+      if (iteration == BaseAI.iteration) return true;
+      foreach (trap; BaseAI.BaseAI.traps) {
+        if(trap.id == id) {
+          ptr = trap.ptr;
+          iteration = BaseAI.iteration;
+          return true;
+        }
+      }
+      throw new ExistentialError();
+    }
+    
+    override int getID() {
+      validify();
+      return (cast(_Trap*)ptr).id;
+    }
+    
+    override int getX() {
+      validify();
+      return (cast(_Trap*)ptr).x;
+    }
+    
+    override int getY() {
+      validify();
+      return (cast(_Trap*)ptr).y;
+    }
+    
+    int getOwner() {
+      validify();
+      return (cast(_Trap*)ptr).owner;
+    }
+    
+    int getTrapType() {
+      validify();
+      return (cast(_Trap*)ptr).trapType;
+    }
+    
+    bool isVisible() {
+      validify();
+      return (cast(_Trap*)ptr).visible == 1;
+    }
+    
+    bool isActive() {
+      validify();
+      return (cast(_Trap*)ptr).active == 1;
+    } 
+    
+    int getBodyCount() {
+      validify();
+      return (cast(_Trap*)ptr).bodyCount;
+    }
+    
+    int getActivationsRemaining() {
+      validify();
+      return (cast(_Trap*)ptr).activationsRemaining;
+    }
+    
+    int getTurnsTillActive() {
+      validify();
+      return (cast(_Trap*)ptr).turnsTillActive;
+    }
+    
+    bool act(int x, int y) {
+      validify();
+      return trapAct((cast(_Trap*)ptr), x, y) == 1;
+    }
+    
+    bool toggle() {
+      validify();
+      return trapToggle((cast(_Trap*)ptr)) == 1;
+    }
+    
+    override string toString() {
+      validify();
+      _Trap* trap_ptr = cast(_Trap*)ptr;
+      return "id: " ~ to!string(trap_ptr.id) ~ "\n" ~
+             "x: " ~ to!string(trap_ptr.x) ~ "\n" ~
+             "y: " ~ to!string(trap_ptr.y) ~ "\n" ~
+             "owner: " ~ to!string(trap_ptr.owner) ~ "\n" ~
+             "trapType: " ~ to!string(trap_ptr.trapType) ~ "\n" ~
+             "visible: " ~ to!string(trap_ptr.visible == 1) ~ "\n" ~
+             "active: " ~ to!string(trap_ptr.active == 1) ~ "\n" ~
+             "bodyCount: " ~ to!string(trap_ptr.bodyCount) ~ "\n" ~
+             "activationsRemaining: " ~ to!string(trap_ptr.activationsRemaining) ~ "\n" ~
+             "turnsTillActive: " ~ to!string(trap_ptr.turnsTillActive) ~ "\n";
+    }
 }

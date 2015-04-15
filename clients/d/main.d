@@ -21,7 +21,7 @@ int main(string[] argv) {
     return 1;
   }
   
-  if (!serverLogin(c, ai.getUsername().toStringz(), ai.getPassword().toStringz())) {
+  if (!serverLogin(c, ai.username().toStringz(), ai.password().toStringz())) {
     return 1;
   }
   
