@@ -16,3 +16,8 @@ texture trap_sarcophagus textures/trap_sarcophagus.png
 texture trap_snake-pit textures/trap_snake-pit.png
 texture trap_spider-web textures/trap_spider-web.png
 texture trap_swinging-blade textures/trap_swinging-blade.png
+texture thief_bomber textures/thief_bomber.png
+texture thief_digger textures/thief_digger.png
+texture thief_ninja textures/thief_ninja.png
+texture thief_guide textures/thief_guide.png
+texture thief_slave textures/thief_slave.png

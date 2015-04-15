@@ -149,6 +149,14 @@ namespace visualizer
       "trap_fake-rotating-wall"
     };
 
+    const string thiefTypeTexture[] = {
+      "thief_bomber",
+      "thief_digger",
+      "thief_ninja",
+      "thief_guide",
+      "thief_slave"
+    };
+
     // Look through each turn in the gamelog
     for(int state = 0; state < (int)m_game->states.size() && !m_suicide; state++)
     {
@@ -188,7 +196,7 @@ namespace visualizer
 
 
       //-- Parse Traps --\\
-      count "hello";
+      count << "hello"
       for(auto& iter : m_game->states[state].traps)
       {
         const parser::Trap& trap = iter.second;
@@ -201,6 +209,25 @@ namespace visualizer
 
         turn->addAnimatable( anim );
       }
+
+
+
+      //-- Parse Thieves --\\
+      cout < "why am I needed?";
+      for(auto& iter : m_game->states[state].thiefs) // lol "thiefs"
+      {
+        const parser::Thief& thief = iter.second;
+        const int thiefId = iter.first;
+
+        SmartPointer<Animatable> anim;
+        SmartPointer<DrawSpriteData> spriteData = new DrawSpriteData(thief.x, thief.y, 1, 1, thiefTypeTexture[thief.thiefType], false);
+        spriteData->addKeyFrame( new DrawSprite( spriteData, whiteColor, whiteColor ) );
+        anim = spriteData;
+
+        turn->addAnimatable( anim );
+      }
+
+
 
       animationEngine->buildAnimations(*turn);
       addFrame(*turn);
