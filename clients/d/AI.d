@@ -1,7 +1,9 @@
 import BaseAI, TrapType, ThiefType, structures;
 import std.typecons, std.stdio;
 
-//The class implementing basic AI logic.
+/**
+  The class implementing basic AI logic.
+*/
 public class AI : BaseAI {
   public:
     this(Connection* conn) {
