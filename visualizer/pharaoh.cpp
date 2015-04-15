@@ -132,19 +132,32 @@ namespace visualizer
     int mapWidth = getWidth();
     int mapHeight = getHeight();
 
+    Color whiteColor = Color(1, 1, 1, 1);
     parser::Tile lastTileAt [mapWidth][mapHeight];
+    const string trapTypeTexture[] = {
+      "trap_sarcophagus",
+      "trap_snake-pit",
+      "trap_swinging-blade",
+      "trap_boulder",
+      "trap_spider-web",
+      "trap_quicksand",
+      "trap_oil-vases",
+      "trap_arrow-wall",
+      "trap_head-wire",
+      "trap_mercury-pit",
+      "trap_mummy",
+      "trap_fake-rotating-wall"
+    };
 
     // Look through each turn in the gamelog
     for(int state = 0; state < (int)m_game->states.size() && !m_suicide; state++)
     {
-      Color whiteColor = Color(1, 1, 1, 1);
-
       // Parse Tiles \\
       //for(auto iter : m_game->states[state].tiles)
-      for(std::map<int,parser::Tile>::iterator iter = m_game->states[state].tiles.begin(); iter != m_game->states[state].tiles.end(); iter++)
+      for(auto& iter : m_game->states[state].tiles)
       {
-        const parser::Tile& tile = iter->second;
-        const int ptileId = iter->first;
+        const parser::Tile& tile = iter.second;
+        const int tileId = iter.first;
         lastTileAt[tile.x][tile.y] = tile;
       }
 
@@ -171,6 +184,22 @@ namespace visualizer
 
           turn->addAnimatable( anim );
         }
+      }
+
+
+      //-- Parse Traps --\\
+      count "hello";
+      for(auto& iter : m_game->states[state].traps)
+      {
+        const parser::Trap& trap = iter.second;
+        const int trapId = iter.first;
+
+        SmartPointer<Animatable> anim;
+        SmartPointer<DrawSpriteData> spriteData = new DrawSpriteData(trap.x, trap.y, 1, 1, trapTypeTexture[trap.trapType], false);
+        spriteData->addKeyFrame( new DrawSprite( spriteData, whiteColor, whiteColor ) );
+        anim = spriteData;
+
+        turn->addAnimatable( anim );
       }
 
       animationEngine->buildAnimations(*turn);
