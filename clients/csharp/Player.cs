@@ -129,6 +129,19 @@ public class Player
     }
   }
 
+  /// <summary>
+  /// The number of sarcophagi captured by this player this round.
+  /// </summary>
+  public int SarcophagiCaptured
+  {
+    get
+    {
+      validify();
+      int value = Client.playerGetSarcophagiCaptured(ptr);
+      return value;
+    }
+  }
+
   #endregion
 
   #region Properties

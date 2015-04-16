@@ -1,21 +1,43 @@
-//Copyright (C) 2009 - Missouri S&T ACM AI Team
-//Please do not modify this file while building your AI
-//See AI.h & AI.cpp for that
-#ifndef VC_STRUCTURES_H
-#define VC_STRUCTURES_H
+extern (C++):
 
-namespace client
+struct Connection
 {
+  int socket;
+  
+  //#ifdef ENABLE_THREADS
+  //pthread_mutex_t mutex;
+  //#endif
+  
+  int mapWidth;
+  int mapHeight;
+  int turnNumber;
+  int roundTurnNumber;
+  int maxThieves;
+  int maxTraps;
+  int playerID;
+  int gameNumber;
+  int roundNumber;
+  int scarabsForTraps;
+  int scarabsForThieves;
+  int maxStack;
+  int roundsToWin;
+  int roundTurnLimit;
 
-struct Connection;
-struct _Player;
-struct _Mappable;
-struct _Tile;
-struct _Trap;
-struct _Thief;
-struct _ThiefType;
-struct _TrapType;
-
+  _Player* Players;
+  int PlayerCount;
+  _Mappable* Mappables;
+  int MappableCount;
+  _Tile* Tiles;
+  int TileCount;
+  _Trap* Traps;
+  int TrapCount;
+  _Thief* Thiefs;
+  int ThiefCount;
+  _ThiefType* ThiefTypes;
+  int ThiefTypeCount;
+  _TrapType* TrapTypes;
+  int TrapTypeCount;
+};
 
 struct _Player
 {
@@ -25,15 +47,8 @@ struct _Player
   float time;
   int scarabs;
   int roundsWon;
-  int sarcophagiCaptured;
 };
-struct _Mappable
-{
-  Connection* _c;
-  int id;
-  int x;
-  int y;
-};
+
 struct _Tile
 {
   Connection* _c;
@@ -42,6 +57,7 @@ struct _Tile
   int y;
   int type;
 };
+
 struct _Trap
 {
   Connection* _c;
@@ -56,6 +72,7 @@ struct _Trap
   int activationsRemaining;
   int turnsTillActive;
 };
+
 struct _Thief
 {
   Connection* _c;
@@ -71,6 +88,7 @@ struct _Thief
   int maxMovement;
   int frozenTurnsLeft;
 };
+
 struct _ThiefType
 {
   Connection* _c;
@@ -82,6 +100,7 @@ struct _ThiefType
   int maxSpecials;
   int maxInstances;
 };
+
 struct _TrapType
 {
   Connection* _c;
@@ -105,6 +124,9 @@ struct _TrapType
   int unpassable;
 };
 
+struct _Mappable {
+  Connection* _c;
+  int id;
+  int x;
+  int y;
 }
-
-#endif

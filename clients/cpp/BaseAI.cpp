@@ -49,10 +49,6 @@ int BaseAI::scarabsForThieves()
 {
   return getScarabsForThieves(c);
 }
-int BaseAI::maxStack()
-{
-  return getMaxStack(c);
-}
 int BaseAI::roundsToWin()
 {
   return getRoundsToWin(c);
@@ -60,6 +56,10 @@ int BaseAI::roundsToWin()
 int BaseAI::roundTurnLimit()
 {
   return getRoundTurnLimit(c);
+}
+int BaseAI::numberOfSarcophagi()
+{
+  return getNumberOfSarcophagi(c);
 }
 
 bool BaseAI::startTurn()

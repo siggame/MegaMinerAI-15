@@ -31,6 +31,7 @@ struct Player
   float time;
   int scarabs;
   int roundsWon;
+  int sarcophagiCaptured;
 
   friend std::ostream& operator<<(std::ostream& stream, Player obj);
 };
@@ -226,9 +227,9 @@ struct GameState
   int roundNumber;
   int scarabsForTraps;
   int scarabsForThieves;
-  int maxStack;
   int roundsToWin;
   int roundTurnLimit;
+  int numberOfSarcophagi;
 
   std::map< int, std::vector< SmartPointer< Animation > > > animations;
   friend std::ostream& operator<<(std::ostream& stream, GameState obj);

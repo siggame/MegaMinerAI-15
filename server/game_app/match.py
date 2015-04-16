@@ -43,9 +43,9 @@ class Match(DefaultGameWorld):
     self.roundNumber = 0
     self.scarabsForTraps = self.scarabsForTraps
     self.scarabsForThieves = self.scarabsForThieves
-    self.maxStack = self.maxStack
     self.roundsToWin = self.roundsToWin
     self.roundTurnLimit = self.roundTurnLimit
+    self.numberOfSarcophagi = self.numberOfSarcophagi
 
   #this is here to be wrapped
   def __del__(self):
@@ -58,7 +58,7 @@ class Match(DefaultGameWorld):
     if type == "player":
       self.players.append(connection)
       try:
-        self.addObject(Player, [connection.screenName, self.startTime, self.scarabsForTraps, 0])
+        self.addObject(Player, [connection.screenName, self.startTime, self.scarabsForTraps, 0, 0])
       except TypeError:
         raise TypeError("Someone forgot to add the extra attributes to the Player object initialization")
     elif type == "spectator":
@@ -119,6 +119,9 @@ class Match(DefaultGameWorld):
           self.grid[x][y][0].type = generatedMaze[x % (self.mapWidth / 2)][y]
           self.grid[x][y][0].updatedAt = self.turnNumber # updatedAt tells the server to resend tile data
 
+      for player in self.objects.players:
+        player.sarcophagiCaptured = 0
+
       # Remove any traps and thieves from the previous round
       for trap in list(self.objects.traps):
         #self.grid[trap.x][trap.y].remove(trap)
@@ -133,7 +136,7 @@ class Match(DefaultGameWorld):
       yChange = [ 0, 0, -1, 1]
       loopCount = 1
       sarcophagusCount = 0
-      while sarcophagusCount != 3:
+      while sarcophagusCount != self.numberOfSarcophagi:
         for i in range(4):
           leftX = self.mapWidth/4 + loopCount * xChange[i]
           y = self.mapHeight/2 + loopCount * yChange[i]
@@ -146,7 +149,7 @@ class Match(DefaultGameWorld):
             sarcophagus_stats = [rightX, y, 1, self.sarcophagus, 1, 1, 0, 0, 0]
             self.grid[rightX][y].append( self.addObject(Trap, sarcophagus_stats))
             sarcophagusCount += 1
-            if sarcophagusCount == 3:
+            if sarcophagusCount == self.numberOfSarcophagi:
               break
         loopCount += 1
 
@@ -187,7 +190,7 @@ class Match(DefaultGameWorld):
 
     self.checkWinner()
     if self.winner is None:
-      self.sendStatus([self.turn] +  self.spectators)
+      self.sendStatus([self.turn] + self.spectators)
     else:
       self.sendStatus(self.spectators)
     
@@ -205,9 +208,9 @@ class Match(DefaultGameWorld):
           roundNumber = self.roundNumber,
           scarabsForTraps = self.scarabsForTraps,
           scarabsForThieves = self.scarabsForThieves,
-          maxStack = self.maxStack,
           roundsToWin = self.roundsToWin,
           roundTurnLimit = self.roundTurnLimit,
+          numberOfSarcophagi = self.numberOfSarcophagi,
           Players = [i.toJson() for i in self.objects.values() if i.__class__ is Player],
           Mappables = [i.toJson() for i in self.objects.values() if i.__class__ is Mappable],
           Tiles = [i.toJson() for i in self.objects.values() if i.__class__ is Tile],
@@ -240,6 +243,7 @@ class Match(DefaultGameWorld):
               self.grid[sarcophagus.x][sarcophagus.y].remove(sarcophagus)
               self.removeObject(sarcophagus)
               sarcophagi.remove(sarcophagus)
+              self.objects.players[obj.owner].sarcophagiCaptured += 1
               if len(sarcophagi) == 0:
                 self.declareRoundWinner(self.objects.players[obj.owner], "Player {} gathered all the sarcophagi".format(obj.owner))
                 return True
@@ -381,7 +385,7 @@ class Match(DefaultGameWorld):
   def status(self):
     msg = ["status"]
 
-    msg.append(["game", self.mapWidth, self.mapHeight, self.turnNumber, self.roundTurnNumber, self.maxThieves, self.maxTraps, self.playerID, self.gameNumber, self.roundNumber, self.scarabsForTraps, self.scarabsForThieves, self.maxStack, self.roundsToWin, self.roundTurnLimit])
+    msg.append(["game", self.mapWidth, self.mapHeight, self.turnNumber, self.roundTurnNumber, self.maxThieves, self.maxTraps, self.playerID, self.gameNumber, self.roundNumber, self.scarabsForTraps, self.scarabsForThieves, self.roundsToWin, self.roundTurnLimit, self.numberOfSarcophagi])
 
     typeLists = []
     typeLists.append(["Player"] + [i.toList() for i in self.objects.players])

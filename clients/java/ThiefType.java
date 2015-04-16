@@ -3,12 +3,6 @@ import com.sun.jna.Pointer;
 ///Represents a type of thief.
 class ThiefType
 {
-  public static final int BOMBER = 0;
-  public static final int DIGGER = 1;
-  public static final int NINJA = 2;
-  public static final int GUIDE = 3;
-  public static final int SLAVE = 4;
-  
   Pointer ptr;
   int ID;
   int iteration;

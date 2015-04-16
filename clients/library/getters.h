@@ -17,6 +17,7 @@ DLLEXPORT char* playerGetPlayerName(_Player* ptr);
 DLLEXPORT float playerGetTime(_Player* ptr);
 DLLEXPORT int playerGetScarabs(_Player* ptr);
 DLLEXPORT int playerGetRoundsWon(_Player* ptr);
+DLLEXPORT int playerGetSarcophagiCaptured(_Player* ptr);
 
 
 DLLEXPORT int mappableGetId(_Mappable* ptr);

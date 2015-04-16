@@ -80,5 +80,11 @@ class Player
     validify();
     return Client.INSTANCE.playerGetRoundsWon(ptr);
   }
+  ///The number of sarcophagi captured by this player this round.
+  public int getSarcophagiCaptured()
+  {
+    validify();
+    return Client.INSTANCE.playerGetSarcophagiCaptured(ptr);
+  }
 
 }

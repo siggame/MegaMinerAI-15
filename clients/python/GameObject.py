@@ -88,6 +88,14 @@ class Player(GameObject):
   ##The number of rounds won by this player.
   roundsWon = property(getRoundsWon)
 
+  #\cond
+  def getSarcophagiCaptured(self):
+    self.validify()
+    return library.playerGetSarcophagiCaptured(self._ptr)
+  #\endcond
+  ##The number of sarcophagi captured by this player this round.
+  sarcophagiCaptured = property(getSarcophagiCaptured)
+
 
   def __str__(self):
     self.validify()
@@ -97,6 +105,7 @@ class Player(GameObject):
     ret += "time: %s\n" % self.getTime()
     ret += "scarabs: %s\n" % self.getScarabs()
     ret += "roundsWon: %s\n" % self.getRoundsWon()
+    ret += "sarcophagiCaptured: %s\n" % self.getSarcophagiCaptured()
     return ret
 
 ##A mappable object!
@@ -490,13 +499,6 @@ class Thief(Mappable):
 
 ##Represents a type of thief.
 class ThiefType(GameObject):
-  #Types as ints
-  BOMBER = 0
-  DIGGER = 1
-  NINJA = 2
-  GUIDE = 3
-  SLAVE = 4
-  
   def __init__(self, ptr):
     from BaseAI import BaseAI
     self._ptr = ptr
@@ -588,20 +590,6 @@ class ThiefType(GameObject):
 
 ##Represents a type of trap.
 class TrapType(GameObject):
-  #Types as ints
-  SARCOPHAGUS = 0
-  SNAKE_PIT = 1
-  SWINGING_BLADE = 2
-  BOULDER = 3
-  SPIDER_WEB = 4
-  QUICKSAND = 5
-  OIL_VASES = 6
-  ARROW_WALL = 7
-  HEAD_WIRE = 8
-  MERCURY_PIT = 9
-  MUMMY = 10
-  FAKE_ROTATING_WALL = 11
-
   def __init__(self, ptr):
     from BaseAI import BaseAI
     self._ptr = ptr

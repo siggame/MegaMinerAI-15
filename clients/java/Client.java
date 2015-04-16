@@ -39,9 +39,9 @@ public interface Client extends Library {
   int getRoundNumber(Pointer connection);
   int getScarabsForTraps(Pointer connection);
   int getScarabsForThieves(Pointer connection);
-  int getMaxStack(Pointer connection);
   int getRoundsToWin(Pointer connection);
   int getRoundTurnLimit(Pointer connection);
+  int getNumberOfSarcophagi(Pointer connection);
 
   Pointer getPlayer(Pointer connection, int num);
   int getPlayerCount(Pointer connection);
@@ -65,6 +65,7 @@ public interface Client extends Library {
   float playerGetTime(Pointer ptr);
   int playerGetScarabs(Pointer ptr);
   int playerGetRoundsWon(Pointer ptr);
+  int playerGetSarcophagiCaptured(Pointer ptr);
 
   int mappableGetId(Pointer ptr);
   int mappableGetX(Pointer ptr);

@@ -65,11 +65,11 @@ public class Client {
   [DllImport("client")]
   public static extern int getScarabsForThieves(IntPtr connection);
   [DllImport("client")]
-  public static extern int getMaxStack(IntPtr connection);
-  [DllImport("client")]
   public static extern int getRoundsToWin(IntPtr connection);
   [DllImport("client")]
   public static extern int getRoundTurnLimit(IntPtr connection);
+  [DllImport("client")]
+  public static extern int getNumberOfSarcophagi(IntPtr connection);
 
   [DllImport("client")]
   public static extern IntPtr getPlayer(IntPtr connection, int num);
@@ -112,6 +112,8 @@ public class Client {
   public static extern int playerGetScarabs(IntPtr ptr);
   [DllImport("client")]
   public static extern int playerGetRoundsWon(IntPtr ptr);
+  [DllImport("client")]
+  public static extern int playerGetSarcophagiCaptured(IntPtr ptr);
 
   [DllImport("client")]
   public static extern int mappableGetId(IntPtr ptr);

@@ -77,6 +77,15 @@ static bool parsePlayer(Player& object, sexp_t* expression)
   object.roundsWon = atoi(sub->val);
   sub = sub->next;
 
+  if ( !sub ) 
+  {
+    cerr << "Error in parsePlayer.\n Parsing: " << *expression << endl;
+    return false;
+  }
+
+  object.sarcophagiCaptured = atoi(sub->val);
+  sub = sub->next;
+
   return true;
 
 }
@@ -921,13 +930,13 @@ static bool parseSexp(Game& game, sexp_t* expression)
           gs.scarabsForThieves = atoi(sub->val);
           sub = sub->next;
           if ( !sub ) return false;
-          gs.maxStack = atoi(sub->val);
-          sub = sub->next;
-          if ( !sub ) return false;
           gs.roundsToWin = atoi(sub->val);
           sub = sub->next;
           if ( !sub ) return false;
           gs.roundTurnLimit = atoi(sub->val);
+          sub = sub->next;
+          if ( !sub ) return false;
+          gs.numberOfSarcophagi = atoi(sub->val);
           sub = sub->next;
       }
       else if(string(sub->val) == "Player")

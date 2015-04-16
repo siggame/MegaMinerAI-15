@@ -65,9 +65,9 @@ DLLEXPORT Connection* createConnection()
   c->roundNumber = 0;
   c->scarabsForTraps = 0;
   c->scarabsForThieves = 0;
-  c->maxStack = 0;
   c->roundsToWin = 0;
   c->roundTurnLimit = 0;
+  c->numberOfSarcophagi = 0;
   c->Players = NULL;
   c->PlayerCount = 0;
   c->Mappables = NULL;
@@ -379,6 +379,8 @@ void parsePlayer(Connection* c, _Player* object, sexp_t* expression)
   sub = sub->next;
   object->roundsWon = atoi(sub->val);
   sub = sub->next;
+  object->sarcophagiCaptured = atoi(sub->val);
+  sub = sub->next;
 
 }
 void parseMappable(Connection* c, _Mappable* object, sexp_t* expression)
@@ -647,13 +649,13 @@ DLLEXPORT int networkLoop(Connection* c)
           c->scarabsForThieves = atoi(sub->val);
           sub = sub->next;
 
-          c->maxStack = atoi(sub->val);
-          sub = sub->next;
-
           c->roundsToWin = atoi(sub->val);
           sub = sub->next;
 
           c->roundTurnLimit = atoi(sub->val);
+          sub = sub->next;
+
+          c->numberOfSarcophagi = atoi(sub->val);
           sub = sub->next;
 
         }
@@ -940,10 +942,6 @@ DLLEXPORT int getScarabsForThieves(Connection* c)
 {
   return c->scarabsForThieves;
 }
-DLLEXPORT int getMaxStack(Connection* c)
-{
-  return c->maxStack;
-}
 DLLEXPORT int getRoundsToWin(Connection* c)
 {
   return c->roundsToWin;
@@ -951,4 +949,8 @@ DLLEXPORT int getRoundsToWin(Connection* c)
 DLLEXPORT int getRoundTurnLimit(Connection* c)
 {
   return c->roundTurnLimit;
+}
+DLLEXPORT int getNumberOfSarcophagi(Connection* c)
+{
+  return c->numberOfSarcophagi;
 }

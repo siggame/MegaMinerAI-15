@@ -55,12 +55,12 @@ public:
   int scarabsForTraps();
   ///The scarabs given to a player to purchase thieves per round.
   int scarabsForThieves();
-  ///The maximum number of thieves per tile.
-  int maxStack();
   ///The number of won rounds required to win.
   int roundsToWin();
   ///The maximum number of round turns before a winner is decided.
   int roundTurnLimit();
+  ///The number of sarcophagi each player will start with each round.
+  int numberOfSarcophagi();
   
   BaseAI(Connection* c);
   virtual ~BaseAI();

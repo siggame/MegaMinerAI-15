@@ -3,19 +3,6 @@ import com.sun.jna.Pointer;
 ///Represents a type of trap.
 class TrapType
 {
-  public static final int SARCOPHAGUS = 0;
-  public static final int SNAKE_PIT = 1;
-  public static final int SWINGING_BLADE = 2;
-  public static final int BOULDER = 3;
-  public static final int SPIDER_WEB = 4;
-  public static final int QUICKSAND = 5;
-  public static final int OIL_VASES = 6;
-  public static final int ARROW_WALL = 7;
-  public static final int HEAD_WIRE = 8;
-  public static final int MERCURY_PIT = 9;
-  public static final int MUMMY = 10;
-  public static final int FAKE_ROTATING_WALL = 11;
-
   Pointer ptr;
   int ID;
   int iteration;

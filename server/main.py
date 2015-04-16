@@ -188,7 +188,7 @@ class GameApp(AccountsAppMixin, BaseApp):
   @requireTurn
   @requireTypes(None, int, int, int)
   def gameUseSpecial(self, thief, x, y):
-    """Commands a thief to act on a location."""
+    """Commands a thief to use a special on a location."""
     if self.game.turn is not self:
       return "Not your turn."
     return self.game.useSpecial(thief, x, y)

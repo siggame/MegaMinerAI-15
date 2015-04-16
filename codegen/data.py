@@ -22,14 +22,15 @@ globals = [
   Variable('roundNumber', int, 'What round of the game this is.'),
   Variable('scarabsForTraps', int, 'The scarabs given to a player to purchase traps per round.'),
   Variable('scarabsForThieves', int, 'The scarabs given to a player to purchase thieves per round.'),
-  Variable('maxStack', int, 'The maximum number of thieves per tile.'),
   Variable('roundsToWin', int, 'The number of won rounds required to win.'),
   Variable('roundTurnLimit', int, 'The maximum number of round turns before a winner is decided.'),
+  Variable('numberOfSarcophagi', int, 'The number of sarcophagi each player will start with each round.'),
 ]
 
 playerData = [
   Variable('scarabs', int, 'The number of scarabs this player has to purchase traps or thieves.'),
   Variable('roundsWon', int, 'The number of rounds won by this player.'),
+  Variable('sarcophagiCaptured', int, 'The number of sarcophagi captured by this player this round.'),
   ]
 
 playerFunctions = [

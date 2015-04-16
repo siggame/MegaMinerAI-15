@@ -23,6 +23,8 @@ class Player {
   int scarabs();
   ///The number of rounds won by this player.
   int roundsWon();
+  ///The number of sarcophagi captured by this player this round.
+  int sarcophagiCaptured();
 
   // Actions
   ///Place the specified trap type at the given location.
