@@ -390,7 +390,8 @@ class Thief(Mappable):
     # Only check for activatesOnWalkedThrough traps when thief moves off of them and not on the thief's first move
     if self.movementLeft < self.maxMovement:
       backstabTrap = next((trap for trap in self.game.grid[self.x][self.y] if isinstance(trap, Trap) and
-                           trap.active and self.game.objects.trapTypes[trap.trapType].activatesOnWalkedThrough), None)
+                           trap.active and self.game.objects.trapTypes[trap.trapType].activatesOnWalkedThrough and
+                           self.game.objects.trapTypes[trap.trapType].turnsToActivateOnTile == 0), None)
       if backstabTrap:
         backstabTrap.attack(self)
         backstabTrap.activate()
