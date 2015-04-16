@@ -39,9 +39,59 @@ namespace visualizer
 
   void Pharaoh::preDraw()
   {
+    processInput();
+  }
+
+  void Pharaoh::processInput()
+  {
     const Input& input = gui->getInput();
-    
-    // Handle player input here
+    int turn = timeManager->getTurn();
+    int unitSelectable = gui->getDebugOptionState("Units Selectable");
+    if(input.leftRelease && turn < (int) m_game->states.size())
+    {
+      m_SelectedUnits.clear();
+
+      if(unitSelectable)
+      {
+        for(auto& iter : m_game->states[turn].traps)
+        {
+          const auto& unit = iter.second;
+
+          if(rectsIntersect(input.x, input.y, input.sx - input.x, input.sy - input.y, (float)unit.x, (float)unit.y, 1.0f, 1.0f))
+          {
+            m_SelectedUnits.push_back(unit.id);
+          }
+        }
+
+        for(auto& iter : m_game->states[turn].thiefs)
+        {
+          const auto& unit = iter.second;
+
+          if(rectsIntersect(input.x, input.y, input.sx - input.x, input.sy - input.y, (float)unit.x, (float)unit.y, 1.0f, 1.0f))
+          {
+            m_SelectedUnits.push_back(unit.id);
+          }
+        }
+      }
+
+      gui->updateDebugWindow();
+      gui->updateDebugUnitFocus();
+    }
+  }
+
+  void Pharaoh::pruneSelection()
+  {
+    gui->updateDebugUnitFocus();
+  }
+
+  bool Pharaoh::rectsIntersect(float x_1, float y_1, float width_1, float height_1, float x_2, float y_2, float width_2, float height_2)
+  {
+    return !(x_1 > x_2+width_2 || x_1+width_1 < x_2 || y_1 > y_2+height_2 || y_1+height_1 < y_2);
+  }
+
+  std::list<IGUI::DebugOption> Pharaoh::getDebugOptions()
+  {
+    return std::list<IGUI::DebugOption>({{"Units Selectable", true}});
   }
 
   void Pharaoh::postDraw()
@@ -79,10 +129,9 @@ namespace visualizer
   }
   
   // Give the Debug Info widget the selected object IDs in the Gamelog
-  list<int> Pharaoh::getSelectedUnits()
+  std::list<int> Pharaoh::getSelectedUnits()
   {
-    // TODO Selection logic
-    return list<int>();  // return the empty list
+    return m_SelectedUnits;
   }
 
   void Pharaoh::loadGamelog( std::string gamelog )
