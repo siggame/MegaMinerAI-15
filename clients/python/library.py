@@ -62,8 +62,8 @@ library.thiefThiefTalk.argtypes = [c_void_p, c_char_p]
 library.thiefMove.restype = c_int
 library.thiefMove.argtypes = [c_void_p, c_int, c_int]
 
-library.thiefAct.restype = c_int
-library.thiefAct.argtypes = [c_void_p, c_int, c_int]
+library.thiefUseSpecial.restype = c_int
+library.thiefUseSpecial.argtypes = [c_void_p, c_int, c_int]
 
 # accessors
 

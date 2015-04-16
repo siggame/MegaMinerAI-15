@@ -42,8 +42,8 @@ class Thief : public Mappable {
   bool thiefTalk(char* message);
   ///Commands a thief to move to a new location.
   bool move(int x, int y);
-  ///Commands a thief to act on a location.
-  bool act(int x, int y);
+  ///Commands a thief to use a special on a location.
+  bool useSpecial(int x, int y);
 
   // Properties
 

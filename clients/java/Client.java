@@ -25,7 +25,7 @@ public interface Client extends Library {
   int trapToggle(Pointer object);
   int thiefThiefTalk(Pointer object, String message);
   int thiefMove(Pointer object, int x, int y);
-  int thiefAct(Pointer object, int x, int y);
+  int thiefUseSpecial(Pointer object, int x, int y);
 
     //accessors
   int getMapWidth(Pointer connection);

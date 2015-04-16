@@ -343,10 +343,10 @@ DLLEXPORT int thiefMove(_Thief* object, int x, int y)
   return 1;
 }
 
-DLLEXPORT int thiefAct(_Thief* object, int x, int y)
+DLLEXPORT int thiefUseSpecial(_Thief* object, int x, int y)
 {
   stringstream expr;
-  expr << "(game-act " << object->id
+  expr << "(game-use-special " << object->id
        << " " << x
        << " " << y
        << ")";
