@@ -34,9 +34,9 @@ int getGameNumber(Connection*);
 int getRoundNumber(Connection*);
 int getScarabsForTraps(Connection*);
 int getScarabsForThieves(Connection*);
-int getMaxStack(Connection*);
 int getRoundsToWin(Connection*);
 int getRoundTurnLimit(Connection*);
+int getNumberOfSarcophagi(Connection*);
 
 _Player* getPlayer(Connection*, int);
 int getPlayerCount(Connection*);

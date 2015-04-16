@@ -49,6 +49,11 @@ class Player {
       return ptr.roundsWon;
     }
     
+    int getSarcophagiCaptured() {
+      validify();
+      return ptr.sarcophagiCaptured;
+    }
+    
     bool placeTrap(int x, int y, int trapType) {
       validify();
       return playerPlaceTrap(ptr, x, y, trapType) == 1;

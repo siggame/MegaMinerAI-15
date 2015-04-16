@@ -62,16 +62,16 @@ class BaseAI {
       return game.getScarabsForThieves(c);
     }
     
-    int maxStack() {
-      return game.getMaxStack(c);
-    }
-    
     int roundsToWin() {
       return game.getRoundsToWin(c);
     }
     
     int roundTurnLimit() {
       return game.getRoundTurnLimit(c);
+    }
+    
+    int numberOfSarcophagi() {
+      return game.getNumberOfSarcophagi(c);
     }
     
     abstract const string username();
