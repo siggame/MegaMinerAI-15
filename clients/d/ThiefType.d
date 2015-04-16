@@ -30,36 +30,43 @@ class ThiefType {
       throw new ExistentialError();
     }
     
+    ///Unique identifier
     int getID() {
       validify();
       return ptr.id;
     }
     
+    ///The name of this type of thief.
     string getName() {
       validify();
       return to!string(ptr.name);
     }
     
+    ///The type of this thief. This value is unique for all types.
     int getType() {
       validify();
       return ptr.type;
     }
     
+    ///The number of scarabs required to purchase this thief.
     int getCost() {
       validify();
       return ptr.cost;
     }
     
+    ///The maximum number of times this thief can move.
     int getMaxMovement() {
       validify();
       return ptr.maxMovement;
     }
     
+    ///The maximum number of times this thief can use its special ability.
     int getMaxSpecials() {
       validify();
       return ptr.maxSpecials;
     }
     
+    ///The maximum number of this type thief that can be purchased each round.
     int getMaxInstances() {
       validify();
       return ptr.maxInstances;

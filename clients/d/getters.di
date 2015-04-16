@@ -7,7 +7,7 @@ char* playerGetPlayerName(_Player*);
 float playerGetTime(_Player*);
 int playerGetScarabs(_Player*);
 int playerGetRoundsWon(_Player*);
-
+int playerGetSarcophagiCaptured(_Player*);
 
 int mappableGetId(_Mappable*);
 int mappableGetX(_Mappable*);

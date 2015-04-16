@@ -18,21 +18,25 @@ class Tile : Mappable {
       throw new ExistentialError();
     }
     
+    ///Unique identifier
     override int getID() {
       validify();
       return (cast(_Tile*)ptr).id;
     }
     
+    ///X position of the object
     override int getX() {
       validify();
       return (cast(_Tile*)ptr).x;
     }
     
+    ///Y position of the object
     override int getY() {
       validify();
       return (cast(_Tile*)ptr).y;
     }
     
+    ///What type of tile this is. 0: empty, 1: spawn: 2: wall.
     int getType() {
       validify();
       return (cast(_Tile*)ptr).type;

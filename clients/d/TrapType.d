@@ -37,91 +37,109 @@ class TrapType {
       throw new ExistentialError();
     }
     
+    ///Unique identifier
     int getID() {
       validify();
       return ptr.id;
     }
     
+    ///The name of this type of trap.
     string getName() {
       validify();
       return to!string(ptr.name);
     }
     
+    ///The type of this trap. This value is unique for all types.
     int getType() {
       validify();
       return ptr.type;
     }
     
+    ///The number of scarabs required to purchase this trap.
     int getCost() {
       validify();
       return ptr.cost;
     }
     
+    ///The maximum number of this type of trap that can be placed in a round by a player.
     int getMaxInstances() {
       validify();
       return ptr.maxInstances;
     }
     
+    ///Whether the trap starts visible to the enemy player.
     bool startsVisible() {
       validify();
       return ptr.startsVisible == 1;
     }
     
+    ///Whether the trap is able to act().
     bool hasAction() {
       validify();
       return ptr.hasAction == 1;
     }
     
+    ///Whether the trap can be deactivated by the player, stopping the trap from automatically activating.
     bool isDeactivatable() {
       validify();
       return ptr.deactivatable == 1;
     }
     
+    ///The maximum number of times this trap can be activated before being disabled.
     int getMaxActivations() {
       validify();
       return ptr.maxActivations;
     }
     
+    ///This trap activates when a thief moves onto and then off of this tile.
     bool activatesOnWalkedThrough() {
       validify();
       return ptr.activatesOnWalkedThrough == 1;
     }
     
+    ///The maximum number of turns a thief can stay on this tile before it activates.
     int turnsToActivateOnTile() {
       validify();
       return ptr.turnsToActivateOnTile;
     }
     
+    ///Whether this trap can be placed inside of walls.
     bool canPlaceOnWalls() {
       validify();
       return ptr.canPlaceOnWalls == 1;
     }
     
+    ///Whether this trap can be placed on empty tiles.
     bool canPlaceOnOpenTiles() {
       validify();
       return ptr.canPlaceOnOpenTiles == 1;
     }
     
+    ///How many turns a thief will be frozen when this trap activates.
     int freezesForTurns() {
       validify();
       return ptr.freezesForTurns;
     }
     
+    ///Whether this trap kills thieves when activated.
     bool killsOnActivate() {
       validify();
       return ptr.killsOnActivate == 1;
     }
     
+    ///How many turns this trap has to wait between activations.
     int cooldown() {
       validify();
       return ptr.cooldown;
     }
     
+    ///When destroyed via dynamite kills adjacent thieves.
     bool isExplosive() {
       validify();
       return ptr.explosive == 1;
     }
     
+    ///Cannot be passed through, stopping a thief that tries to move onto its tile.
     bool isUnpassable() {
       validify();
       return ptr.unpassable == 1;

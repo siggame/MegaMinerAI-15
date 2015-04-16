@@ -18,65 +18,87 @@ class BaseAI {
       c = connection;
     }
   
+    ///The width of the total map.
     int mapWidth() {
       return game.getMapWidth(c);
     }
     
+    ///The height of the total map.
     int mapHeight() {
       return game.getMapHeight(c);
     }
     
+    ///The current turn number.
     int turnNumber() {
       return game.getTurnNumber(c);
     }
     
+    ///The current turn number for this round.
     int roundTurnNumber() {
       return game.getRoundTurnNumber(c);
     }
     
+    ///The maximum number of Thieves allowed per player.
     int maxThieves() {
       return game.getMaxThieves(c);
     }
     
+    ///The maximum number of Traps allowed per player.
     int maxTraps() {
       return game.getMaxTraps(c);
     }
     
+    ///The id of the current player.
     int playerID() {
       return game.getPlayerID(c);
     }
     
+    ///What number game this is for the server.
     int gameNumber() {
       return game.getGameNumber(c);
     }
     
+    ///What round of the game this is.
     int roundNumber() {
       return game.getRoundNumber(c);
     }
     
+    ///The scarabs given to a player to purchase traps per round.
     int scarabsForTraps() {
       return game.getScarabsForTraps(c);
     }
     
+    ///The scarabs given to a player to purchase thieves per round.
     int scarabsForThieves() {
       return game.getScarabsForThieves(c);
     }
     
-    int maxStack() {
-      return game.getMaxStack(c);
-    }
-    
+    ///The number of won rounds required to win.
     int roundsToWin() {
       return game.getRoundsToWin(c);
     }
     
+    ///The maximum number of round turns before a winner is decided.
     int roundTurnLimit() {
       return game.getRoundTurnLimit(c);
     }
     
+    ///The number of sarcophagi each player will start with each round.
+    int numberOfSarcophagi() {
+      return game.getNumberOfSarcophagi(c);
+    }
+    
+    ///Make this your username, which should be provided.
     abstract const string username();
+    
+    ///Make this your password, which should be provided.
     abstract const string password();
+    
+    ///This function is run once, before your first turn.
     abstract void init();
+    
+    ///This function is called each time it is your turn
+    ///Return true to end your turn, return false to ask the server for updated information
     abstract bool run();
     
     bool startTurn() {

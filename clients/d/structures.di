@@ -19,9 +19,9 @@ struct Connection
   int roundNumber;
   int scarabsForTraps;
   int scarabsForThieves;
-  int maxStack;
   int roundsToWin;
   int roundTurnLimit;
+  int numberOfSarcophagi;
 
   _Player* Players;
   int PlayerCount;
@@ -47,6 +47,7 @@ struct _Player
   float time;
   int scarabs;
   int roundsWon;
+  int sarcophagiCaptured;
 };
 
 struct _Tile
