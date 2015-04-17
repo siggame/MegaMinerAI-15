@@ -223,30 +223,29 @@ class Trap(Mappable):
         self.turnsTillActive -= 1
         if self.turnsTillActive == 0:
           self.active = 1
+      else:
+        # swinging blade
+        if self.trapType == self.game.swingingBlade:
+          self.active = self.active ^ 1
+        elif self.trapType == self.game.mummy:
+          self.movementLeft = 1
 
-      # swinging blade
-      elif self.trapType == self.game.swingingBlade:
-        self.active = self.active ^ 1
-
-      if self.trapType == self.game.mummy:
-        self.movementLeft = 1
-
-      elif trapType.turnsToActivateOnTile:
-        # Find thieves
-        thieves = [unit for unit in self.game.grid[self.x][self.y] if isinstance(unit, Thief)]
-        # Forget thieves who moved off
-        self.standingThieves = {thief: turns for thief, turns in self.standingThieves.iteritems() if thief in thieves}
-        # Increase counter for thieves
-        activated = False
-        for thief in thieves:
-          if thief not in self.standingThieves:
-            self.standingThieves[thief] = 0
-          self.standingThieves[thief] += 1
-          if self.standingThieves[thief] >= trapType.turnsToActivateOnTile:
-            activated = True
-            self.attack(thief)
-        if activated:
-          self.activate()
+        if trapType.turnsToActivateOnTile:
+          # Find thieves
+          thieves = [unit for unit in self.game.grid[self.x][self.y] if isinstance(unit, Thief)]
+          # Forget thieves who moved off
+          self.standingThieves = {thief: turns for thief, turns in self.standingThieves.iteritems() if thief in thieves}
+          # Increase counter for thieves
+          activated = False
+          for thief in thieves:
+            if thief not in self.standingThieves:
+              self.standingThieves[thief] = 0
+            self.standingThieves[thief] += 1
+            if self.standingThieves[thief] >= trapType.turnsToActivateOnTile:
+              activated = True
+              self.attack(thief)
+          if activated:
+            self.activate()
 
       return True
 
