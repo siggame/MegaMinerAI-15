@@ -9,6 +9,7 @@ import itertools
 import scribe
 import jsonLogger
 import maze
+import random
 
 Scribe = scribe.Scribe
 
@@ -251,7 +252,14 @@ class Match(DefaultGameWorld):
               done = False
               break
 
-    if self.roundTurnNumber >= self.roundTurnLimit:
+    # Check if at dead end state
+    deadEnd = False
+    cheapest = min(typeThief.cost for typeThief in self.objects.thiefTypes)
+    aliveThieves = sum(thief.alive for thief in self.objects.thiefs)
+    if aliveThieves == 0 and self.objects.players[0].scarabs < cheapest and self.objects.players[1].scarabs < cheapest and self.roundTurnNumber > 2:
+      deadEnd = True
+
+    if self.roundTurnNumber >= self.roundTurnLimit or deadEnd:
       # Check if either player has more sarcophagi
       for side, sarcophagi in enumerate(sarcophagi_by_team):
         if len(sarcophagi) > len(sarcophagi_by_team[side ^ 1]):
@@ -275,8 +283,16 @@ class Match(DefaultGameWorld):
           self.declareRoundWinner(self.objects.players[side], "Player {} had less total distance to the sarcophagi".format(side))
           break
       else:
-        #TODO: Add more tiebreakers
-        self.declareRoundWinner(self.objects.players[0], "Because I said so, this should be removed")
+        #Whoever has killed more thieves
+        player1Kills = sum(trap.bodyCount for trap in self.objects.traps if trap.owner == 0)
+        player2Kills = sum(trap.bodyCount for trap in self.objects.traps if trap.owner == 1)
+        side = player1Kills > player2Kills
+        if player1Kills != player2Kills:
+          self.declareRoundWinner(self.objects.players[side], "Player {} has killed more opponent thieves.".format(side))
+        else:
+          #random chance now
+          side = random.randint(0, 1)
+          self.declareRoundWinner(self.objects.players[side], "Player {} won by coin flip.".format(side))
       return True
 
     # The round has not ended yet

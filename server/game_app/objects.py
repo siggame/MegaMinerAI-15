@@ -279,15 +279,20 @@ class Trap(Mappable):
       if abs(x - self.x) + abs(y - self.y) != 1:
         return 'Turn {}: Cannot move mummy {} to non-adjacent space. ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       # Check if desired space is within grid
-      if not (0 <= x - (self.game.mapWidth/2) * (self.owner) < self.game.mapWidth/2) or not (0 <= y < self.game.mapHeight):
+      elif not (0 <= x - (self.game.mapWidth/2) * (self.owner) < self.game.mapWidth/2) or not (0 <= y < self.game.mapHeight):
         return 'Turn {}: Cannot move mummy {} outside of grid ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       # Check if desired space is not a wall
-      if self.game.grid[x][y][0].type != self.game.empty:
+      elif self.game.grid[x][y][0].type != self.game.empty:
         return 'Turn {}: Cannot move mummy {} into a wall or spawn. ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       # Check if the mummy still has moves left
-      if self.movementLeft <= 0:
+      elif self.movementLeft <= 0:
         return 'Turn {}: Mummy {} can only move once per turn. ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-      
+      # Make sure that there isn't a sarcophagus there
+      for unit in self.game.grid[x][y]:
+        if isinstance(unit, Trap):
+          if unit.trapType == self.game.sarcophagus:
+            return 'Turn {}: Mummy {} cannot move onto a sarcophagus. ({}, {}) -> ({}, {})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+
       # Move trap (mummy)
       self.game.grid[self.x][self.y].remove(self)
       self.x, self.y = x, y
