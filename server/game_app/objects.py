@@ -223,7 +223,7 @@ class Trap(Mappable):
         self.turnsTillActive -= 1
         if self.turnsTillActive == 0:
           self.active = 1
-      else:
+      if self.active:
         # swinging blade
         if self.trapType == self.game.swingingBlade:
           self.active = self.active ^ 1
