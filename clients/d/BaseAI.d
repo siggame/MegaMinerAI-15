@@ -1,5 +1,5 @@
 import Player, Mappable, Tile, Trap, Thief, ThiefType, TrapType, structures, game;
-import std.array, std.stdio;
+import std.array;
 
 static int iteration = 0;
 
@@ -106,50 +106,43 @@ class BaseAI {
       iteration++;
       int count = 0;
       count = getPlayerCount(c);
-      players.clear();
-      players.length = count;
+      players = new Player[count];
       foreach (i; 0..count) {
         players[i] = new Player(getPlayer(c, i));
       }
       
       count = getMappableCount(c);
-      mappables.clear();
-      mappables.length = count;
+      mappables = new Mappable[count];
       foreach (i; 0..count) {
         mappables[i] = new Mappable(getMappable(c, i));
       }
       
       count = getTileCount(c);
-      tiles.clear();
-      tiles.length = count;
+      tiles = new Tile[count];
       foreach (i; 0..count) {
         tiles[i] = new Tile(getTile(c, i));
       }
       
       count = getTrapCount(c);
-      traps.clear();
-      traps.length = count;
+      traps = new Trap[count];
       foreach (i; 0..count) {
         traps[i] = new Trap(getTrap(c, i));
       }
       
       count = getThiefCount(c);
-      thieves.clear();
-      thieves.length = count;
+      thieves = new Thief[count];
       foreach (i; 0..count) {
         thieves[i] = new Thief(getThief(c, i));
       }
       
       count = getThiefTypeCount(c);
-      thiefTypes.clear();
-      thiefTypes.length = count;
+      thiefTypes = new ThiefType[count];
       foreach (i; 0..count) {
         thiefTypes[i] = new ThiefType(getThiefType(c, i));
       }
       
       count = getTrapTypeCount(c);
-      trapTypes.clear();
-      trapTypes.length = count;
+      trapTypes = new TrapType[count];
       foreach (i; 0..count) {
         trapTypes[i] = new TrapType(getTrapType(c, i));
       }
