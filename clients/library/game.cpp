@@ -296,7 +296,18 @@ DLLEXPORT int playerPlaceTrap(_Player* object, int x, int y, int trapType)
     for (int i = 0; i < c->TrapCount; ++i)
     {
       if(getTrap(c, i)->owner == object->id)
-        trapInstanceCount[getTrap(c, i)->trapType] += 1;
+      {
+        _TrapType* junk;
+        for(int i = 0; i < c->TrapTypeCount; ++i)
+        {
+          junk = getTrapType(c, i);
+          if(junk->type == getTrap(c, i)->trapType)
+          {
+            break;
+          }
+        }
+        trapInstanceCount[junk->type] += 1;
+      }
     }
   }
   
@@ -326,7 +337,16 @@ DLLEXPORT int playerPlaceTrap(_Player* object, int x, int y, int trapType)
   if(trapType < 0 or trapType >= c->TrapTypeCount)
     return 0;
 
-  _TrapType* type = getTrapType(c, trapType);
+  _TrapType* type;
+  for(int i = 0; i < c->TrapTypeCount; ++i)
+  {
+    type = getTrapType(c, i);
+    if(type->type == trapType)
+    {
+      break;
+    }
+  }
+
   _Tile* tile;
   for (int i = 0; i < c->TileCount; ++i)
   {
@@ -407,7 +427,18 @@ DLLEXPORT int playerPurchaseThief(_Player* object, int x, int y, int thiefType)
     for (int i = 0; i < c->ThiefCount; ++i)
     {
       if(getThief(c, i)->owner == object->id)
-        thiefInstanceCount[getThief(c, i)->thiefType] += 1;
+      {
+        _ThiefType* type;
+        for(int i2 = 0; i2 < c->ThiefTypeCount; ++i2)
+        {
+          type = getThiefType(c, i2);
+          if(getThief(c, i)->thiefType == type->type)
+          {
+            break;
+          }
+        }
+        thiefInstanceCount[type->type] += 1;
+      }
     }
   }
 
@@ -417,7 +448,7 @@ DLLEXPORT int playerPurchaseThief(_Player* object, int x, int y, int thiefType)
 
   //wrong pyramid
   int width = c->mapWidth/2;
-  int minX = object->id == 1 ? 0 : width;
+  int minX = (object->id == 1) ? 0 : width;
   if(x < minX || x >= minX + width)
     return 0;
 
@@ -438,7 +469,15 @@ DLLEXPORT int playerPurchaseThief(_Player* object, int x, int y, int thiefType)
   if(thiefType < 0 || thiefType >= c->ThiefTypeCount)
     return 0;
 
-  _ThiefType* type = getThiefType(c, thiefType);
+  _ThiefType* type;
+  for(int i = 0; i < c->ThiefTypeCount; ++i)
+  {
+    type = getThiefType(c, i);
+    if(type->type == thiefType)
+    {
+      break;
+    }
+  }
 
   if(thiefMoney < type->cost)
     return 0;
@@ -590,10 +629,23 @@ DLLEXPORT int trapAct(_Trap* object, int x, int y)
   }
 
   object->activationsRemaining -= 1;
-  _TrapType* trap = getTrapType(c, object->trapType);
+  _TrapType* trap;
+  for(int i = 0; i < c->TrapTypeCount; ++i)
+  {
+    trap = getTrapType(c, i);
+    if(trap->type == object->trapType)
+    {
+      break;
+    }
+  }
   if(object->activationsRemaining == 0)
   {
     object->active = 0;
+  }
+  else if(trap->cooldown)
+  {
+    object->active = 0;
+    object->turnsTillActive = trap->cooldown;
   }
 
   return 1;
@@ -608,7 +660,18 @@ DLLEXPORT int trapToggle(_Trap* object)
   send_string(object->_c->socket, expr.str().c_str());
   UNLOCK( &object->_c->mutex);
 
-  if(getTrapType(object->_c, object->trapType)->deactivatable != 1)
+  Connection* c = object->_c;
+
+  _TrapType* trap;
+  for(int i = 0; i < c->TrapTypeCount; ++i)
+  {
+    trap = getTrapType(c, i);
+    if(trap->type == object->trapType)
+    {
+      break;
+    }
+  }
+  if(trap->deactivatable != 1)
     return 0;
   else if(!object->active && object->activationsRemaining == 0)
     return 0;
@@ -655,29 +718,41 @@ DLLEXPORT int thiefMove(_Thief* object, int x, int y)
 
   //proper owner
   if(object->owner != c->playerID)
+  {
     return 0;
+  }
 
   //alive
   if(object->alive == 0)
+  {
     return 0;
+  }
 
   //not frozen
   if(object->frozenTurnsLeft > 0)
+  {
     return 0;
+  }
 
   //can move
   if(object->movementLeft <= 0)
+  {
     return 0;
+  }
 
   //out of bounds
   if(x < 0 || x >= c->mapWidth || y < 0 || y >= c->mapHeight)
+  {
     return 0;
+  }
 
   //wrong pyramid
   int width = c->mapWidth/2;
-  int minX = object->owner == 1 ? 0 : width;
+  int minX = (object->owner == 1) ? 0 : width;
   if(x < minX || x >= minX + width)
+  {
     return 0;
+  }
 
   //not moving on wall
   for (int i = 0; i < c->TileCount; ++i)
@@ -686,7 +761,9 @@ DLLEXPORT int thiefMove(_Thief* object, int x, int y)
     if(t->x == x && t->y == y)
     {
       if(t->type == 2)
+      {
         return 0;
+      }
       else
         break;
     }
@@ -694,11 +771,13 @@ DLLEXPORT int thiefMove(_Thief* object, int x, int y)
 
   //move one space
   if(abs(object->x - x) + abs(object->y - y) != 1)
+  {
     return 0;
+  }
 
   //check for activatesOnWalkedThrough
   //check for traps on the tile
-  _Trap* trap;
+  _Trap* trap = 0;
   for(int i = 0; i < c->TrapCount; ++i)
   {
     trap = getTrap(c, i);
@@ -706,61 +785,78 @@ DLLEXPORT int thiefMove(_Thief* object, int x, int y)
     {
       break;
     }
+    trap = 0;
   }
-  //make sure it's active and all that
-  _TrapType* trapType = getTrapType(c, trap->trapType);
-  if(trap->active && trapType->activatesOnWalkedThrough && trapType->turnsToActivateOnTile == 0)
+  if(trap != 0)
   {
-    --trap->activationsRemaining;
-    if(trap->activationsRemaining == 0)
+    //make sure it's active and all that
+    _TrapType* trapType;
+    for(int i = 0; i < c->TrapTypeCount; ++i)
     {
-      trap->active = 0;
-    }
-    else if(trapType->cooldown)
-    {
-      trap->active = 0;
-      trap->turnsTillActive = trapType->cooldown;
-    }
-    if(object->thiefType == 2 && object->specialsLeft > 0)
-    {
-      --object->specialsLeft;
-    }
-    else
-    {
-      if(trapType->killsOnActivate)
+      trapType = getTrapType(c, i);
+      if(trapType->type == trap->trapType)
       {
-        object->alive = false;
+        break;
       }
     }
-  }
-  //blocking trap
-  else if(trap->active && trapType->unpassable)
-  {
-    --object->movementLeft;
-    return 1;
-  }
-  //on move trap
-  else if(trap->active && trapType->activatesOnWalkedThrough && trapType->turnsToActivateOnTile == 1)
-  {
-    --trap->activationsRemaining;
-    if(trap->activationsRemaining == 0)
+    if(trap->active && trapType->activatesOnWalkedThrough && trapType->turnsToActivateOnTile == 0)
     {
-      trap->active = 0;
-    }
-    else if(trapType->cooldown)
-    {
-      trap->active = 0;
-      trap->turnsTillActive = trapType->cooldown;
-    }
-    if(object->thiefType == 2 && object->specialsLeft > 0)
-    {
-      --object->specialsLeft;
-    }
-    else
-    {
-      if(trapType->killsOnActivate)
+      --trap->activationsRemaining;
+      if(trap->activationsRemaining == 0)
       {
-        object->alive = false;
+        trap->active = 0;
+      }
+      else if(trapType->cooldown)
+      {
+        trap->active = 0;
+        trap->turnsTillActive = trapType->cooldown;
+      }
+      if(object->thiefType == 2 && object->specialsLeft > 0)
+      {
+        --object->specialsLeft;
+      }
+      else
+      {
+        if(trapType->killsOnActivate)
+        {
+          object->alive = false;
+        }
+      }
+    }
+    //blocking trap
+    else if(trap->active && trapType->unpassable)
+    {
+      --object->movementLeft;
+      --trap->activationsRemaining;
+      if(trap->activationsRemaining <= 0)
+      {
+        trap->active = 0;
+      }
+      return 1;
+    }
+    //on move trap
+    else if(trap->active && trapType->activatesOnWalkedThrough && trapType->turnsToActivateOnTile == 1)
+    {
+      --trap->activationsRemaining;
+      if(trap->activationsRemaining == 0)
+      {
+        trap->active = 0;
+      }
+      else if(trapType->cooldown)
+      {
+        trap->active = 0;
+        trap->turnsTillActive = trapType->cooldown;
+      }
+      if(object->thiefType == 2 && object->specialsLeft > 0)
+      {
+        --object->specialsLeft;
+      }
+      else
+      {
+        if(trapType->killsOnActivate)
+        {
+          object->alive = false;
+        }
       }
     }
   }
