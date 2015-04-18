@@ -456,7 +456,13 @@ class Thief(Mappable):
         #oil vase
         if isinstance(unit, Trap) and unit.trapType == 6:
           unit.attack(self)
+          offsets = (1, 0), (-1, 0), (0, 1), (0, -1)
+          for off in offsets:
+            for target in self.game.grid[self.x + off[0]][self.y + off[1]]:
+              if isinstance(target, Thief):
+                unit.attack(target)
           unit.activate()
+
         #Blow up traps
         if isinstance(unit, Trap) and unit.trapType != 0 and unit.trapType != 6:
           self.game.grid[x][y].remove(unit)
