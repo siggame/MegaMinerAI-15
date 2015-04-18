@@ -486,6 +486,15 @@ class Thief(Mappable):
       elif not (0 <= x < self.game.mapWidth and 0 <= y < self.game.mapHeight):
         return 'Turn {}: Your digger {} must dig on the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
 
+      #make sure that there is somewhere to end up on the other side of the wall
+      xchange = x - self.x
+      ychange = y - self.y
+      thisTile = self.game.getTile(x + xchange, y + ychange)
+      if thisTile is None or thisTile.type != 0:
+        return 'Turn {}: Your digger {} has nowhere to go on the other side of the wall. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+      elif (x + xchange < self.game.mapWidth/2 and self.x >= self.game.mapWidth/2) or (x + xchange >= self.game.mapWidth/2 and self.x < self.game.mapWidth/2):
+        return 'Turn {}: Your digger {} cannot dig onto the other side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+        
       #activate vase
       for unit in self.game.grid[x][y]:
         if isinstance(unit, Trap) and unit.trapType == 6:
@@ -498,16 +507,7 @@ class Thief(Mappable):
           unit.activate()
           break
       else:
-        #make sure that there is somewhere to end up on the other side of the wall
-        xchange = x - self.x
-        ychange = y - self.y
-        thisTile = self.game.getTile(x + xchange, y + ychange)
-        if thisTile is None or thisTile.type != 0:
-          return 'Turn {}: Your digger {} has nowhere to go on the other side of the wall. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-        elif (x + xchange < self.game.mapWidth/2 and self.x >= self.game.mapWidth/2) or (x + xchange >= self.game.mapWidth/2 and self.x < self.game.mapWidth/2):
-          return 'Turn {}: Your digger {} cannot dig onto the other side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
         self.game.addAnimation(DigAnimation(self.id, self.game.grid[x][y][0].id, x + xchange, y + ychange))
-
         self.game.grid[self.x][self.y].remove(self)
         newX = x + xchange
         newY = y + ychange
