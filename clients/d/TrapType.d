@@ -1,7 +1,7 @@
 import structures, std.conv, getters, ExistentialError, BaseAI;
 
 static const int SARCOPHAGUS = 0;
-static const int SNAKE_PIT = 1;
+static const int SPIKE_PIT = 1;
 static const int SWINGING_BLADE = 2;
 static const int BOULDER = 3;
 static const int SPIDER_WEB = 4;

@@ -223,30 +223,29 @@ class Trap(Mappable):
         self.turnsTillActive -= 1
         if self.turnsTillActive == 0:
           self.active = 1
+      if self.active:
+        # swinging blade
+        if self.trapType == self.game.swingingBlade:
+          self.active = self.active ^ 1
+        elif self.trapType == self.game.mummy:
+          self.movementLeft = 1
 
-      # swinging blade
-      elif self.trapType == self.game.swingingBlade:
-        self.active = self.active ^ 1
-
-      if self.trapType == self.game.mummy:
-        self.movementLeft = 1
-
-      elif trapType.turnsToActivateOnTile:
-        # Find thieves
-        thieves = [unit for unit in self.game.grid[self.x][self.y] if isinstance(unit, Thief)]
-        # Forget thieves who moved off
-        self.standingThieves = {thief: turns for thief, turns in self.standingThieves.iteritems() if thief in thieves}
-        # Increase counter for thieves
-        activated = False
-        for thief in thieves:
-          if thief not in self.standingThieves:
-            self.standingThieves[thief] = 0
-          self.standingThieves[thief] += 1
-          if self.standingThieves[thief] >= trapType.turnsToActivateOnTile:
-            activated = True
-            self.attack(thief)
-        if activated:
-          self.activate()
+        if trapType.turnsToActivateOnTile:
+          # Find thieves
+          thieves = [unit for unit in self.game.grid[self.x][self.y] if isinstance(unit, Thief)]
+          # Forget thieves who moved off
+          self.standingThieves = {thief: turns for thief, turns in self.standingThieves.iteritems() if thief in thieves}
+          # Increase counter for thieves
+          activated = False
+          for thief in thieves:
+            if thief not in self.standingThieves:
+              self.standingThieves[thief] = 0
+            self.standingThieves[thief] += 1
+            if self.standingThieves[thief] >= trapType.turnsToActivateOnTile:
+              activated = True
+              self.attack(thief)
+          if activated:
+            self.activate()
 
       return True
 
@@ -263,7 +262,7 @@ class Trap(Mappable):
       return 'Turn {}: You cannot use this trap ({}) because it is not active.'.format(self.game.turnNumber, self.id)
 
     if self.trapType == self.game.boulder:
-      if abs(x) + abs(y) != 1:
+      if abs(x - self.x) + abs(y - self.y) != 1:
         return 'Turn {}: Invalid rolling direction for boulder {}. ({}, {})'.format(self.game.turnNumber, self.id, x, y)
 
       # Kill thieves as boulder rolls over them, until boulder runs into a wall
