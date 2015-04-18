@@ -10,11 +10,11 @@ class Thief extends Mappable
   boolean validify()
   {
     if(iteration == BaseAI.iteration) return true;
-    for(int i = 0; i < BaseAI.thiefs.length; i++)
+    for(int i = 0; i < BaseAI.thieves.length; i++)
     {
-      if(BaseAI.thiefs[i].ID == ID)
+      if(BaseAI.thieves[i].ID == ID)
       {
-        ptr = BaseAI.thiefs[i].ptr;
+        ptr = BaseAI.thieves[i].ptr;
         iteration = BaseAI.iteration;
         return true;
       }

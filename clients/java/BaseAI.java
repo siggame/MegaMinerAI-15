@@ -11,7 +11,7 @@ public abstract class BaseAI
   static Mappable[] mappables;
   static Tile[] tiles;
   static Trap[] traps;
-  static Thief[] thiefs;
+  static Thief[] thieves;
   static ThiefType[] thiefTypes;
   static TrapType[] trapTypes;
   Pointer connection;
@@ -72,10 +72,10 @@ public abstract class BaseAI
       traps[i] = new Trap(Client.INSTANCE.getTrap(connection, i));
     }
     count = Client.INSTANCE.getThiefCount(connection);
-    thiefs = new Thief[count];
+    thieves = new Thief[count];
     for(int i = 0; i < count; i++)
     {
-      thiefs[i] = new Thief(Client.INSTANCE.getThief(connection, i));
+      thieves[i] = new Thief(Client.INSTANCE.getThief(connection, i));
     }
     count = Client.INSTANCE.getThiefTypeCount(connection);
     thiefTypes = new ThiefType[count];
