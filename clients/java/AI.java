@@ -473,7 +473,7 @@ public class AI extends BaseAI
     Tile endTile = getTile(end.x, end.y);
     
     //as long as the end tile has no parent...
-    while (parent.count(endTile) == 0)
+    while (count(parent, endTile) == 0)
     {
       //if there are no tiles in the openSet then there is no path
       if (openSet.isEmpty())
@@ -496,7 +496,7 @@ public class AI extends BaseAI
         //if a tile exists there
         if (toAdd != null)
         {
-          if (toAdd.getType() == Tile.EMPTY && parent.count(toAdd) == 0)
+          if (toAdd.getType() == Tile.EMPTY && count(parent, toAdd) == 0)
           {
             openSet.addLast(toAdd);
             parent.put(toAdd, curTile);
@@ -512,6 +512,21 @@ public class AI extends BaseAI
     }
     
     return toReturn;
+  }
+  
+  private int count(HashMap<Tile> points, Tile tile)
+  {
+    int result = 0;
+    
+    for (Tile t; points.values())
+    {
+      if (t.equals(tile))
+      {
+        result++;
+      }
+    } 
+    
+    return result;
   }
 
   //This function is called once, after your last turn
