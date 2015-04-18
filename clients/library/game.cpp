@@ -353,6 +353,22 @@ DLLEXPORT int playerPlaceTrap(_Player* object, int x, int y, int trapType)
   //not enough money
   if(trapMoney < type->cost)
     return 0;
+    
+  // Move sarcophagus
+  if (trapType == 0)
+  {
+    for (int i = 0; i < c->TrapCount; ++i)
+    {
+      _Trap* t = getTrap(c, i);
+      if(t->trapType == 0 && t->turnsTillActive == 0)
+      {
+        t->x = x;
+        t->y = y;
+        t->turnsTillActive = 1;
+        break;
+      }
+    }
+  }
 
   trapsThisTurn.push_back(Point(x, y));
   trapInstanceCount[trapType] += 1;
@@ -578,11 +594,6 @@ DLLEXPORT int trapAct(_Trap* object, int x, int y)
   if(object->activationsRemaining == 0)
   {
     object->active = 0;
-  }
-  else if(trap->cooldown)
-  {
-    object->active = 0;
-    object->turnsTillActive = trap->cooldown;
   }
 
   return 1;
