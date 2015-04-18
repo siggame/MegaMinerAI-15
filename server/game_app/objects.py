@@ -30,7 +30,7 @@ class Player(object):
     tile = self.game.getTile(x, y)
     if not tile:
       return "Turn {}: You cannot place a trap outside of the map. ({}, {})".format(self.game.turnNumber, x, y)
-    if not (self.id * (self.game.mapWidth / 2) < x < (1 + self.id) * (self.game.mapWidth / 2)):
+    if not (self.id * (self.game.mapWidth / 2) <= x < (1 + self.id) * (self.game.mapWidth / 2)):
       return "Turn {}: You cannot place a trap outside of your pyramid. ({}, {})".format(self.game.turnNumber, x, y)
     if tile.type == self.game.spawn:
       return "Turn {}: You cannot place a trap on a spawn point ({}, {})".format(self.game.turnNumber, x, y)
@@ -267,12 +267,14 @@ class Trap(Mappable):
 
       # Kill thieves as boulder rolls over them, until boulder runs into a wall
       boulderX, boulderY = self.x, self.y
+      xchange, ychange = x - self.x, y - self.y
       while self.game.grid[boulderX][boulderY][0].type == self.game.empty:
         for unit in self.game.grid[boulderX][boulderY]:
           if isinstance(unit, Thief):
             self.attack(unit)
-        boulderX += x
-        boulderY += y
+        boulderX += xchange
+        boulderY += ychange
+
     # Move mummy and kill thieves
     elif self.trapType == self.game.mummy:
       # Check if desired space is adjacent to mummy's current space
@@ -311,6 +313,11 @@ class Trap(Mappable):
   def toggle(self):
     if not self.game.objects.trapTypes[self.trapType].deactivatable:
       return 'Turn {}: Cannot toggle trap {} that is not deactivatable'.format(self.game.turnNumber, self.id)
+    elif not self.active and self.activationsRemaining == 0:
+      return 'Turn {}: Trap {} has no activations remaining.'.format(self.game.turnNumber, self.id)
+    elif not self.active and self.turnsTillActive > 0:
+      return 'Turn {}: Trap {} has turns remaining until it is active'.format(self.game.turnNumber, self.id)
+        
     if self.active:
       self.active = 0
     elif self.activationsRemaining and self.turnsTillActive == 0:
@@ -446,13 +453,22 @@ class Thief(Mappable):
         #Blow up walls
         if isinstance(unit, Tile) and unit.type == 2:
           unit.type = 0
+        #oil vase
+        if isinstance(unit, Trap) and unit.trapType == 6:
+          unit.attack(self)
+          offsets = (1, 0), (-1, 0), (0, 1), (0, -1)
+          for off in offsets:
+            for target in self.game.grid[self.x + off[0]][self.y + off[1]]:
+              if isinstance(target, Thief):
+                unit.attack(target)
+          unit.activate()
+
         #Blow up traps
-        if isinstance(unit, Trap) and unit.trapType != 0:
+        if isinstance(unit, Trap) and unit.trapType != 0 and unit.trapType != 6:
           self.game.grid[x][y].remove(unit)
         #Blow up thieves
         if isinstance(unit, Thief):
           unit.alive = 0
-          self.game.grid[x][y].remove(unit)
         
       self.game.addAnimation(BombAnimation(self.id, self.game.grid[x][y][0].id))
       self.movementLeft = 0
@@ -478,17 +494,39 @@ class Thief(Mappable):
         return 'Turn {}: Your digger {} has nowhere to go on the other side of the wall. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
       elif (x + xchange < self.game.mapWidth/2 and self.x >= self.game.mapWidth/2) or (x + xchange >= self.game.mapWidth/2 and self.x < self.game.mapWidth/2):
         return 'Turn {}: Your digger {} cannot dig onto the other side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-      self.game.addAnimation(DigAnimation(self.id, self.game.grid[x][y][0].id, x + xchange, y + ychange))
+        
+      #activate vase
+      for unit in self.game.grid[x][y]:
+        if isinstance(unit, Trap) and unit.trapType == 6:
+          unit.attack(self)
+          offsets = (1, 0), (-1, 0), (0, 1), (0, -1)
+          for off in offsets:
+            for target in self.game.grid[self.x + off[0]][self.y + off[1]]:
+              if isinstance(target, Thief):
+                unit.attack(target)
+          unit.activate()
+          break
+      else:
+        self.game.addAnimation(DigAnimation(self.id, self.game.grid[x][y][0].id, x + xchange, y + ychange))
+        self.game.grid[self.x][self.y].remove(self)
+        newX = x + xchange
+        newY = y + ychange
+        self.x = newX
+        self.y = newY
+        self.game.grid[self.x][self.y].append(self)
 
-      self.game.grid[self.x][self.y].remove(self)
-      newX = x + xchange
-      newY = y + ychange
-      self.x = newX
-      self.y = newY
-      self.game.grid[self.x][self.y].append(self)
+        #TRAPS
+        instaTrap = next((trap for trap in self.game.grid[self.x][self.y] if isinstance(trap, Trap) and trap.active and
+                          self.game.objects.trapTypes[trap.trapType].activatesOnWalkedThrough and
+                          self.game.objects.trapTypes[trap.trapType].turnsToActivateOnTile == 1), None)
 
-      self.movementLeft = 0
-      self.specialsLeft -= 1
+        if instaTrap:
+          instaTrap.attack(self)
+          instaTrap.activate()
+
+        self.movementLeft = 0
+        self.specialsLeft -= 1
+    return True
 
 
   def __setattr__(self, name, value):
