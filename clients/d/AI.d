@@ -376,7 +376,7 @@ class AI : BaseAI {
     Tile endTile = getTile(end.x, end.y);
     
     //as long as the end tile has no parent...
-    while (count(parent, endTile) == 0) {
+    while (parent.values.count(endTile) == 0) {
       //if there are no tiles in the openSet then there is no path
       if (openSet.length == 0) {
         return point(-1,-1);
@@ -386,8 +386,8 @@ class AI : BaseAI {
       Tile curTile = openSet.front;
       //and remove it
       openSet.remove(0);
-      const int xChange[] = [0, 0, -1, 1];
-      const int yChange[] = [-1, 1, 0, 0];
+      const int[] xChange = [0, 0, -1, 1];
+      const int[] yChange = [-1, 1, 0, 0];
       
       //look in all directions
       foreach (i; 0..4) {
@@ -395,7 +395,7 @@ class AI : BaseAI {
         Tile toAdd = getTile(loc.x, loc.y);
         //if a tile exists there
         if (toAdd !is null) {
-          if (toAdd.getType() == Tile.EMPTY && count(parent, toAdd) == 0) {
+          if (toAdd.getType() == Tile.EMPTY && parent.values.count(toAdd) == 0) {
             openSet ~= toAdd;
             parent[toAdd] = curTile;
           }
@@ -411,18 +411,6 @@ class AI : BaseAI {
     if (toReturn.length != 0) return toReturn.front;
     
     return point(-1,-1);
-  }
-  
-  private int count(ref Tile[Tile] points, Tile tile) {
-    int result = 0;
-    
-    foreach (t; points.values()) {
-      if (t !is null && t == tile) {
-        result++;
-      }
-    } 
-    
-    return result;
   }
 
   //This function is called once, after your last turn
