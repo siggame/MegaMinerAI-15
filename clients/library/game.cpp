@@ -281,14 +281,16 @@ DLLEXPORT int playerPlaceTrap(_Player* object, int x, int y, int trapType)
   Connection* c = object->_c;
   int trapMoney = object->scarabs;
 
+  
   //after trap phase
   if (c->roundTurnNumber > 1)
     return 0;
-
+    
   if (turnNo != c->turnNumber)
   {
     turnNo = c->turnNumber;
     trapsThisTurn.clear();
+    trapInstanceCount.clear();
     trapInstanceCount.resize(c->TrapTypeCount, 0);
 
     for (int i = 0; i < c->TrapCount; ++i)
@@ -297,6 +299,7 @@ DLLEXPORT int playerPlaceTrap(_Player* object, int x, int y, int trapType)
         trapInstanceCount[getTrap(c, i)->trapType] += 1;
     }
   }
+  
     
   //out of bounds
   if(x < 0 || x >= c->mapWidth || y < 0 || y >= c->mapHeight)
@@ -354,6 +357,7 @@ DLLEXPORT int playerPlaceTrap(_Player* object, int x, int y, int trapType)
   trapsThisTurn.push_back(Point(x, y));
   trapInstanceCount[trapType] += 1;
   object->scarabs -= type->cost;
+  
   return 1;
 }
 
