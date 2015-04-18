@@ -506,6 +506,7 @@ class Thief(Mappable):
 
       self.movementLeft = 0
       self.specialsLeft -= 1
+    return True
 
 
   def __setattr__(self, name, value):
@@ -539,7 +540,7 @@ class ThiefType(object):
   def __setattr__(self, name, value):
       if name in self.game_state_attributes:
         object.__setattr__(self, 'updatedAt', self.game.turnNumber)
-        object.__setattr__(self, name, value)
+      object.__setattr__(self, name, value)
 
 class TrapType(object):
   game_state_attributes = ['id', 'name', 'type', 'cost', 'maxInstances', 'startsVisible', 'hasAction', 'deactivatable', 'maxActivations', 'activatesOnWalkedThrough', 'turnsToActivateOnTile', 'canPlaceOnWalls', 'canPlaceOnOpenTiles', 'freezesForTurns', 'killsOnActivate', 'cooldown', 'explosive', 'unpassable']
