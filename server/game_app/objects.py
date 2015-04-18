@@ -306,7 +306,10 @@ class Trap(Mappable):
           self.attack(unit)
 
     # General trap logic
-    self.activate()
+    self.activationsRemaining -= 1
+    if self.activationsRemaining == 0:
+      self.active = 0
+    self.visible = 1
 
     return True
 
