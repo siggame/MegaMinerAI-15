@@ -660,7 +660,7 @@ DLLEXPORT int thiefMove(_Thief* object, int x, int y)
 
   //wrong pyramid
   int width = c->mapWidth/2;
-  int minX = object->id == 1 ? 0 : width;
+  int minX = object->owner == 1 ? 0 : width;
   if(x < minX || x >= minX + width)
     return 0;
 
@@ -788,7 +788,7 @@ DLLEXPORT int thiefUseSpecial(_Thief* object, int x, int y)
 
   //wrong pyramid
   int width = c->mapWidth/2;
-  int minX = object->id == 1 ? 0 : width;
+  int minX = object->owner == 1 ? 0 : width;
   if(x < minX || x >= minX + width)
     return 0;
 
