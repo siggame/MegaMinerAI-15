@@ -1,7 +1,8 @@
 import com.sun.jna.Pointer;
 import java.util.Random;
 import java.util.ArrayList;
-import java.util.Deque;
+import java.util.ArrayDeque;
+import java.util.HashMap;
 
 ///The class implementing gameplay logic.
 public class AI extends BaseAI
@@ -27,13 +28,13 @@ public class AI extends BaseAI
     ArrayList<Trap> enemySarcophagi = new ArrayList<Trap>();
     
     //If it's time to place traps...
-    if (roundTurnNumber() == 0 || roundTurNumber() == 1)
+    if (roundTurnNumber() == 0 || roundTurnNumber() == 1)
     {
       //find my sarcophagi
-      for (int i = 0; i < traps.size(); i++)
+      for (int i = 0; i < traps.length; i++)
       {
         Trap trap = traps[i];
-        if (trap.getOwner() == playerID() && trap.trapType() == TrapType.SARCOPHAGUS)
+        if (trap.getOwner() == playerID() && trap.getTrapType() == TrapType.SARCOPHAGUS)
         {
           mySarcophagi.add(trap);
         }  
@@ -41,11 +42,11 @@ public class AI extends BaseAI
       
       //find the first open tiles and place the sarcophagi there
       int sarcophagusCount = mySarcophagi.size();
-      for (int i = 0; i < tiles.size(); i++)
+      for (int i = 0; i < tiles.length; i++)
       {
         //if the tile is on my side and is empty
         Tile tile = tiles[i];
-        if (onMySide(tile.x()) && tile.type() == Tile.EMPTY)
+        if (onMySide(tile.getX()) && tile.getType() == Tile.EMPTY)
         {
           //move my sarcophagus to that location
           me.placeTrap(tile.getX(), tile.getY(), TrapType.SARCOPHAGUS);
@@ -61,7 +62,7 @@ public class AI extends BaseAI
       int[] trapCount = new int[trapTypes.length];
       
       //continue spawning traps until there isn't enough money to spend
-      for (int i = 0; i < tiles.size(); i++)
+      for (int i = 0; i < tiles.length; i++)
       {
         //if the tile is on my side
         Tile tile = tiles[i];
@@ -74,7 +75,7 @@ public class AI extends BaseAI
           }
           
           //select a random trap type (make sure it isn't a sarcophagus)
-          int trapType = rand.nextInt(trapTypes.size()-1) + 1;
+          int trapType = rand.nextInt(trapTypes.length-1) + 1;
           
           //make sure another can be spawned
           if (trapCount[trapType] < trapTypes[trapType].getMaxInstances())
@@ -86,12 +87,12 @@ public class AI extends BaseAI
           if (me.getScarabs() >= trapTypes[trapType].getCost())
           {
             //check if the tile is the right type (wall or empty)
-            if (trapTypes[trapType].canPlaceOnWalls() && tile.type() == Tile.WALL)
+            if (trapTypes[trapType].getCanPlaceOnWalls() == 1 && tile.getType() == Tile.WALL)
             {
               me.placeTrap(tile.getX(), tile.getY(), trapType);
               trapCount[trapType]++;
             }
-            else if (!trapTypes[trapType].canPlaceOnWalls() && tile.type() == Tile.EMPTY)
+            else if (trapTypes[trapType].getCanPlaceOnWalls() == 0 && tile.getType() == Tile.EMPTY)
             {
               me.placeTrap(tile.getX(), tile.getY(), trapType);
               trapCount[trapType]++;
@@ -110,7 +111,7 @@ public class AI extends BaseAI
     else
     {
       //find my sarcophagi and the enemy sarcophagi
-      for (int i = 0; i < traps.size(); i++)
+      for (int i = 0; i < traps.length; i++)
       {
         Trap trap = traps[i];
         if (trap.getTrapType() == TrapType.SARCOPHAGUS)
@@ -127,13 +128,13 @@ public class AI extends BaseAI
       }
       
       //find my spawn tiles
-      ArrayList<Tile> spawnTiles = new getMySpawns();
+      ArrayList<Tile> spawnTiles = getMySpawns();
       
       //select a random thief type
       int thiefNo = rand.nextInt(thiefTypes.length);
       
       //if you can afford the thief
-      if (me.getScarabs() >= thiefTypes[thiefNo].cost())
+      if (me.getScarabs() >= thiefTypes[thiefNo].getCost())
       {
         //make sure another can be spawned
         int max = thiefTypes[thiefNo].getMaxInstances();
@@ -166,24 +167,24 @@ public class AI extends BaseAI
         Thief thief = myThieves.get(i);
         
         //if the thief is alive and not frozen
-        if (thief.isAlive() && thief.getFrozenTurnsLeft() == 0)
+        if (thief.getAlive() == 1 && thief.getFrozenTurnsLeft() == 0)
         {
           final int[] xChange = new int[]{-1, 1, 0, 0};
-          final int[] yChange = new int[]{0, 0, -1, -1};
+          final int[] yChange = new int[]{0, 0, -1, 1};
           
           //try to dig or use a bomb before moving
           if (thief.getThiefType() == ThiefType.DIGGER && thief.getSpecialsLeft() > 0)
           {
-            for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
             {
               //if there is a wall adjacent and an empty space on the other side
-              int checkX = thief.getX() + xChange[i];
-              int checkY = thief.getY() + yChange[i];
+              int checkX = thief.getX() + xChange[j];
+              int checkY = thief.getY() + yChange[j];
               Tile wallTile = getTile(checkX, checkY);
-              Tile emptyTile = getTile(checkX + xChange[i], checkY + yChange[i]);
+              Tile emptyTile = getTile(checkX + xChange[j], checkY + yChange[j]);
               
               //must be on the map, and not trying to dig to the other side
-              if (wallTile != null && emptyTile != null && !onMySide(checkX + xChange[i]))
+              if (wallTile != null && emptyTile != null && !onMySide(checkX + xChange[j]))
               {
                 //if there is a wall with an empty tile on the other side
                 if (wallTile.getType() == Tile.WALL && emptyTile.getType() == Tile.EMPTY)
@@ -197,13 +198,13 @@ public class AI extends BaseAI
               }
             }
           }
-          else if thief.getType() == ThiefType.BOMBER && thief.getSpecialsLeft() > 0)
+          else if (thief.getThiefType() == ThiefType.BOMBER && thief.getSpecialsLeft() > 0)
           {
-            for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
             {
               //the place to chceck for things to blow up
-              int checkX = thief.getX() + xChange[i];
-              int checkY = thief.getY() + yChange[i];
+              int checkX = thief.getX() + xChange[j];
+              int checkY = thief.getY() + yChange[j];
             
               //make sure that the spot isn't on the other side
               if (!onMySide(checkX))
@@ -239,7 +240,7 @@ public class AI extends BaseAI
           if (thief.getMovementLeft() > 0)
           {
             //find a path from the thief's location to the enemy sarcophagus
-            Deque<Point> path = new Deque<Point>();
+            ArrayDeque<Point> path = new ArrayDeque<Point>();
             int endX = enemySarcophagi.get(0).getX();
             int endY = enemySarcophagi.get(0).getY();
             path = findPath(new Point(thief.getX(), thief.getY()), new Point(endX, endY));
@@ -247,7 +248,7 @@ public class AI extends BaseAI
             //if a path exists then move forward on the path
             if (path.size() > 0)
             {
-              thief.move(path.getFirst().x, path.getFirst());
+              thief.move(path.getFirst().x, path.getFirst().y);
             }
           }
         }
@@ -258,24 +259,24 @@ public class AI extends BaseAI
       for (int i = 0; i < myTraps.size(); i++)
       {
         final int[] xChange = new int[]{-1, 1, 0, 0};  
-        final int[] yChange = new int[]{0, 0, -1, -1};  
+        final int[] yChange = new int[]{0, 0, -1, 1};  
         Trap trap = myTraps.get(i);
         
         //make sure trap can be used
-        if (trap.isActive())
+        if (trap.getActive() == 1)
         {
           //if trap is a boulder
           if (trap.getTrapType() == TrapType.BOULDER)
           {
             //if there is an enemy thief adjacent
-            for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
             {
-              Thief enemyThief = getThief(trap.getX() + xChange[i], trap.getY() + yChange[i]);
+              Thief enemyThief = getThief(trap.getX() + xChange[j], trap.getY() + yChange[j]);
               
               //roll over the thief
               if (enemyThief != null)
               {
-                trap.act(xChange[i], yChange[i]);
+                trap.act(xChange[j], yChange[j]);
                 break;
               }
             }
@@ -286,6 +287,8 @@ public class AI extends BaseAI
             int dir = rand.nextInt(4);
             int checkX = trap.getX() + xChange[dir];
             int checkY = trap.getY() + yChange[dir];
+            Tile checkTile = getTile(checkX, checkY);
+            Trap checkTrap = getTrap(checkX, checkY);
             
             //if the tile is empty, and there isn't a sarcophagus there
             if (checkTrap == null || checkTrap.getTrapType() != TrapType.SARCOPHAGUS)
@@ -348,7 +351,7 @@ public class AI extends BaseAI
     return thiefList;
   }
   
-  private ArrayList<Thief> getMyTraps()
+  private ArrayList<Trap> getMyTraps()
   {
     ArrayList<Trap> trapList = new ArrayList<Trap>();  
     
@@ -364,7 +367,7 @@ public class AI extends BaseAI
     return trapList;
   }
   
-  private ArrayList<Thief> getEnemyTraps()
+  private ArrayList<Trap> getEnemyTraps()
   {
     ArrayList<Trap> trapList = new ArrayList<Trap>();  
     
@@ -385,7 +388,7 @@ public class AI extends BaseAI
     ArrayList<Tile> tileList = new ArrayList<Tile>();
     
     int mapSize = mapHeight();
-    tileList.add( getTile(mapSize/2-1, (1-playerID())*mapSize, 0) );
+    tileList.add( getTile(mapSize/2-1 + (1-playerID())*mapSize, 0) );
     tileList.add( getTile(mapSize-1 + (1-playerID())*mapSize, mapSize/2-1) );
     tileList.add( getTile(mapSize/2+1 + (1-playerID())*mapSize, mapSize-1 ) );
     tileList.add( getTile((1-playerID())*mapSize, mapSize/2+1) );
@@ -457,11 +460,11 @@ public class AI extends BaseAI
   }
   
   
-  Deque<Point> findPath(Point start, Point end)
+  private ArrayDeque<Point> findPath(Point start, Point end)
   {
-    Deque<Point> toReturn = new Deque<Point>;
+    ArrayDeque<Point> toReturn = new ArrayDeque<Point>();
     //the set of open tiles to look at
-    Deque<Tile> openSet = new Deque<Tile>;
+    ArrayDeque<Tile> openSet = new ArrayDeque<Tile>();
     //points back to parent tile
     HashMap<Tile, Tile> parent = new HashMap<Tile, Tile>();
     
@@ -485,13 +488,13 @@ public class AI extends BaseAI
       Tile curTile = openSet.getFirst();
       //and remove it
       openSet.pop();
-      final int xChange[] = {0, 0, -1, -1};
-      final int yChange[] = {1, 1, 0, 0};
+      final int xChange[] = {0, 0, -1, 1};
+      final int yChange[] = {-1, 1, 0, 0};
       
       //look in all directions
       for (int i = 0; i < 4; i++)
       {
-        Point loc = new Point(curTile.x + xChange[i], curTile.y + yChange[i]);
+        Point loc = new Point(curTile.getX() + xChange[i], curTile.getY() + yChange[i]);
         Tile toAdd = getTile(loc.x, loc.y);
         //if a tile exists there
         if (toAdd != null)
@@ -506,21 +509,21 @@ public class AI extends BaseAI
     }
     
     //find the path back
-    for (Tile tile = endTile; parent.get(Tile) != null; tile = parent.get(tile))
+    for (Tile tile = endTile; parent.get(tile) != null; tile = parent.get(tile))
     {
-      toReturn.addFirst(new Point(tile.x, tile.y));
+      toReturn.addFirst(new Point(tile.getX(), tile.getY()));
     }
     
     return toReturn;
   }
   
-  private int count(HashMap<Tile> points, Tile tile)
+  private int count(HashMap<Tile, Tile> points, Tile tile)
   {
     int result = 0;
     
-    for (Tile t; points.values())
+    for (Tile t : points.values())
     {
-      if (t.equals(tile))
+      if (t != null && t.equals(tile))
       {
         result++;
       }
