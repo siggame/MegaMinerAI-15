@@ -818,6 +818,62 @@ DLLEXPORT int thiefUseSpecial(_Thief* object, int x, int y)
     }
     object->x = newx;
     object->y = newy;
+    
+    // Check for oil vase
+    _Trap* vase;
+    bool isVase = false;
+    for(int i = 0; i < c->TrapCount; ++i)
+    {
+      vase = getTrap(c, i);
+      if(vase->active && vase->x == newx&& vase->y == y && vase->trapType == 6)
+      {
+        isVase = true;
+      }
+    }
+    if (isVase)
+    {
+      _TrapType* trapType = getTrapType(c, vase->trapType);
+    
+      --vase->activationsRemaining;
+      if(vase->activationsRemaining == 0)
+      {
+        vase->active = 0;
+      }
+      else if(trapType->cooldown)
+      {
+        vase->active = 0;
+        vase->turnsTillActive = trapType->cooldown;
+      }
+    
+      int xds[] = {1, -1, 0, 0};
+      int yds[] = {0, 0, 1, -1};
+      for (int di = 0; di < 4; ++di) {
+        int tx = x + xds[di];
+        int ty = y + yds[di];
+        
+        // Kill adjacent thieves
+        for(int i = 0; i < c->ThiefCount; ++i)
+        {
+          _Thief* thief = getThief(c, i);
+          if(thief->x == tx && thief->y == ty)
+          {
+            if(thief->thiefType == 2 && thief->specialsLeft > 0)
+            {
+              --thief->specialsLeft;
+            }
+            else
+            {
+              if(trapType->killsOnActivate)
+              {
+                thief->alive = false;
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    // Check for traps at digger destination
     _Trap* trap;
     bool okay = false;
     //trap
@@ -880,6 +936,35 @@ DLLEXPORT int thiefUseSpecial(_Thief* object, int x, int y)
             trap->active = 0;
             trap->turnsTillActive = trapType->cooldown;
           }
+        
+          int xds[] = {1, -1, 0, 0};
+          int yds[] = {0, 0, 1, -1};
+          for (int di = 0; di < 4; ++di) {
+            int tx = x + xds[di];
+            int ty = y + yds[di];
+            
+            // Kill adjacent thieves
+            for(int i = 0; i < c->ThiefCount; ++i)
+            {
+              _Thief* thief = getThief(c, i);
+              if(thief->x == tx && thief->y == ty)
+              {
+                if(thief->thiefType == 2 && thief->specialsLeft > 0)
+                {
+                  --thief->specialsLeft;
+                }
+                else
+                {
+                  if(trapType->killsOnActivate)
+                  {
+                    thief->alive = false;
+                  }
+                }
+              }
+            }
+          }
+          
+          // Kill calling thief
           if(object->thiefType == 2 && object->specialsLeft > 0)
           {
             --object->specialsLeft;
