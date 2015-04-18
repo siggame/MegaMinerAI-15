@@ -262,7 +262,7 @@ class Trap(Mappable):
       return 'Turn {}: You cannot use this trap ({}) because it is not active.'.format(self.game.turnNumber, self.id)
 
     if self.trapType == self.game.boulder:
-      if abs(x) + abs(y) != 1:
+      if abs(x - self.x) + abs(y - self.y) != 1:
         return 'Turn {}: Invalid rolling direction for boulder {}. ({}, {})'.format(self.game.turnNumber, self.id, x, y)
 
       # Kill thieves as boulder rolls over them, until boulder runs into a wall
