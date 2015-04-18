@@ -197,6 +197,8 @@ class Trap(Mappable):
     elif self.game.objects.trapTypes[self.trapType].cooldown:
       self.active = 0
       self.turnsTillActive = self.game.objects.trapTypes[self.trapType].cooldown
+    if not self.visible:
+      self.revealedThisTurn = True
     self.visible = 1
 
   def attack(self, thief):
@@ -206,16 +208,21 @@ class Trap(Mappable):
           thief.alive = 0
           thief.frozenTurnsLeft = 0
           self.bodyCount += 1
-          if not self.visible:
+          if not self.visible or self.revealedThisTurn:
+            self.revealedThisTurn = True
+            thief.gotKilledThisTurn = True
             thief.hidden = True
         if self.game.objects.trapTypes[self.trapType].freezesForTurns:
           thief.frozenTurnsLeft = self.game.objects.trapTypes[self.trapType].freezesForTurns
-          if not self.visible:
+          if not self.visible or self.revealedThisTurn:
+            self.revealedThisTurn = True
             thief.hidden = True
+            thief.gotFrozenThisTurn = True
       elif thief.thiefType == self.game.ninja:
         thief.specialsLeft -= 1
 
   def nextTurn(self):
+    self.revealedThisTurn = False
     trapType = self.game.objects.trapTypes[self.trapType]
 
     if self.game.playerID == self.owner:
@@ -356,6 +363,9 @@ class Thief(Mappable):
     return dict(id = self.id, x = self.x, y = self.y, owner = self.owner, thiefType = self.thiefType, alive = self.alive, specialsLeft = self.specialsLeft, maxSpecials = self.maxSpecials, movementLeft = self.movementLeft, maxMovement = self.maxMovement, frozenTurnsLeft = self.frozenTurnsLeft, )
   
   def nextTurn(self):
+    self.walledBy = None
+    self.gotFrozenThisTurn = False
+    self.gotKilledThisTurn = False
     if self.game.playerID == self.owner:
       if self.thiefType == 3:
         xchange = [-1, 1, 0,  0]
@@ -378,26 +388,32 @@ class Thief(Mappable):
     pass
 
   def move(self, x, y):
-    if self.owner != self.game.playerID:
-      return 'Turn {}: You cannot use the other player\'s thief {}. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-    if not self.alive:
-      if self.hidden:
-        return True
-      else:
-        return 'Turn {}: You cannot move a dead thief {}. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-    if self.frozenTurnsLeft > 0:
-      if self.hidden:
-        return True
-      else:
-        return 'Turn {}: You cannot move a thief {} that is frozen for {} turns. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.frozenTurnsLeft, self.x, self.y, x, y)
-    if self.movementLeft <= 0:
-      return 'Turn {}: Your thief {} does not have any movement left. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-    if not (0 <= x - (self.game.mapWidth / 2) * (self.owner ^ 1) < self.game.mapWidth / 2) or not (0 <= y < self.game.mapHeight):
-      return 'Turn {}: Your thief {} cannot move off its side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-    if self.game.getTile(x, y).type == self.game.wall:
-      return 'Turn {}: Your thief {} is trying to run into a wall. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
-    if abs(self.x - x) + abs(self.y - y) != 1:
-      return 'Turn {}: Your thief {} can only move one unit away. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+    if self.gotFrozenThisTurn or self.gotKilledThisTurn:
+      return True
+    if self.walledBy is None:
+      if self.owner != self.game.playerID:
+        return 'Turn {}: You cannot use the other player\'s thief {}. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+      if not self.alive:
+        if self.hidden:
+          return True
+        else:
+          return 'Turn {}: You cannot move a dead thief {}. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+      if self.frozenTurnsLeft > 0:
+        if self.hidden:
+          return True
+        else:
+          return 'Turn {}: You cannot move a thief {} that is frozen for {} turns. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.frozenTurnsLeft, self.x, self.y, x, y)
+      if self.movementLeft <= 0:
+        return 'Turn {}: Your thief {} does not have any movement left. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+      if not (0 <= x - (self.game.mapWidth / 2) * (self.owner ^ 1) < self.game.mapWidth / 2) or not (0 <= y < self.game.mapHeight):
+        return 'Turn {}: Your thief {} cannot move off its side of the map. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+      if self.game.getTile(x, y).type == self.game.wall:
+        return 'Turn {}: Your thief {} is trying to run into a wall. ({},{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+      if abs(self.x - x) + abs(self.y - y) != 1:
+        return 'Turn {}: Your thief {} can only move one unit away. ({}.{}) -> ({},{})'.format(self.game.turnNumber, self.id, self.x, self.y, x, y)
+    else:
+      self.walledBy.activate()
+      return True
 
     # Only check for activatesOnWalkedThrough traps when thief moves off of them and not on the thief's first move
     if self.movementLeft < self.maxMovement:
@@ -412,7 +428,10 @@ class Thief(Mappable):
                          self.game.objects.trapTypes[trap.trapType].unpassable), None)
 
     if blockingTrap:
+      if not blockingTrap.visible or blockingTrap.revealedThisTurn:
+        self.walledBy = blockingTrap
       blockingTrap.activate()
+      return True
 
     if self.alive and not blockingTrap:
       self.game.addAnimation(MoveAnimation(self.id, self.x, self.y, x, y))
