@@ -30,7 +30,7 @@ class Player(object):
     tile = self.game.getTile(x, y)
     if not tile:
       return "Turn {}: You cannot place a trap outside of the map. ({}, {})".format(self.game.turnNumber, x, y)
-    if not (self.id * (self.game.mapWidth / 2) < x < (1 + self.id) * (self.game.mapWidth / 2)):
+    if not (self.id * (self.game.mapWidth / 2) <= x < (1 + self.id) * (self.game.mapWidth / 2)):
       return "Turn {}: You cannot place a trap outside of your pyramid. ({}, {})".format(self.game.turnNumber, x, y)
     if tile.type == self.game.spawn:
       return "Turn {}: You cannot place a trap on a spawn point ({}, {})".format(self.game.turnNumber, x, y)
