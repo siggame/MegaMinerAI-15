@@ -267,12 +267,14 @@ class Trap(Mappable):
 
       # Kill thieves as boulder rolls over them, until boulder runs into a wall
       boulderX, boulderY = self.x, self.y
+      xchange, ychange = x - self.x, y - self.y
       while self.game.grid[boulderX][boulderY][0].type == self.game.empty:
         for unit in self.game.grid[boulderX][boulderY]:
           if isinstance(unit, Thief):
             self.attack(unit)
-        boulderX += x
-        boulderY += y
+        boulderX += xchange
+        boulderY += ychange
+
     # Move mummy and kill thieves
     elif self.trapType == self.game.mummy:
       # Check if desired space is adjacent to mummy's current space
