@@ -311,6 +311,11 @@ class Trap(Mappable):
   def toggle(self):
     if not self.game.objects.trapTypes[self.trapType].deactivatable:
       return 'Turn {}: Cannot toggle trap {} that is not deactivatable'.format(self.game.turnNumber, self.id)
+    elif not self.active and self.activationsRemaining == 0:
+      return 'Turn {}: Trap {} has no activations remaining.'.format(self.game.turnNumber, self.id)
+    elif not self.active and self.turnsTillActive > 0:
+      return 'Turn {}: Trap {} has turns remaining until it is active'.format(self.game.turnNumber, self.id)
+        
     if self.active:
       self.active = 0
     elif self.activationsRemaining and self.turnsTillActive == 0:
@@ -446,13 +451,16 @@ class Thief(Mappable):
         #Blow up walls
         if isinstance(unit, Tile) and unit.type == 2:
           unit.type = 0
+        #oil vase
+        if isinstance(unit, Trap) and unit.trapType == 6:
+          unit.attack(self)
+          unit.activate()
         #Blow up traps
-        if isinstance(unit, Trap) and unit.trapType != 0:
+        if isinstance(unit, Trap) and unit.trapType != 0 and unit.trapType != 6:
           self.game.grid[x][y].remove(unit)
         #Blow up thieves
         if isinstance(unit, Thief):
           unit.alive = 0
-          self.game.grid[x][y].remove(unit)
         
       self.game.addAnimation(BombAnimation(self.id, self.game.grid[x][y][0].id))
       self.movementLeft = 0
@@ -486,6 +494,15 @@ class Thief(Mappable):
       self.x = newX
       self.y = newY
       self.game.grid[self.x][self.y].append(self)
+
+      #TRAPS
+      instaTrap = next((trap for trap in self.game.grid[self.x][self.y] if isinstance(trap, Trap) and trap.active and
+                        self.game.objects.trapTypes[trap.trapType].activatesOnWalkedThrough and
+                        self.game.objects.trapTypes[trap.trapType].turnsToActivateOnTile == 1), None)
+
+      if instaTrap:
+        instaTrap.attack(self)
+        instaTrap.activate()
 
       self.movementLeft = 0
       self.specialsLeft -= 1
@@ -522,7 +539,7 @@ class ThiefType(object):
   def __setattr__(self, name, value):
       if name in self.game_state_attributes:
         object.__setattr__(self, 'updatedAt', self.game.turnNumber)
-      object.__setattr__(self, name, value)
+        object.__setattr__(self, name, value)
 
 class TrapType(object):
   game_state_attributes = ['id', 'name', 'type', 'cost', 'maxInstances', 'startsVisible', 'hasAction', 'deactivatable', 'maxActivations', 'activatesOnWalkedThrough', 'turnsToActivateOnTile', 'canPlaceOnWalls', 'canPlaceOnOpenTiles', 'freezesForTurns', 'killsOnActivate', 'cooldown', 'explosive', 'unpassable']
