@@ -791,7 +791,7 @@ DLLEXPORT int thiefMove(_Thief* object, int x, int y)
   for(int i = 0; i < c->TrapCount; ++i)
   {
     lastTrap = getTrap(c, i);
-    if(lastTrap->x == x && lastTrap->y == y)
+    if(lastTrap->x == object->x && lastTrap->y == object->y)
     {
       break;
     }
@@ -829,7 +829,6 @@ DLLEXPORT int thiefMove(_Thief* object, int x, int y)
       {
         if(trapType->killsOnActivate)
         {
-          std::cout << "got killed\n";
           object->alive = false;
         }
       }
@@ -843,7 +842,7 @@ DLLEXPORT int thiefMove(_Thief* object, int x, int y)
     for(int i = 0; i < c->TrapTypeCount; ++i)
     {
       trapType = getTrapType(c, i);
-      if(trapType->type == lastTrap->trapType)
+      if(trapType->type == trap->trapType)
       {
         break;
       }
