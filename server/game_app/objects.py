@@ -224,17 +224,19 @@ class Trap(Mappable):
   def nextTurn(self):
     self.revealedThisTurn = False
     trapType = self.game.objects.trapTypes[self.trapType]
+    self.hidden = False
 
     if self.game.playerID == self.owner:
       if self.turnsTillActive > 0:
         self.turnsTillActive -= 1
         if self.turnsTillActive == 0:
           self.active = 1
+      # swinging blade
+      if self.trapType == self.game.swingingBlade and self.activationsRemaining > 0:
+        self.active = self.active ^ 1
       if self.active:
-        # swinging blade
-        if self.trapType == self.game.swingingBlade:
-          self.active = self.active ^ 1
-        elif self.trapType == self.game.mummy:
+        
+        if self.trapType == self.game.mummy:
           self.movementLeft = 1
 
         if trapType.turnsToActivateOnTile:
