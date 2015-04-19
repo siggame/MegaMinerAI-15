@@ -422,6 +422,7 @@ DLLEXPORT int playerPurchaseThief(_Player* object, int x, int y, int thiefType)
   if (turnNo != c->turnNumber)
   {
     turnNo = c->turnNumber;
+    thiefInstanceCount.clear();
     thiefInstanceCount.resize(c->ThiefTypeCount, 0);
 
     for (int i = 0; i < c->ThiefCount; ++i)
@@ -444,13 +445,17 @@ DLLEXPORT int playerPurchaseThief(_Player* object, int x, int y, int thiefType)
 
   //out of bounds
   if(x < 0 || x >= c->mapWidth || y < 0 || y >= c->mapHeight)
+  {
     return 0;
+  }
 
   //wrong pyramid
   int width = c->mapWidth/2;
   int minX = (object->id == 1) ? 0 : width;
   if(x < minX || x >= minX + width)
+  {
     return 0;
+  }
 
   //not spawn
   for (int i = 0; i < c->TileCount; ++i)
@@ -459,7 +464,9 @@ DLLEXPORT int playerPurchaseThief(_Player* object, int x, int y, int thiefType)
     if(t->x == x && t->y == y)
     {
       if(t->type != 1)
+      {
         return 0;
+      }
       else
         break;
     }
@@ -467,7 +474,9 @@ DLLEXPORT int playerPurchaseThief(_Player* object, int x, int y, int thiefType)
 
   // invalid type
   if(thiefType < 0 || thiefType >= c->ThiefTypeCount)
+  {
     return 0;
+  }
 
   _ThiefType* type;
   for(int i = 0; i < c->ThiefTypeCount; ++i)
@@ -480,10 +489,14 @@ DLLEXPORT int playerPurchaseThief(_Player* object, int x, int y, int thiefType)
   }
 
   if(thiefMoney < type->cost)
+  {
     return 0;
+  }
 
   if(thiefInstanceCount[thiefType] >= type->maxInstances)
+  {
     return 0;
+  }
   
   thiefInstanceCount[thiefType] += 1;
   object->scarabs -= type->cost;
