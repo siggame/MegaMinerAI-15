@@ -281,9 +281,10 @@ class Trap(Mappable):
         return 'Turn {}: Invalid rolling direction for boulder {}. ({}, {})'.format(self.game.turnNumber, self.id, x, y)
 
       # Kill thieves as boulder rolls over them, until boulder runs into a wall
+      print "BOULDER"
       boulderX, boulderY = self.x, self.y
       xchange, ychange = x - self.x, y - self.y
-      while self.game.grid[boulderX][boulderY][0].type == self.game.empty:
+      while self.game.getTile(boulderX, boulderY) is not None and self.game.grid[boulderX][boulderY][0].type == self.game.empty:
         for unit in self.game.grid[boulderX][boulderY]:
           if isinstance(unit, Thief):
             self.attack(unit)
