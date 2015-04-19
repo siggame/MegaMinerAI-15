@@ -799,7 +799,7 @@ DLLEXPORT int thiefMove(_Thief* object, int x, int y)
         break;
       }
     }
-    if(trap->active && trapType->activatesOnWalkedThrough && trapType->turnsToActivateOnTile == 0)
+    if(trap->active && trapType->activatesOnWalkedThrough && trapType->turnsToActivateOnTile == 0 && object->movementLeft < object->maxMovement)
     {
       --trap->activationsRemaining;
       if(trap->activationsRemaining == 0)
