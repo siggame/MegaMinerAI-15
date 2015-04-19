@@ -502,6 +502,7 @@ class Thief(Mappable):
         #Blow up traps
         if isinstance(unit, Trap) and unit.trapType != 0 and unit.trapType != 6:
           self.game.grid[x][y].remove(unit)
+          self.game.removeObject(unit)
         #Blow up thieves
         if isinstance(unit, Thief):
           unit.alive = 0
