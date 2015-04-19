@@ -18,6 +18,7 @@ class Player(object):
     return dict(id = self.id, playerName = self.playerName, time = self.time, scarabs = self.scarabs, roundsWon = self.roundsWon, sarcophagiCaptured = self.sarcophagiCaptured, )
   
   def nextTurn(self):
+    self.hasSpoken = False
     if self.game.playerID == self.id:
       if self.game.roundTurnNumber in [0, 1]:
         self.scarabs = self.game.scarabsForTraps
@@ -107,7 +108,12 @@ class Player(object):
     return True
 	
   def pharaohTalk(self, message):
-    pass
+    if not self.hasSpoken:
+      self.hasSpoken = True
+      message = message[0:140]
+      self.game.addAnimation(PharaohTalkAnimation(self.id, message))
+      return True
+    return 'Turn {}: The Pharaoh has already exhausted his mind on the matters.'.format(self.game.turnNumber)
 
   def __setattr__(self, name, value):
       if name in self.game_state_attributes:
@@ -235,7 +241,7 @@ class Trap(Mappable):
       if self.trapType == self.game.swingingBlade and self.activationsRemaining > 0:
         self.active = self.active ^ 1
       if self.active:
-        
+
         if self.trapType == self.game.mummy:
           self.movementLeft = 1
 
@@ -368,6 +374,7 @@ class Thief(Mappable):
     return dict(id = self.id, x = self.x, y = self.y, owner = self.owner, thiefType = self.thiefType, alive = self.alive, specialsLeft = self.specialsLeft, maxSpecials = self.maxSpecials, movementLeft = self.movementLeft, maxMovement = self.maxMovement, frozenTurnsLeft = self.frozenTurnsLeft, )
   
   def nextTurn(self):
+    self.hasSpoken = False
     self.walledBy = None
     self.gotFrozenThisTurn = False
     self.gotKilledThisTurn = False
@@ -390,7 +397,12 @@ class Thief(Mappable):
     return True
 
   def thiefTalk(self, message):
-    pass
+    if not self.hasSpoken:
+      self.hasSpoken = True
+      message = message[0:140]
+      self.game.addAnimation(ThiefTalkAnimation(self.id, message))
+      return True
+    return 'Turn {}: This thief run out of words to say, perhaps the spike pit will convince him otherwise?'.format(self.game.turnNumber)
 
   def move(self, x, y):
     if self.gotFrozenThisTurn or self.gotKilledThisTurn:
