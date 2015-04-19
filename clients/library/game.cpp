@@ -642,6 +642,11 @@ DLLEXPORT int trapAct(_Trap* object, int x, int y)
   {
     object->active = 0;
   }
+  else if(trap->cooldown)
+  {
+    object->active = 0;
+    object->turnsTillActive = trap->cooldown;
+  }
 
   return 1;
 }
@@ -773,6 +778,7 @@ DLLEXPORT int thiefMove(_Thief* object, int x, int y)
   //check for activatesOnWalkedThrough
   //check for traps on the tile
   _Trap* trap = 0;
+  _Trap* lastTrap = 0;
   for(int i = 0; i < c->TrapCount; ++i)
   {
     trap = getTrap(c, i);
@@ -782,29 +788,38 @@ DLLEXPORT int thiefMove(_Thief* object, int x, int y)
     }
     trap = 0;
   }
-  if(trap != 0)
+  for(int i = 0; i < c->TrapCount; ++i)
+  {
+    lastTrap = getTrap(c, i);
+    if(lastTrap->x == x && lastTrap->y == y)
+    {
+      break;
+    }
+    lastTrap = 0;
+  }
+  if(lastTrap != 0)
   {
     //make sure it's active and all that
     _TrapType* trapType;
     for(int i = 0; i < c->TrapTypeCount; ++i)
     {
       trapType = getTrapType(c, i);
-      if(trapType->type == trap->trapType)
+      if(trapType->type == lastTrap->trapType)
       {
         break;
       }
     }
-    if(trap->active && trapType->activatesOnWalkedThrough && trapType->turnsToActivateOnTile == 0 && object->movementLeft < object->maxMovement)
+    if(lastTrap->active && trapType->activatesOnWalkedThrough && trapType->turnsToActivateOnTile == 0 && object->movementLeft < object->maxMovement)
     {
-      --trap->activationsRemaining;
-      if(trap->activationsRemaining == 0)
+      --lastTrap->activationsRemaining;
+      if(lastTrap->activationsRemaining == 0)
       {
-        trap->active = 0;
+        lastTrap->active = 0;
       }
       else if(trapType->cooldown)
       {
-        trap->active = 0;
-        trap->turnsTillActive = trapType->cooldown;
+        lastTrap->active = 0;
+        lastTrap->turnsTillActive = trapType->cooldown;
       }
       if(object->thiefType == 2 && object->specialsLeft > 0)
       {
@@ -814,12 +829,26 @@ DLLEXPORT int thiefMove(_Thief* object, int x, int y)
       {
         if(trapType->killsOnActivate)
         {
+          std::cout << "got killed\n";
           object->alive = false;
         }
       }
     }
-    //blocking trap
-    else if(trap->active && trapType->unpassable)
+  }
+  //blocking trap
+  if(trap != 0)
+  {
+    //make sure it's active and all that
+    _TrapType* trapType;
+    for(int i = 0; i < c->TrapTypeCount; ++i)
+    {
+      trapType = getTrapType(c, i);
+      if(trapType->type == lastTrap->trapType)
+      {
+        break;
+      }
+    }
+    if(trap->active && trapType->unpassable)
     {
       --object->movementLeft;
       --trap->activationsRemaining;
