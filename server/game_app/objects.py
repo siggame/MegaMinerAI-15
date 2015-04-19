@@ -232,14 +232,17 @@ class Trap(Mappable):
     trapType = self.game.objects.trapTypes[self.trapType]
     self.hidden = False
 
+    # Swinging blade - toggle on the begginng of opponent's turn
+    if self.game.playerID != self.owner:
+      if self.trapType == self.game.swingingBlade and self.activationsRemaining > 0:
+        self.active = self.active ^ 1
+
     if self.game.playerID == self.owner:
       if self.turnsTillActive > 0:
         self.turnsTillActive -= 1
         if self.turnsTillActive == 0:
           self.active = 1
-      # swinging blade
-      if self.trapType == self.game.swingingBlade and self.activationsRemaining > 0:
-        self.active = self.active ^ 1
+
       if self.active:
 
         if self.trapType == self.game.mummy:
