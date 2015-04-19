@@ -655,11 +655,6 @@ DLLEXPORT int trapAct(_Trap* object, int x, int y)
   {
     object->active = 0;
   }
-  else if(trap->cooldown)
-  {
-    object->active = 0;
-    object->turnsTillActive = trap->cooldown;
-  }
 
   return 1;
 }
