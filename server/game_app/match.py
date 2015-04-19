@@ -254,9 +254,15 @@ class Match(DefaultGameWorld):
 
     # Check if at dead end state
     deadEnd = False
-    cheapest = min(typeThief.cost for typeThief in self.objects.thiefTypes)
-    aliveThieves = sum(thief.alive for thief in self.objects.thiefs)
-    if aliveThieves == 0 and self.objects.players[0].scarabs < cheapest and self.objects.players[1].scarabs < cheapest and self.roundTurnNumber > 2:
+    thiefCounts = [[0 for thiefType in self.objects.thiefTypes] for player in self.objects.players]
+    aliveThieves = 0
+    for thief in self.objects.thiefs:
+      thiefCounts[thief.owner][thief.thiefType] += 1
+      aliveThieves += thief.alive
+    cheapest = [min(thiefType.cost for thiefType in self.objects.thiefTypes if
+    thiefCounts[player.id][thiefType.type] < thiefType.maxInstances) for player in self.objects.players]
+    canBuyThieves = sum(1 for player in self.objects.players if player.scarabs >= cheapest[player.id])
+    if aliveThieves == 0 and canBuyThieves == 0 and self.roundTurnNumber > 2:
       deadEnd = True
 
     if self.roundTurnNumber >= self.roundTurnLimit or deadEnd:
@@ -393,12 +399,12 @@ class Match(DefaultGameWorld):
 
   def sendStatus(self, players):
     for i in players:
-      i.writeSExpr(self.status())
+      i.writeSExpr(self.status(i))
       i.writeSExpr(self.animations)
     return True
 
 
-  def status(self):
+  def status(self, connection):
     msg = ["status"]
 
     msg.append(["game", self.mapWidth, self.mapHeight, self.turnNumber, self.roundTurnNumber, self.maxThieves, self.maxTraps, self.playerID, self.gameNumber, self.roundNumber, self.scarabsForTraps, self.scarabsForThieves, self.roundsToWin, self.roundTurnLimit, self.numberOfSarcophagi])
@@ -409,7 +415,8 @@ class Match(DefaultGameWorld):
     updated = [i for i in self.objects.tiles if i.updatedAt > self.turnNumber-3]
     if updated:
       typeLists.append(["Tile"] + [i.toList() for i in updated])
-    typeLists.append(["Trap"] + [i.toList() for i in self.objects.traps])
+    
+    typeLists.append(["Trap"] + [i.toList() for i in self.objects.values() if i.__class__ is Trap and( i.visible or i.owner == self.playerID or connection.type != "player")])
     typeLists.append(["Thief"] + [i.toList() for i in self.objects.thiefs])
     updated = [i for i in self.objects.thiefTypes if i.updatedAt > self.turnNumber-3]
     if updated:
