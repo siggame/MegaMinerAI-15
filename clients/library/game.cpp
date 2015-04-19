@@ -564,14 +564,20 @@ DLLEXPORT int trapAct(_Trap* object, int x, int y)
 
     do
     {
+      bool okay = false;
       //get tile
       for(int i = 0; i < c->TileCount; ++i)
       {
         tile = getTile(c, i);
         if(tile->x == deathX && tile->y == deathY)
         {
+          okay = true;
           break;
         }
+      }
+      if(!okay)
+      {
+        break;
       }
       for(int i = 0; i < c->ThiefCount; ++i)
       {
