@@ -393,12 +393,12 @@ class Match(DefaultGameWorld):
 
   def sendStatus(self, players):
     for i in players:
-      i.writeSExpr(self.status())
+      i.writeSExpr(self.status(i))
       i.writeSExpr(self.animations)
     return True
 
 
-  def status(self):
+  def status(self, connection):
     msg = ["status"]
 
     msg.append(["game", self.mapWidth, self.mapHeight, self.turnNumber, self.roundTurnNumber, self.maxThieves, self.maxTraps, self.playerID, self.gameNumber, self.roundNumber, self.scarabsForTraps, self.scarabsForThieves, self.roundsToWin, self.roundTurnLimit, self.numberOfSarcophagi])
@@ -409,7 +409,8 @@ class Match(DefaultGameWorld):
     updated = [i for i in self.objects.tiles if i.updatedAt > self.turnNumber-3]
     if updated:
       typeLists.append(["Tile"] + [i.toList() for i in updated])
-    typeLists.append(["Trap"] + [i.toList() for i in self.objects.traps])
+    
+    typeLists.append(["Trap"] + [i.toList() for i in self.objects.values() if i.__class__ is Trap and( i.visible or i.owner == self.playerID or connection.type != "player")])
     typeLists.append(["Thief"] + [i.toList() for i in self.objects.thiefs])
     updated = [i for i in self.objects.thiefTypes if i.updatedAt > self.turnNumber-3]
     if updated:
