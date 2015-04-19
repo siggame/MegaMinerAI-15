@@ -254,9 +254,15 @@ class Match(DefaultGameWorld):
 
     # Check if at dead end state
     deadEnd = False
-    cheapest = min(typeThief.cost for typeThief in self.objects.thiefTypes)
-    aliveThieves = sum(thief.alive for thief in self.objects.thiefs)
-    if aliveThieves == 0 and self.objects.players[0].scarabs < cheapest and self.objects.players[1].scarabs < cheapest and self.roundTurnNumber > 2:
+    thiefCounts = [[0 for thiefType in self.objects.thiefTypes] for player in self.objects.players]
+    aliveThieves = 0
+    for thief in self.objects.thiefs:
+      thiefCounts[thief.owner][thief.thiefType] += 1
+      aliveThieves += thief.alive
+    cheapest = [min(thiefType.cost for thiefType in self.objects.thiefTypes if
+                    thiefCounts[player.id][thiefType.type] < thiefType.maxInstances) for player in self.objects.players]
+    canBuyThieves = sum(1 for player in self.objects.players if player.scarabs >= cheapest[player.id])
+    if aliveThieves == 0 and canBuyThieves == 0 and self.roundTurnNumber > 2:
       deadEnd = True
 
     if self.roundTurnNumber >= self.roundTurnLimit or deadEnd:
