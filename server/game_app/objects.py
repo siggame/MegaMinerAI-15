@@ -247,7 +247,7 @@ class Trap(Mappable):
 
         if trapType.turnsToActivateOnTile:
           # Find thieves
-          thieves = [unit for unit in self.game.grid[self.x][self.y] if isinstance(unit, Thief)]
+          thieves = [unit for unit in self.game.grid[self.x][self.y] if isinstance(unit, Thief) and unit.alive]
           # Forget thieves who moved off
           self.standingThieves = {thief: turns for thief, turns in self.standingThieves.iteritems() if thief in thieves}
           # Increase counter for thieves
